@@ -6,7 +6,7 @@
           v-model="userSearch"
           class="form-control"
           type="search"
-          placeholder="Search..."
+          placeholder="Search users..."
         />
       </b-col>
       <b-col class="pl-0">
