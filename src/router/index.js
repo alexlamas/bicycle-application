@@ -1,13 +1,18 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Users from "../views/Users.vue";
-import Bicycles from "../views/Bicycles.vue";
+import Users from "../components/Users.vue";
+import Bicycles from "../components/Bicycles.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
+    name: "users",
+    component: Users
+  },
+  {
+    path: "/users",
     name: "users",
     component: Users
   },

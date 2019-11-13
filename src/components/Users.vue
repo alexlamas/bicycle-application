@@ -55,9 +55,14 @@ export default {
       this.newPerson.code = "05/000" + this.newPerson.code;
       var newPersonToPush = this.newPerson;
       db.ref("people").push(newPersonToPush);
-      db.ref("people").once("value", snapshot => {
-        this.people = Object.values(snapshot.val());
-      });
+      db.ref("people")
+        .once("value", snapshot => {
+          this.people = Object.values(snapshot.val());
+        })
+        .then(() => {
+          this.newPerson.code = "";
+          this.newPerson.name = "";
+        });
     }
   }
 };

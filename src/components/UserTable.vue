@@ -10,32 +10,36 @@
     >
       <template v-slot:cell(actions)="row">
         <b-button
-          v-b-modal.edit-modal
+          @click="editModal(row.item, $event.target)"
           variant="outline-secondary"
           size="sm"
-          @click="editUser(row.item)"
           class="mr-1"
-          >Edit</b-button
         >
+          Edit
+        </b-button>
         <b-button
-          v-b-modal.modal-3
+          @click="deleteModal(row.item, $event.target)"
           variant="outline-danger"
           size="sm"
-          @click="deleteUser(row.item)"
           class="mr-1"
         >
           Delete
         </b-button>
       </template>
     </b-table>
+    <edit-user :userArray="selectedUser" />
+    <delete-user :userArray="selectedUser" />
   </b-row>
 </template>
 
 <script>
+import EditUser from "./EditUser";
+import DeleteUser from "./DeleteUser";
 import { db } from "../firebase";
 export default {
   data() {
     return {
+      selectedUser: {},
       people: [],
       fields: [
         {
@@ -64,9 +68,31 @@ export default {
   props: {
     filterVariable: String
   },
-  beforeMount: function() {
+  components: {
+    EditUser,
+    DeleteUser
+  },
+  methods: {
+    deleteModal(userArray, button) {
+      this.$root.$emit("bv::show::modal", "delete-user-modal", button);
+      this.selectedUser = userArray;
+    },
+    editModal(userArray, button) {
+      this.selectedUser = userArray;
+      this.$root.$emit("bv::show::modal", "edit-user-modal", button);
+    }
+  },
+  created: function() {
     db.ref("people").on("value", snapshot => {
-      this.people = Object.values(snapshot.val());
+      this.people = [];
+      snapshot.forEach(doc => {
+        this.people.push({
+          key: doc.key,
+          name: doc.val().name,
+          code: doc.val().code,
+          num: doc.val().num
+        });
+      });
     });
   }
 };
