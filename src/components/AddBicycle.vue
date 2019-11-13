@@ -6,27 +6,30 @@
     id="add-bicycle-modal"
     title="Add a New Bicycle"
   >
-  <label for="bicycle-id">Bicycle ID</label>
-  <b-form-input v-model="newBicycle.id" class="mb-2" id="bicycle-id"></b-form-input>
-  <label for="img-url">Image URL</label>
-  <b-form-input v-model="newBicycle.src" id="img-url"></b-form-input>
-
+    <label for="bicycle-id">Bicycle ID</label>
+    <b-form-input
+      v-model="newBicycle.id"
+      class="mb-2"
+      id="bicycle-id"
+    ></b-form-input>
+    <label for="img-url">Image URL</label>
+    <b-form-input v-model="newBicycle.src" id="img-url"></b-form-input>
   </b-modal>
 </template>
 
 <script>
 import { db } from "../firebase";
 export default {
-  data () {
+  data() {
     return {
       newBicycle: {
-        id:'',
-        src:'',
-        status: 'available'
+        id: "",
+        src: "",
+        status: "available"
       }
-    }
+    };
   },
-  methods:{
+  methods: {
     saveBicycle() {
       var newBicycleToPush = this.newBicycle;
       db.ref("bicycles").push(newBicycleToPush);

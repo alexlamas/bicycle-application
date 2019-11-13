@@ -21,7 +21,6 @@
           @click="deleteModal(row.item, $event.target)"
           variant="outline-danger"
           size="sm"
-          class="mr-1"
         >
           Delete
         </b-button>
@@ -78,8 +77,10 @@ export default {
       this.selectedUser = userArray;
     },
     editModal(userArray, button) {
-      this.selectedUser = userArray;
       this.$root.$emit("bv::show::modal", "edit-user-modal", button);
+      this.selectedUser = userArray;
+      /* eslint-disable no-console */
+      console.log(userArray);
     }
   },
   created: function() {

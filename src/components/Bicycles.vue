@@ -1,8 +1,9 @@
 <template>
-  <div >
+  <div>
     <b-row class="my-2">
       <b-col>
         <input
+          v-model="bicycleSearch"
           class="form-control"
           type="search"
           placeholder="Search bicycles..."
@@ -16,7 +17,7 @@
     <div v-for="i in Math.ceil(bicycles.length / 3)" v-bind:key="i.id">
       <b-card-group columns>
         <bicycle
-          v-for="bicycle in bicycles.slice((i - 1) * 3, i * 3)"
+          v-for="bicycle in filteredBicycles.slice((i - 1) * 3, i * 3)"
           v-bind:bicycle="bicycle"
           v-bind:key="bicycle.id"
         />
@@ -37,8 +38,20 @@ export default {
 
   data() {
     return {
-      bicycles: []
+      bicycles: [],
+      bicycleSearch: ""
     };
+  },
+  computed: {
+    filteredBicycles() {
+      return this.bicycles.filter(bicycle => {
+        return (
+          !this.bicycleSearch ||
+          bicycle.id.toLowerCase().indexOf(this.bicycleSearch.toLowerCase()) >
+            -1
+        );
+      });
+    }
   },
   created: function() {
     db.ref("bicycles").on("value", snapshot => {
