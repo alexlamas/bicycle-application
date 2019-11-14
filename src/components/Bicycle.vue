@@ -7,7 +7,7 @@
     <b-button
       v-if="withButton"
       @click="setBicycle"
-      variant="outline-success"
+      variant="outline-primary"
       class="float-right align-middle"
       >Lend</b-button
     >

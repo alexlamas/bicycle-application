@@ -2,7 +2,7 @@
   <b-modal
     @ok="returnBicycle"
     ok-title="Return"
-    ok-variant="success"
+    ok-variant="warning"
     ref="return-bicycle"
     no-fade
     id="return-bicycle"
