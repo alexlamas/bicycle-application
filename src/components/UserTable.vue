@@ -1,6 +1,7 @@
 <template>
   <b-row class="mt-4 px-3">
     <b-table
+      stacked="sm"
       ref="userTable"
       :items="people"
       :fields="fields"
