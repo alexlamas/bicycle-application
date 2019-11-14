@@ -49,9 +49,8 @@ export default {
     filteredBicycles() {
       return this.bicycles.filter(bicycle => {
         return (
-          !this.bicycleSearch ||
           bicycle.id.toLowerCase().indexOf(this.bicycleSearch.toLowerCase()) >
-            -1
+            -1 && bicycle.currentUser == "none"
         );
       });
     }

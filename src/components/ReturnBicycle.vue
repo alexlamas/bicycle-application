@@ -1,6 +1,8 @@
 <template lang="html">
   <b-modal
     @ok="returnBicycle"
+    ok-title="Return"
+    ok-variant="success"
     ref="return-bicycle"
     no-fade
     id="return-bicycle"
