@@ -22,7 +22,7 @@
         </b-button>
         <b-button
           v-if="row.item.bicycleKey != ''"
-          @click="selectUser(row.item)"
+          @click="returnBicycle(row.item)"
           variant="warning"
           size="sm"
           class="mr-1"
@@ -114,22 +114,20 @@ export default {
       this.selectedUser = userArray;
     },
     selectUser(user) {
-      if (user.status == "normal") {
-        this.$root.$emit("bv::show::modal", "choose-bicycle");
-      } else if (user.status == "renting") {
-        var key = user.bicycleKey;
-        var bicycle;
-        db.ref("bicycles/" + key).on("value", function(snapshot) {
-          bicycle = snapshot.val();
-          bicycle.key = snapshot.key;
-        });
-        this.$root.$emit("bv::show::modal", "return-bicycle");
-      }
+      this.$root.$emit("bv::show::modal", "choose-bicycle");
       this.selectedBicycle = bicycle;
       this.selectedUser = user;
-      this.$refs.userTable.clearSelected();
-      /* eslint-disable no-console */
-      console.log("cleared");
+    },
+    returnBicycle(user) {
+      var key = user.bicycleKey;
+      var bicycle;
+      db.ref("bicycles/" + key).on("value", function(snapshot) {
+        bicycle = snapshot.val();
+        bicycle.key = snapshot.key;
+      });
+      this.$root.$emit("bv::show::modal", "return-bicycle");
+      this.selectedBicycle = bicycle;
+      this.selectedUser = user;
     },
     setBicycle(key) {
       this.selectedBicycleKey = key;
