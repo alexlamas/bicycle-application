@@ -6,13 +6,30 @@
       :items="people"
       :fields="fields"
       :filter="filterVariable"
-      @row-clicked="selectUser"
-      :select-mode="'single'"
       small
       hover
-      selectable
     >
       <template v-slot:cell(actions)="row">
+        <b-button
+          v-if="row.item.bicycleKey == ''"
+          @click="selectUser(row.item)"
+          variant="primary"
+          size="sm"
+          class="mr-1"
+          style="width:8rem;"
+        >
+          Choose Bike
+        </b-button>
+        <b-button
+          v-if="row.item.bicycleKey != ''"
+          @click="selectUser(row.item)"
+          variant="warning"
+          size="sm"
+          class="mr-1"
+          style="width:8rem;"
+        >
+          Return Bike
+        </b-button>
         <b-button
           @click="editModal(row.item, $event.target)"
           variant="outline-secondary"
@@ -73,8 +90,7 @@ export default {
         },
         {
           key: "actions",
-          label: "",
-          class: "text-right"
+          label: ""
         }
       ]
     };
@@ -111,6 +127,9 @@ export default {
       }
       this.selectedBicycle = bicycle;
       this.selectedUser = user;
+      this.$refs.userTable.clearSelected();
+      /* eslint-disable no-console */
+      console.log("cleared");
     },
     setBicycle(key) {
       this.selectedBicycleKey = key;

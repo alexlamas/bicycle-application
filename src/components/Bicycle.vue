@@ -35,9 +35,6 @@ export default {
       if (this.bicycle.currentUser != "none") {
         status = "busy";
       }
-      /* eslint-disable no-console */
-      console.log(status);
-      console.log(this.bicycle);
       return status;
     }
   }
