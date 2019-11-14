@@ -8,7 +8,7 @@
       v-if="withButton"
       @click="setBicycle"
       variant="outline-primary"
-      class="float-right align-middle"
+      class="float-right align-middle btn-sm"
       >Lend</b-button
     >
   </b-card>
