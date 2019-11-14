@@ -26,7 +26,7 @@
           variant="outline-danger"
           size="sm"
         >
-          Delete
+          <font-awesome-icon icon="trash" />
         </b-button>
       </template>
     </b-table>
@@ -64,6 +64,11 @@ export default {
           sortable: true
         },
         {
+          key: "status",
+          label: "Status",
+          sortable: true
+        },
+        {
           key: "actions",
           label: "",
           class: "text-right"
@@ -91,14 +96,14 @@ export default {
     selectUser(record) {
       this.$root.$emit("bv::show::modal", "choose-bicycle");
       this.selectedUser = record;
-      /* eslint-disable no-console */
-      console.log(this.selectedUser);
     },
     setBicycle(key) {
       this.selectedBicycleKey = key;
+      var userKey = this.selectedUser.key;
+      db.ref("people/" + userKey + "/bicycleKey").set(key);
+      db.ref("bicycles/" + key + "/currentUser").set(userKey);
+
       this.$refs.userTable.clearSelected();
-      /* eslint-disable no-console */
-      console.log(this.selectedBicycleKey);
     }
   },
   created: function() {
@@ -109,7 +114,8 @@ export default {
           key: doc.key,
           name: doc.val().name,
           code: doc.val().code,
-          num: doc.val().num
+          num: doc.val().num,
+          status: doc.val().bicycleKey == "" ? "normal" : "renting"
         });
       });
     });

@@ -34,12 +34,16 @@ export default {
       newPerson: {
         name: "",
         code: "05/000",
-        num: 0
+        num: 0,
+        bicycleKey: ""
       }
     };
   },
   methods: {
     saveUser(evt) {
+      if (this.newPerson.code == "05/000") {
+        this.newPerson.code = "";
+      }
       evt.preventDefault();
       var newPersonToPush = this.newPerson;
       db.ref("people").push(newPersonToPush);

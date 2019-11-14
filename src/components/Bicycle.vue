@@ -3,12 +3,13 @@
     <b-badge variant="light" class="align-middle"
       ><span class="text-muted">ID: </span>{{ bicycle.id }}</b-badge
     >
+    <b-badge variant="light" class="align-middle">{{ status }}</b-badge>
     <b-button
       v-if="withButton"
       @click="setBicycle"
       variant="outline-success"
       class="float-right align-middle"
-      >Choose</b-button
+      >Lend</b-button
     >
   </b-card>
 </template>
@@ -23,6 +24,15 @@ export default {
     setBicycle() {
       var key = this.bicycle.key;
       this.$emit("setBicycle", key);
+    }
+  },
+  computed: {
+    status() {
+      var status = "available";
+      if (this.bicycle.currentUser != "") {
+        status = "busy";
+      }
+      return status;
     }
   }
 };

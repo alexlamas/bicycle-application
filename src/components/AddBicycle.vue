@@ -25,7 +25,8 @@ export default {
       newBicycle: {
         id: "",
         src: "",
-        status: "available"
+        status: "available",
+        currentUser: ""
       }
     };
   },
