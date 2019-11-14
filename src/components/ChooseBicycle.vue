@@ -1,6 +1,14 @@
-<template>
-  <div>
-    <b-row class="my-2">
+<template lang="html">
+  <b-modal
+    ref="choose-bicycle"
+    hide-footer
+    size="xl"
+    no-fade
+    id="choose-bicycle"
+    title="Choose a Bicycle"
+  >
+    Choose from one of these lovely bicycles :)
+    <b-row class="mt-2 mb-4">
       <b-col>
         <input
           v-model="bicycleSearch"
@@ -9,34 +17,28 @@
           placeholder="Search bicycles..."
         />
       </b-col>
-      <b-col class="pl-0">
-        <b-button v-b-modal.add-bicycle-modal variant="primary">Add</b-button>
-      </b-col>
     </b-row>
-    <add-bicycle />
     <div v-for="i in Math.ceil(bicycles.length / 3)" v-bind:key="i.id">
       <b-card-group columns>
         <bicycle
-          :withButton="false"
+          :withButton="true"
+          v-on:setBicycle="setBicycle"
           v-for="bicycle in filteredBicycles.slice((i - 1) * 3, i * 3)"
-          :bicycle="bicycle"
-          :key="bicycle.id"
+          v-bind:bicycle="bicycle"
+          v-bind:key="bicycle.id"
         />
       </b-card-group>
     </div>
-  </div>
+  </b-modal>
 </template>
 
 <script>
-import Bicycle from "./Bicycle";
-import AddBicycle from "./AddBicycle";
 import { db } from "../firebase";
+import Bicycle from "./Bicycle";
 export default {
   components: {
-    AddBicycle,
     Bicycle
   },
-
   data() {
     return {
       bicycles: [],
@@ -54,6 +56,12 @@ export default {
       });
     }
   },
+  methods: {
+    setBicycle(key) {
+      this.$emit("setBicycle", key);
+      this.$refs["choose-bicycle"].hide();
+    }
+  },
   created: function() {
     db.ref("bicycles").on("value", snapshot => {
       this.bicycles = [];
@@ -69,3 +77,10 @@ export default {
   }
 };
 </script>
+
+<style>
+.card-body {
+  padding: 0.5rem !important;
+  height: 50px;
+}
+</style>

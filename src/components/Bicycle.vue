@@ -1,22 +1,35 @@
 <template>
-  <b-card hover style="max-width: 30rem;" :img-src="bicycle.src" img-bottom>
-    <b-card-title
-      ><span class="text-muted">ID:</span>{{ bicycle.id }}</b-card-title
+  <b-card style="max-width: 30rem;" :img-src="bicycle.src" img-top>
+    <b-badge variant="light" class="align-middle"
+      ><span class="text-muted">ID: </span>{{ bicycle.id }}</b-badge
     >
-    <h6><b-badge variant="success">Available</b-badge></h6>
+    <b-button
+      v-if="withButton"
+      @click="setBicycle"
+      variant="outline-success"
+      class="float-right align-middle"
+      >Choose</b-button
+    >
   </b-card>
 </template>
 
 <script>
 export default {
   props: {
-    bicycle: Object
+    bicycle: Object,
+    withButton: Boolean
+  },
+  methods: {
+    setBicycle() {
+      var key = this.bicycle.key;
+      this.$emit("setBicycle", key);
+    }
   }
 };
 </script>
 <style>
-.card-img-bottom {
-  height: 200px;
+.card-img-top {
+  height: 150px;
   object-fit: cover;
 }
 </style>

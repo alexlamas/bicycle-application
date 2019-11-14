@@ -2,9 +2,7 @@
   <div id="app">
     <b-container class="px-4 py-2">
       <div id="nav">
-        <router-link class="mr-3 button" to="/users"
-          ><h1>Users</h1></router-link
-        >
+        <router-link class="mr-3 button" to="/"><h1>Users</h1></router-link>
         <router-link to="/bicycles"><h1>Bicycles</h1></router-link>
       </div>
       <router-view />
@@ -19,7 +17,7 @@
 #nav a {
   color: #007aff6b;
 }
-.router-link-active {
+.router-link-exact-active {
   color: #0056b3 !important;
 }
 </style>

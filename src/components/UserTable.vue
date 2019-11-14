@@ -1,9 +1,12 @@
 <template>
   <b-row class="mt-4 px-3">
     <b-table
+      ref="userTable"
       :items="people"
       :fields="fields"
       :filter="filterVariable"
+      @row-clicked="selectUser"
+      :select-mode="'single'"
       small
       hover
       selectable
@@ -28,17 +31,20 @@
     </b-table>
     <edit-user :userArray="selectedUser" />
     <delete-user :userArray="selectedUser" />
+    <choose-bicycle v-on:setBicycle="setBicycle" />
   </b-row>
 </template>
 
 <script>
 import EditUser from "./EditUser";
 import DeleteUser from "./DeleteUser";
+import ChooseBicycle from "./ChooseBicycle";
 import { db } from "../firebase";
 export default {
   data() {
     return {
       selectedUser: {},
+      selectedBicycleKey: "",
       people: [],
       fields: [
         {
@@ -69,7 +75,8 @@ export default {
   },
   components: {
     EditUser,
-    DeleteUser
+    DeleteUser,
+    ChooseBicycle
   },
   methods: {
     deleteModal(userArray, button) {
@@ -79,8 +86,18 @@ export default {
     editModal(userArray, button) {
       this.$root.$emit("bv::show::modal", "edit-user-modal", button);
       this.selectedUser = userArray;
+    },
+    selectUser(record) {
+      this.$root.$emit("bv::show::modal", "choose-bicycle");
+      this.selectedUser = record;
       /* eslint-disable no-console */
-      console.log(userArray);
+      console.log(this.selectedUser);
+    },
+    setBicycle(key) {
+      this.selectedBicycleKey = key;
+      this.$refs.userTable.clearSelected();
+      /* eslint-disable no-console */
+      console.log(this.selectedBicycleKey);
     }
   },
   created: function() {
