@@ -13,7 +13,7 @@
         <b-button
           v-if="row.item.bicycleKey == ''"
           @click="selectUser(row.item)"
-          variant="primary"
+          variant="outline-primary"
           size="sm"
           class="mr-1"
           style="width:8rem;"
