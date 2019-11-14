@@ -28,10 +28,16 @@ export default {
   },
   computed: {
     status() {
-      var status = "available";
-      if (this.bicycle.currentUser != "") {
+      var status;
+      if (this.bicycle.currentUser == "none") {
+        status = "available";
+      }
+      if (this.bicycle.currentUser != "none") {
         status = "busy";
       }
+      /* eslint-disable no-console */
+      console.log(status);
+      console.log(this.bicycle);
       return status;
     }
   }

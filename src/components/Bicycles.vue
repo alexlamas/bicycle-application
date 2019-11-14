@@ -62,7 +62,7 @@ export default {
           key: doc.key,
           src: doc.val().src,
           id: doc.val().id,
-          status: doc.val().status
+          currentUser: doc.val().currentUser
         });
       });
     });

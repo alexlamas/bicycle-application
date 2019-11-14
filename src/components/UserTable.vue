@@ -33,6 +33,7 @@
     <edit-user :userArray="selectedUser" />
     <delete-user :userArray="selectedUser" />
     <choose-bicycle v-on:setBicycle="setBicycle" />
+    <return-bicycle :bicycle="selectedBicycle" />
   </b-row>
 </template>
 
@@ -40,11 +41,13 @@
 import EditUser from "./EditUser";
 import DeleteUser from "./DeleteUser";
 import ChooseBicycle from "./ChooseBicycle";
+import ReturnBicycle from "./ReturnBicycle";
 import { db } from "../firebase";
 export default {
   data() {
     return {
       selectedUser: {},
+      selectedBicycle: {},
       selectedBicycleKey: "",
       people: [],
       fields: [
@@ -82,7 +85,8 @@ export default {
   components: {
     EditUser,
     DeleteUser,
-    ChooseBicycle
+    ChooseBicycle,
+    ReturnBicycle
   },
   methods: {
     deleteModal(userArray, button) {
@@ -93,16 +97,26 @@ export default {
       this.$root.$emit("bv::show::modal", "edit-user-modal", button);
       this.selectedUser = userArray;
     },
-    selectUser(record) {
-      this.$root.$emit("bv::show::modal", "choose-bicycle");
-      this.selectedUser = record;
+    selectUser(user) {
+      if (user.status == "normal") {
+        this.$root.$emit("bv::show::modal", "choose-bicycle");
+      } else if (user.status == "renting") {
+        var key = user.bicycleKey;
+        var bicycle;
+        db.ref("bicycles/" + key).on("value", function(snapshot) {
+          bicycle = snapshot.val();
+          bicycle.key = snapshot.key;
+        });
+        this.$root.$emit("bv::show::modal", "return-bicycle");
+      }
+      this.selectedBicycle = bicycle;
+      this.selectedUser = user;
     },
     setBicycle(key) {
       this.selectedBicycleKey = key;
       var userKey = this.selectedUser.key;
       db.ref("people/" + userKey + "/bicycleKey").set(key);
       db.ref("bicycles/" + key + "/currentUser").set(userKey);
-
       this.$refs.userTable.clearSelected();
     }
   },
@@ -115,6 +129,7 @@ export default {
           name: doc.val().name,
           code: doc.val().code,
           num: doc.val().num,
+          bicycleKey: doc.val().bicycleKey,
           status: doc.val().bicycleKey == "" ? "normal" : "renting"
         });
       });
