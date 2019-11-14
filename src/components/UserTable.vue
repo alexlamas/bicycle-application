@@ -115,7 +115,6 @@ export default {
     },
     selectUser(user) {
       this.$root.$emit("bv::show::modal", "choose-bicycle");
-      this.selectedBicycle = bicycle;
       this.selectedUser = user;
     },
     returnBicycle(user) {
