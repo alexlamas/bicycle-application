@@ -9,14 +9,17 @@
       small
       hover
     >
-      <template v-slot:cell(actions)="row">
+      <template v-slot:cell(num)="row">
+        <b-badge variant="light">{{ row.item.num }}</b-badge>
+      </template>
+      <template v-slot:cell(status)="row">
         <b-button
           v-if="row.item.bicycleKey == ''"
           @click="selectUser(row.item)"
           variant="outline-primary"
           size="sm"
           class="mr-1"
-          style="width:8rem;"
+          style="width:10rem;"
         >
           Choose Bike
         </b-button>
@@ -26,9 +29,15 @@
           variant="warning"
           size="sm"
           class="mr-1"
-          style="width:8rem;"
+          style="width:10rem;"
         >
           Return Bike
+          <b-badge v-if="row.item.timeRenting < 1" class="ml-2" variant="light"
+            >0 days</b-badge
+          >
+          <b-badge v-if="row.item.timeRenting > 0" class="ml-2" variant="danger"
+            >{{ row.item.timeRenting }} days</b-badge
+          >
         </b-button>
         <b-button
           @click="editModal(row.item, $event.target)"
@@ -47,10 +56,10 @@
         </b-button>
       </template>
     </b-table>
-    <edit-user :userArray="selectedUser" />
-    <delete-user :userArray="selectedUser" />
+    <edit-user :user="selectedUser" />
+    <delete-user :user="selectedUser" />
     <choose-bicycle v-on:setBicycle="setBicycle" />
-    <return-bicycle :bicycle="selectedBicycle" />
+    <return-bicycle :bicycle="selectedBicycle" :user="selectedUser" />
   </b-row>
 </template>
 
@@ -59,7 +68,7 @@ import EditUser from "./EditUser";
 import DeleteUser from "./DeleteUser";
 import ChooseBicycle from "./ChooseBicycle";
 import ReturnBicycle from "./ReturnBicycle";
-import { db } from "../firebase";
+import { db } from "@/firebase";
 export default {
   data() {
     return {
@@ -80,17 +89,13 @@ export default {
         },
         {
           key: "num",
-          label: "#",
+          label: "Borrowed",
           sortable: true
         },
         {
           key: "status",
-          label: "Status",
+          label: "",
           sortable: true
-        },
-        {
-          key: "actions",
-          label: ""
         }
       ]
     };
@@ -130,13 +135,20 @@ export default {
     },
     setBicycle(key) {
       this.selectedBicycleKey = key;
+      var d = new Date();
+      d = d.getTime() / 1000 / 60 / 60 / 24;
       var userKey = this.selectedUser.key;
       db.ref("people/" + userKey + "/bicycleKey").set(key);
+      db.ref("people/" + userKey + "/rentalDate").set(d);
       db.ref("bicycles/" + key + "/currentUser").set(userKey);
       this.$refs.userTable.clearSelected();
+      /* eslint-disable no-console */
+      console.log(d);
     }
   },
   created: function() {
+    var d = new Date();
+    d = d.getTime() / 1000 / 60 / 60 / 24;
     db.ref("people").on("value", snapshot => {
       this.people = [];
       snapshot.forEach(doc => {
@@ -146,12 +158,11 @@ export default {
           code: doc.val().code,
           num: doc.val().num,
           bicycleKey: doc.val().bicycleKey,
-          status: doc.val().bicycleKey == "" ? "normal" : "renting"
+          status: doc.val().bicycleKey == "" ? "none" : "renting",
+          timeRenting: Math.floor(d - doc.val().rentalDate)
         });
       });
     });
   }
 };
 </script>
-
-<style lang="css" scoped></style>

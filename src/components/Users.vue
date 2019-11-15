@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import UserTable from "./UserTable";
-import AddUser from "./AddUser";
+import UserTable from "./users/UserTable";
+import AddUser from "./users/AddUser";
 export default {
   data() {
     return {

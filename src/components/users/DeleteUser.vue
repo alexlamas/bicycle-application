@@ -2,7 +2,7 @@
   <b-modal
     :ok-variant="'danger'"
     no-fade
-    @ok="deleteUser(userArray.key)"
+    @ok="deleteUser(user.key)"
     :ok-title="'Delete'"
     id="delete-user-modal"
     title="Delete User"
@@ -12,13 +12,17 @@
 </template>
 
 <script>
-import { db } from "../firebase";
+import { db } from "@/firebase";
 export default {
   props: {
-    userArray: Object
+    user: Object
   },
   methods: {
     deleteUser(key) {
+      var bicycleKey = this.user.bicycleKey;
+      if (bicycleKey != "") {
+        db.ref("bicycles/" + bicycleKey + "/currentUser").set("none");
+      }
       db.ref("people/" + key).remove();
     }
   }

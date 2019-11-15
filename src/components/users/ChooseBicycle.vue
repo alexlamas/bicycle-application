@@ -33,8 +33,8 @@
 </template>
 
 <script>
-import { db } from "../firebase";
-import Bicycle from "./Bicycle";
+import { db } from "@/firebase";
+import Bicycle from "../bicycles/Bicycle";
 export default {
   components: {
     Bicycle

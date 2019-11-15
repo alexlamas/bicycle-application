@@ -17,7 +17,7 @@
     <div v-for="i in Math.ceil(bicycles.length / 3)" v-bind:key="i.id">
       <b-card-group columns>
         <bicycle
-          :withButton="false"
+          :deletable="true"
           v-for="bicycle in filteredBicycles.slice((i - 1) * 3, i * 3)"
           :bicycle="bicycle"
           :key="bicycle.id"
@@ -28,9 +28,9 @@
 </template>
 
 <script>
-import Bicycle from "./Bicycle";
-import AddBicycle from "./AddBicycle";
-import { db } from "../firebase";
+import Bicycle from "./bicycles/Bicycle";
+import AddBicycle from "./bicycles/AddBicycle";
+import { db } from "@/firebase";
 export default {
   components: {
     AddBicycle,
