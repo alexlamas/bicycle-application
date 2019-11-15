@@ -1,16 +1,12 @@
 <template>
   <div id="app">
     <b-container class="px-4 py-2">
-      <div id="nav">
-        <router-link class="mr-3 button" to="/"><h1>Users</h1></router-link>
-        <router-link to="/bicycles"><h1>Bicycles</h1></router-link>
-      </div>
       <router-view />
     </b-container>
   </div>
 </template>
 
-<style scoped>
+<style>
 #nav {
   display: flex;
 }

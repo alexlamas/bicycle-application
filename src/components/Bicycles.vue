@@ -1,5 +1,14 @@
 <template>
   <div>
+    <div id="nav">
+      <router-link class="mr-3 button" to="/users"><h1>Users</h1></router-link>
+      <router-link to="/bicycles"><h1>Bicycles</h1></router-link>
+      <b-col class="text-right align-middle">
+        <b-button variant="outline-secondary" @click="signOut"
+          >Sign Out</b-button
+        >
+      </b-col>
+    </div>
     <b-row class="my-2">
       <b-col>
         <input
@@ -31,12 +40,20 @@
 import Bicycle from "./bicycles/Bicycle";
 import AddBicycle from "./bicycles/AddBicycle";
 import { db } from "@/firebase";
+import { auth } from "@/firebase";
+
 export default {
   components: {
     AddBicycle,
     Bicycle
   },
-
+  methods: {
+    signOut() {
+      auth.signOut().then(() => {
+        this.$router.replace("login");
+      });
+    }
+  },
   data() {
     return {
       bicycles: [],

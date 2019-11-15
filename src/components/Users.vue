@@ -1,5 +1,14 @@
 <template>
   <div>
+    <div id="nav">
+      <router-link class="mr-3 button" to="/users"><h1>Users</h1></router-link>
+      <router-link to="/bicycles"><h1>Bicycles</h1></router-link>
+      <b-col class="text-right align-middle">
+        <b-button variant="outline-secondary" @click="signOut"
+          >Sign Out</b-button
+        >
+      </b-col>
+    </div>
     <b-row class="mt-2">
       <b-col>
         <input
@@ -21,7 +30,15 @@
 <script>
 import UserTable from "./users/UserTable";
 import AddUser from "./users/AddUser";
+import { auth } from "@/firebase";
 export default {
+  methods: {
+    signOut() {
+      auth.signOut().then(() => {
+        this.$router.replace("login");
+      });
+    }
+  },
   data() {
     return {
       userSearch: ""
