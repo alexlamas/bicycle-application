@@ -56,8 +56,8 @@ export default {
     }
   },
   methods: {
-    setBicycle(key) {
-      this.$emit("setBicycle", key);
+    setBicycle(key, id) {
+      this.$emit("setBicycle", key, id);
       this.$refs["choose-bicycle"].hide();
     }
   },

@@ -8,7 +8,7 @@
     id="return-bicycle"
     title="Return Bicycle"
   >
-    <bicycle :withButton="false" :bicycle="bicycle" />
+    <bicycle :bicycle="bicycle" />
   </b-modal>
 </template>
 

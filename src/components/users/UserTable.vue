@@ -9,8 +9,13 @@
       small
       hover
     >
+      <template v-slot:cell(code)="row">
+        <b-badge variant="light">{{ row.item.code }} </b-badge>
+      </template>
       <template v-slot:cell(num)="row">
-        <b-badge variant="light">{{ row.item.num }}</b-badge>
+        <b-badge variant="light"
+          >{{ row.item.num }}<span class="text-muted"> times</span>
+        </b-badge>
       </template>
       <template v-slot:cell(status)="row">
         <b-button
@@ -74,7 +79,6 @@ export default {
     return {
       selectedUser: {},
       selectedBicycle: {},
-      selectedBicycleKey: "",
       people: [],
       fields: [
         {
@@ -133,13 +137,13 @@ export default {
       this.selectedBicycle = bicycle;
       this.selectedUser = user;
     },
-    setBicycle(key) {
-      this.selectedBicycleKey = key;
+    setBicycle(key, id) {
       var d = new Date();
       d = d.getTime() / 1000 / 60 / 60 / 24;
       var userKey = this.selectedUser.key;
       db.ref("people/" + userKey + "/bicycleKey").set(key);
       db.ref("people/" + userKey + "/rentalDate").set(d);
+      db.ref("people/" + userKey + "/bicycleID").set(id);
       db.ref("bicycles/" + key + "/currentUser").set(userKey);
       this.$refs.userTable.clearSelected();
       /* eslint-disable no-console */

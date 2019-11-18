@@ -13,6 +13,6 @@ const config = {
 };
 firebase.initializeApp(config);
 let db = firebase.database();
-let auth = firebase.auth();
+let auth = firebase.Auth();
 
 export { db, auth };
