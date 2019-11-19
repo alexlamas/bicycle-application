@@ -17,8 +17,24 @@
         v-model="newPerson.name"
         placeholder=""
       ></b-form-input>
-      <label class="mt-3" for="code">Ausweiz</label>
+      <label class="mt-3" for="code">Ausweis</label>
       <b-form-input id="code" v-model="newPerson.code"></b-form-input>
+      <b-form-checkbox
+        class="mt-4"
+        v-model="newPerson.helper"
+        value="true"
+        unchecked-value="false"
+      >
+        Helper
+      </b-form-checkbox>
+      <b-form-checkbox
+        class="mt-2"
+        v-model="newPerson.makerspace"
+        value="true"
+        unchecked-value="false"
+      >
+        Makerspace
+      </b-form-checkbox>
       <b-button class="mt-2 float-right" type="submit" variant="primary"
         >Submit</b-button
       >
@@ -37,7 +53,9 @@ export default {
       newPerson: {
         name: "",
         code: "05/000",
-        num: 0
+        num: 0,
+        helper: false,
+        makerspace: false
       }
     };
   },
@@ -57,8 +75,8 @@ export default {
     initialValues() {
       this.newPerson.code = "05/000";
       this.newPerson.name = this.userSearch;
-      /* eslint-disable no-console */
-      console.log(this.userSearch);
+      this.newPerson.helper = false;
+      this.newPerson.makerspace = false;
     }
   }
 };

@@ -9,6 +9,21 @@
       small
       hover
     >
+      <template v-slot:cell(name)="row">
+        {{ row.item.name }}
+        <b-badge class="ml-2" v-if="row.item.helper == true">Helper</b-badge>
+        <b-badge class="ml-2" v-if="row.item.makerspace == true"
+          >Makerspace</b-badge
+        >
+      </template>
+      <template v-slot:cell(num)="row">
+        <b-badge variant="light"
+          >{{ row.item.num
+          }}<span class="text-muted">
+            {{ row.item.num == 1 ? "rental" : "rentals" }}</span
+          >
+        </b-badge>
+      </template>
       <template v-slot:cell(code)="row">
         <b-badge v-if="row.item.code" variant="light"
           >{{ row.item.code }}
@@ -122,11 +137,12 @@ export default {
         {
           key: "name",
           label: "Name",
+          class: "text-capitalize",
           sortable: true
         },
         {
           key: "code",
-          label: "Code",
+          label: "Ausweis",
           sortable: true
         },
         {
@@ -195,7 +211,9 @@ export default {
           key: doc.key,
           name: doc.val().name,
           code: doc.val().code,
-          num: doc.val().num,
+          num: doc.val().num ? doc.val().num : 0,
+          helper: doc.val().helper,
+          makerspace: doc.val().makerspace,
           penalty: Math.ceil(doc.val().penalty / 1000 / 60 / 60 / 24 - today),
           bicycleID: doc.val().bicycleID,
           timeRenting: today - doc.val().rentalDate
