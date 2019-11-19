@@ -7,13 +7,7 @@
 </template>
 
 <style>
-#nav {
-  display: flex;
-}
-#nav a {
-  color: #007aff6b;
-}
 .router-link-exact-active {
-  color: #0056b3 !important;
+  color: black !important;
 }
 </style>

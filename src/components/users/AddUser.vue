@@ -1,6 +1,6 @@
 <template>
   <b-modal
-    @show="reset"
+    @shown="initialValues"
     no-fade
     hide-footer
     :ok-title="'Save'"
@@ -11,9 +11,9 @@
     <b-form @submit="saveUser">
       <label for="name">Full Name</label>
       <b-form-input
-        autofocus
         id="name"
         required
+        autofocus
         v-model="newPerson.name"
         placeholder=""
       ></b-form-input>
@@ -29,9 +29,13 @@
 <script>
 import { db } from "@/firebase";
 export default {
+  props: {
+    userSearch: String
+  },
   data() {
     return {
       newPerson: {
+        name: "",
         code: "05/000",
         num: 0
       }
@@ -50,9 +54,11 @@ export default {
       });
       this.$refs["add-user"].hide();
     },
-    reset() {
+    initialValues() {
       this.newPerson.code = "05/000";
-      this.newPerson.name = null;
+      this.newPerson.name = this.userSearch;
+      /* eslint-disable no-console */
+      console.log(this.userSearch);
     }
   }
 };

@@ -1,25 +1,18 @@
 <template>
   <div>
-    <div id="nav">
-      <router-link class="mr-3 button" to="/users"><h1>Users</h1></router-link>
-      <router-link to="/bicycles"><h1>Bicycles</h1></router-link>
-      <b-col class="text-right align-middle">
-        <b-button variant="link" @click="signOut">Sign Out</b-button>
-      </b-col>
-    </div>
-    <b-row class="my-2">
-      <b-col>
-        <input
-          v-model="bicycleSearch"
-          class="form-control"
-          type="search"
-          placeholder="Search bicycles..."
-        />
-      </b-col>
-      <b-col class="pl-0">
+    <navbar />
+    <b-input-group class="my-3">
+      <input
+        v-model="bicycleSearch"
+        class="form-control"
+        type="search"
+        placeholder="Search bicycles..."
+      />
+      <b-input-group-append>
         <b-button v-b-modal.add-bicycle-modal variant="primary">Add</b-button>
-      </b-col>
-    </b-row>
+      </b-input-group-append>
+    </b-input-group>
+
     <add-bicycle />
     <div v-for="i in Math.ceil(bicycles.length / 3)" v-bind:key="i.id">
       <b-card-group columns>
@@ -37,20 +30,14 @@
 <script>
 import Bicycle from "./bicycles/Bicycle";
 import AddBicycle from "./bicycles/AddBicycle";
+import Navbar from "./Navbar";
 import { db } from "@/firebase";
-import { auth } from "@/firebase";
 
 export default {
   components: {
     AddBicycle,
-    Bicycle
-  },
-  methods: {
-    signOut() {
-      auth.signOut().then(() => {
-        this.$router.replace("login");
-      });
-    }
+    Bicycle,
+    Navbar
   },
   data() {
     return {

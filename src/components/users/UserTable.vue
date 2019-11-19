@@ -1,11 +1,11 @@
 <template>
-  <b-row class="mt-4 px-3">
+  <b-row class="mt-2 px-3">
     <b-table
       stacked="sm"
       ref="userTable"
       :items="people"
       :fields="fields"
-      :filter="filterVariable"
+      :filter="userSearch"
       small
       hover
     >
@@ -23,54 +23,80 @@
         </b-badge>
       </template>
       <template v-slot:cell(status)="row">
-        <b-button
-          v-if="!row.item.bicycleID && !row.item.penalty"
-          @click="selectUser(row.item)"
-          variant="light"
-          size="sm"
-          style="width:10rem; text-align:left"
-          class="pl-3"
-        >
-          Choose Bike
-        </b-button>
-        <b-button
-          v-if="row.item.penalty"
-          @click="selectUser(row.item)"
-          variant="light"
-          size="sm"
-          disabled
-          style="width:10rem; text-align:left"
-          class="pl-3"
-        >
-          <b-badge
-            >{{ row.item.penalty }}
-            {{ row.item.penalty == 1 ? "day" : "days" }} remaining</b-badge
+        <b-button-group>
+          <b-button
+            v-if="!row.item.bicycleID && !row.item.penalty"
+            @click="selectUser(row.item)"
+            variant="light"
+            size="sm"
+            style="width:10rem; text-align:left"
+            class="pl-3"
           >
-        </b-button>
-        <b-button
-          v-if="row.item.bicycleID"
-          @click="returnBicycle(row.item)"
-          variant="warning"
-          size="sm"
-          style="width:10rem; text-align:left"
-          class="pl-3"
-        >
-          Return Bike
-          <b-badge v-if="row.item.timeRenting < 1" class="ml-2" variant="light"
-            >{{ row.item.timeRenting }} days</b-badge
+            Choose Bike
+          </b-button>
+          <b-button
+            v-if="row.item.penalty"
+            @click="selectUser(row.item)"
+            variant="light"
+            size="sm"
+            disabled
+            style="width:10rem; text-align:left"
+            class="pl-3"
           >
-          <b-badge v-if="row.item.timeRenting > 0" class="ml-2" variant="danger"
-            >{{ row.item.timeRenting }} days</b-badge
+            <b-badge
+              >{{ row.item.penalty }}
+              {{ row.item.penalty == 1 ? "day" : "days" }} remaining</b-badge
+            >
+          </b-button>
+          <b-button
+            v-if="row.item.bicycleID"
+            @click="returnBicycle(row.item)"
+            variant="warning"
+            size="sm"
+            style="width:10rem; text-align:left"
+            class="pl-3"
           >
-        </b-button>
-        <b-dropdown class="ml-1" size="sm" id="dropdown-1" variant="light">
-          <b-dropdown-item @click="editModal(row.item, $event.target)"
-            >Edit</b-dropdown-item
+            Return Bike
+            <b-badge
+              v-if="row.item.timeRenting < 1"
+              class="ml-2"
+              variant="light"
+              >{{ row.item.timeRenting }} days</b-badge
+            >
+            <b-badge
+              v-if="row.item.timeRenting > 0"
+              class="ml-2"
+              variant="danger"
+              >{{ row.item.timeRenting }} days</b-badge
+            >
+          </b-button>
+          <b-dropdown
+            v-if="!row.item.bicycleID"
+            size="sm"
+            id="dropdown-1"
+            variant="light"
           >
-          <b-dropdown-item @click="deleteModal(row.item, $event.target)"
-            >Delete</b-dropdown-item
+            <b-dropdown-item @click="editModal(row.item, $event.target)"
+              >Edit</b-dropdown-item
+            >
+            <b-dropdown-item @click="deleteModal(row.item, $event.target)"
+              >Delete</b-dropdown-item
+            >
+          </b-dropdown>
+          <b-dropdown
+            v-if="row.item.bicycleID"
+            size="sm"
+            id="dropdown-1"
+            variant="warning"
           >
-        </b-dropdown>
+            <b-dropdown-item @click="editModal(row.item, $event.target)"
+              >Edit</b-dropdown-item
+            >
+            <b-dropdown-item @click="deleteModal(row.item, $event.target)"
+              >Delete</b-dropdown-item
+            >
+          </b-dropdown>
+        </b-button-group>
       </template>
     </b-table>
     <edit-user :user="selectedUser" />
@@ -116,7 +142,7 @@ export default {
     };
   },
   props: {
-    filterVariable: String
+    userSearch: String
   },
   components: {
     EditUser,
