@@ -69,9 +69,8 @@ export default {
     },
     deleteBicycle() {
       var key = this.bicycle.key;
-      var user = this.bicycle.currentUser;
-      if (user != "none") {
-        db.ref("people/" + user + "/bicycleKey").set("");
+      if (this.bicycle.currentUser) {
+        db.ref("people/" + this.bicycle.currentUser + "/bicycleID").set(null);
       }
       db.ref("bicycles/" + key).remove();
     }
@@ -79,10 +78,10 @@ export default {
   computed: {
     status() {
       var status;
-      if (this.bicycle.currentUser == "none") {
+      if (!this.bicycle.currentUser) {
         status = "available";
       }
-      if (this.bicycle.currentUser != "none") {
+      if (this.bicycle.currentUser) {
         status = "busy";
       }
       return status;

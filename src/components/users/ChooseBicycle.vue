@@ -50,7 +50,7 @@ export default {
       return this.bicycles.filter(bicycle => {
         return (
           bicycle.id.toLowerCase().indexOf(this.bicycleSearch.toLowerCase()) >
-            -1 && bicycle.currentUser == "none"
+            -1 && !bicycle.currentUser
         );
       });
     }
@@ -73,6 +73,8 @@ export default {
         });
       });
     });
+    /* eslint-disable no-console */
+    console.log(this.bicycles);
   }
 };
 </script>

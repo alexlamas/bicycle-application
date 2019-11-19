@@ -32,10 +32,8 @@ export default {
   data() {
     return {
       newPerson: {
-        name: "",
         code: "05/000",
-        num: 0,
-        bicycleKey: ""
+        num: 0
       }
     };
   },
@@ -54,7 +52,7 @@ export default {
     },
     reset() {
       this.newPerson.code = "05/000";
-      this.newPerson.name = "";
+      this.newPerson.name = null;
     }
   }
 };

@@ -7,8 +7,26 @@
     id="edit-user-modal"
     title="Edit User"
   >
-    <b-form-input v-model="editDetails.name"></b-form-input>
-    <b-form-input v-model="editDetails.code" class="mt-2"></b-form-input>
+    <label for="name">Name</label>
+    <b-form-input id="name" v-model="editDetails.name"></b-form-input>
+    <label class="mt-3" for="ausweiz">Ausweiz</label>
+    <b-form-input id="ausweiz" v-model="editDetails.code"></b-form-input>
+    <label class="mt-3" for="num">Number of rentals</label>
+    <b-form-input
+      type="number"
+      id="num"
+      v-model="editDetails.num"
+    ></b-form-input>
+    <label class="mt-3" for="penalty">Days of penalty remaining</label>
+    <b-form-input
+      type="number"
+      id="penalty"
+      :disabled="user.bicycleID ? true : false"
+      v-model="editDetails.penalty"
+    ></b-form-input>
+    <small v-if="user.bicycleID" id="emailHelp" class="form-text text-muted"
+      >Cannot change penalty value during rental.</small
+    >
   </b-modal>
 </template>
 
@@ -21,8 +39,10 @@ export default {
   data() {
     return {
       editDetails: {
-        name: "",
-        code: ""
+        name: null,
+        code: null,
+        num: null,
+        penalty: null
       }
     };
   },
@@ -30,6 +50,8 @@ export default {
     initialValues() {
       this.editDetails.name = this.user.name;
       this.editDetails.code = this.user.code;
+      this.editDetails.num = this.user.num;
+      this.editDetails.penalty = this.user.penalty ? this.user.penalty : 0;
     },
     editUser(editDetails) {
       var key = this.user.key;
@@ -39,8 +61,19 @@ export default {
       if (editDetails.code != "") {
         db.ref("people/" + key + "/code").set(editDetails.code);
       }
-      editDetails.name = "";
-      editDetails.code = "";
+      if (editDetails.num != "") {
+        db.ref("people/" + key + "/num").set(editDetails.num);
+      }
+      if (editDetails.penalty == 0) {
+        db.ref("people/" + key + "/penalty").set(null);
+      }
+      if (editDetails.penalty > 0) {
+        db.ref("people/" + key + "/penalty").set(editDetails.penalty);
+      }
+      editDetails.name = null;
+      editDetails.code = null;
+      editDetails.num = null;
+      editDetails.penalty = null;
     }
   }
 };

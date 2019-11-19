@@ -19,9 +19,8 @@ export default {
   },
   methods: {
     deleteUser(key) {
-      var bicycleKey = this.user.bicycleKey;
-      if (bicycleKey != "") {
-        db.ref("bicycles/" + bicycleKey + "/currentUser").set("none");
+      if (this.user.bicycleID) {
+        db.ref("bicycles/" + this.user.bicycleID + "/currentUser").set(null);
       }
       db.ref("people/" + key).remove();
     }
