@@ -90,11 +90,13 @@ export default {
       var bicycleID = this.bicycle.key;
       var key = this.bicycle.currentUser;
       var newCount = this.user.num ? this.user.num + 1 : 1;
+      var penaltyDate = new Date();
+      penaltyDate = penaltyDate.getTime() + this.penalty * 24 * 60 * 60 * 1000;
       db.ref("bicycles/" + bicycleID + "/currentUser").set(null);
       db.ref("people/" + key + "/bicycleID").set(null);
       db.ref("people/" + key + "/rentalDate").set(null);
       db.ref("people/" + key + "/num").set(newCount);
-      db.ref("people/" + key + "/penalty").set(this.penalty);
+      db.ref("people/" + key + "/penalty").set(penaltyDate);
     },
     resetPenalty() {
       this.penalty = null;

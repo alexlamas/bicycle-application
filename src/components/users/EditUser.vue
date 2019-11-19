@@ -41,8 +41,8 @@ export default {
       editDetails: {
         name: null,
         code: null,
-        num: null,
-        penalty: null
+        num: 0,
+        penalty: 0
       }
     };
   },
@@ -55,25 +55,28 @@ export default {
     },
     editUser(editDetails) {
       var key = this.user.key;
-      if (editDetails.name != "") {
+      var penaltyDate = new Date();
+      penaltyDate =
+        penaltyDate.getTime() + editDetails.penalty * 24 * 60 * 60 * 1000;
+      if (editDetails.name) {
         db.ref("people/" + key + "/name").set(editDetails.name);
       }
-      if (editDetails.code != "") {
+      if (editDetails.code) {
         db.ref("people/" + key + "/code").set(editDetails.code);
       }
-      if (editDetails.num != "") {
-        db.ref("people/" + key + "/num").set(editDetails.num);
+      if (editDetails.num) {
+        db.ref("people/" + key + "/num").set(parseInt(editDetails.num));
       }
       if (editDetails.penalty == 0) {
         db.ref("people/" + key + "/penalty").set(null);
       }
       if (editDetails.penalty > 0) {
-        db.ref("people/" + key + "/penalty").set(editDetails.penalty);
+        db.ref("people/" + key + "/penalty").set(parseInt(penaltyDate));
       }
       editDetails.name = null;
       editDetails.code = null;
-      editDetails.num = null;
-      editDetails.penalty = null;
+      editDetails.num = 0;
+      editDetails.penalty = 0;
     }
   }
 };

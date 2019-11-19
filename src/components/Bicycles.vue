@@ -4,9 +4,7 @@
       <router-link class="mr-3 button" to="/users"><h1>Users</h1></router-link>
       <router-link to="/bicycles"><h1>Bicycles</h1></router-link>
       <b-col class="text-right align-middle">
-        <b-button variant="outline-secondary" @click="signOut"
-          >Sign Out</b-button
-        >
+        <b-button variant="link" @click="signOut">Sign Out</b-button>
       </b-col>
     </div>
     <b-row class="my-2">

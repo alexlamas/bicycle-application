@@ -73,8 +73,6 @@ export default {
         });
       });
     });
-    /* eslint-disable no-console */
-    console.log(this.bicycles);
   }
 };
 </script>

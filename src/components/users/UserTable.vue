@@ -23,75 +23,54 @@
         </b-badge>
       </template>
       <template v-slot:cell(status)="row">
-        <b-button-group>
-          <b-button
-            v-if="!row.item.bicycleID && !row.item.penalty"
-            @click="selectUser(row.item)"
-            variant="outline-primary"
-            size="sm"
-            style="width:10rem;"
+        <b-button
+          v-if="!row.item.bicycleID && !row.item.penalty"
+          @click="selectUser(row.item)"
+          variant="light"
+          size="sm"
+          style="width:10rem; text-align:left"
+          class="pl-3"
+        >
+          Choose Bike
+        </b-button>
+        <b-button
+          v-if="row.item.penalty"
+          @click="selectUser(row.item)"
+          variant="light"
+          size="sm"
+          disabled
+          style="width:10rem; text-align:left"
+          class="pl-3"
+        >
+          <b-badge
+            >{{ row.item.penalty }}
+            {{ row.item.penalty == 1 ? "day" : "days" }} remaining</b-badge
           >
-            Choose Bike
-          </b-button>
-          <b-button
-            v-if="row.item.penalty"
-            @click="selectUser(row.item)"
-            variant="outline-secondary"
-            size="sm"
-            style="width:10rem;"
-            disabled
+        </b-button>
+        <b-button
+          v-if="row.item.bicycleID"
+          @click="returnBicycle(row.item)"
+          variant="warning"
+          size="sm"
+          style="width:10rem; text-align:left"
+          class="pl-3"
+        >
+          Return Bike
+          <b-badge v-if="row.item.timeRenting < 1" class="ml-2" variant="light"
+            >{{ row.item.timeRenting }} days</b-badge
           >
-            Penalty:
-            <b-badge
-              >{{ row.item.penalty }}
-              {{ row.item.penalty > 1 ? "days" : "day" }}</b-badge
-            >
-          </b-button>
-          <b-button
-            v-if="row.item.bicycleID"
-            @click="returnBicycle(row.item)"
-            variant="warning"
-            size="sm"
-            style="width:10rem;"
+          <b-badge v-if="row.item.timeRenting > 0" class="ml-2" variant="danger"
+            >{{ row.item.timeRenting }} days</b-badge
           >
-            Return Bike
-            <b-badge
-              v-if="row.item.timeRenting < 1"
-              class="ml-2"
-              variant="light"
-              >0 days</b-badge
-            >
-            <b-badge
-              v-if="row.item.timeRenting > 0"
-              class="ml-2"
-              variant="danger"
-              >{{ row.item.timeRenting }} days</b-badge
-            >
-          </b-button>
-          <b-dropdown size="sm" id="dropdown-1" variant="outline-secondary">
-            <b-dropdown-item @click="editModal(row.item, $event.target)"
-              >Edit</b-dropdown-item
-            >
-            <b-dropdown-item @click="deleteModal(row.item, $event.target)"
-              >Delete</b-dropdown-item
-            >
-          </b-dropdown>
-          <!-- <b-button
-            @click="editModal(row.item, $event.target)"
-            variant="outline-secondary"
-            size="sm"
-            class="mr-1"
+        </b-button>
+        <b-dropdown class="ml-1" size="sm" id="dropdown-1" variant="light">
+          <b-dropdown-item @click="editModal(row.item, $event.target)"
+            >Edit</b-dropdown-item
           >
-            Edit
-          </b-button>
-          <b-button
-            @click="deleteModal(row.item, $event.target)"
-            variant="outline-danger"
-            size="sm"
+          <b-dropdown-item @click="deleteModal(row.item, $event.target)"
+            >Delete</b-dropdown-item
           >
-            <font-awesome-icon icon="trash" />
-          </b-button> -->
-        </b-button-group>
+        </b-dropdown>
       </template>
     </b-table>
     <edit-user :user="selectedUser" />
@@ -126,13 +105,12 @@ export default {
         },
         {
           key: "num",
-          label: "Borrowed",
+          label: "Usage",
           sortable: true
         },
         {
           key: "status",
-          label: "",
-          sortable: true
+          label: ""
         }
       ]
     };
@@ -171,21 +149,19 @@ export default {
       this.selectedUser = user;
     },
     setBicycle(key, id) {
-      var d = new Date();
-      d = d.getTime() / 1000 / 60 / 60 / 24;
+      var rentalDate = new Date();
+      rentalDate = Math.ceil(rentalDate.getTime() / 1000 / 60 / 60 / 24);
       var userKey = this.selectedUser.key;
       db.ref("people/" + userKey + "/bicycleID").set(key);
-      db.ref("people/" + userKey + "/rentalDate").set(d);
+      db.ref("people/" + userKey + "/rentalDate").set(rentalDate);
       db.ref("people/" + userKey + "/bicycleID").set(id);
       db.ref("bicycles/" + key + "/currentUser").set(userKey);
       this.$refs.userTable.clearSelected();
-      /* eslint-disable no-console */
-      console.log(d);
     }
   },
   created: function() {
-    var d = new Date();
-    d = d.getTime() / 1000 / 60 / 60 / 24;
+    var today = new Date();
+    today = Math.ceil(today.getTime() / 1000 / 60 / 60 / 24);
     db.ref("people").on("value", snapshot => {
       this.people = [];
       snapshot.forEach(doc => {
@@ -194,14 +170,12 @@ export default {
           name: doc.val().name,
           code: doc.val().code,
           num: doc.val().num,
-          penalty: doc.val().penalty ? doc.val().penalty : "",
+          penalty: Math.ceil(doc.val().penalty / 1000 / 60 / 60 / 24 - today),
           bicycleID: doc.val().bicycleID,
-          timeRenting: Math.floor(d - doc.val().rentalDate)
+          timeRenting: today - doc.val().rentalDate
         });
       });
     });
-    /* eslint-disable no-console */
-    console.log(this.people);
   }
 };
 </script>
