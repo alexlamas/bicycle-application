@@ -64,7 +64,7 @@ export default {
   methods: {
     setBicycle() {
       var key = this.bicycle.key;
-      var id = this.bicycle.key;
+      var id = this.bicycle.id;
       this.$emit("setBicycle", key, id);
     },
     deleteBicycle() {

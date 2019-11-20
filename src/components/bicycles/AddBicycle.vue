@@ -1,47 +1,70 @@
 <template>
   <b-modal
     no-fade
-    @ok="saveBicycle"
+    hide-footer
     :ok-title="'Save'"
     id="add-bicycle-modal"
+    ref="add-bicycle"
     title="Add a New Bicycle"
   >
-    <label for="bicycle-id">Bicycle ID</label>
-    <b-form-input
-      v-model="newBicycle.id"
-      class="mb-2"
-      id="bicycle-id"
-    ></b-form-input>
-    <label for="img-url">Image URL</label>
-    <b-form-input v-model="newBicycle.src" id="img-url"></b-form-input>
+    <b-form @submit="saveBicycle">
+      <label for="bicycle-id">Bicycle ID</label>
+      <b-form-input
+        required
+        v-model="newBicycle.id"
+        class="mb-2"
+        id="bicycle-id"
+      ></b-form-input>
+
+      <b-form-file
+        required
+        class="mt-4"
+        v-model="file"
+        :state="Boolean(file)"
+        placeholder="Choose a file or drop it here..."
+        drop-placeholder="Drop file here..."
+      ></b-form-file>
+      <div class="mt-3">Selected file: {{ file ? file.name : "" }}</div>
+      <b-button class="mt-2 float-right" type="submit" variant="primary"
+        >Submit</b-button
+      >
+    </b-form>
   </b-modal>
 </template>
 
 <script>
 import { db } from "@/firebase";
+import { storage } from "@/firebase";
 export default {
   data() {
     return {
+      file: null,
       newBicycle: {
-        id: "",
-        src: "",
+        id: null,
         status: "available",
-        currentUser: ""
+        currentUser: null,
+        src: null
       }
     };
   },
   methods: {
-    saveBicycle() {
-      var newBicycleToPush = this.newBicycle;
-      db.ref("bicycles").push(newBicycleToPush);
-      db.ref("bicycles")
-        .once("value", snapshot => {
-          this.bicycles = Object.values(snapshot.val());
-        })
-        .then(() => {
-          this.newBicycle.id = "";
-          this.newBicycle.src = "";
+    saveBicycle(evt) {
+      /* eslint-disable no-console */
+      evt.preventDefault();
+      var storageRef = storage.ref().child("bicycle" + this.newBicycle.id);
+      storageRef.put(this.file).then(() => {
+        storageRef.getDownloadURL().then(i => {
+          this.newBicycle.src = i;
+          var newBicycleToPush = this.newBicycle;
+          db.ref("bicycles").push(newBicycleToPush);
+          db.ref("bicycles").once("value", snapshot => {
+            this.bicycles = Object.values(snapshot.val());
+            this.newBicycle.id = null;
+            this.file = null;
+            this.$refs["add-bicycle"].hide();
+          });
         });
+      });
     }
   }
 };
