@@ -11,6 +11,7 @@
       <label for="bicycle-id">Bicycle ID</label>
       <b-form-input
         required
+        type="number"
         v-model="newBicycle.id"
         class="mb-2"
         id="bicycle-id"
