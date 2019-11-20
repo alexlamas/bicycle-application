@@ -1,7 +1,7 @@
 <template>
   <div>
     <navbar />
-    <b-input-group class="my-3">
+    <b-input-group class="mt-5">
       <input
         v-model="bicycleSearch"
         class="form-control"

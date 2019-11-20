@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <b-container class="px-4 py-2">
+    <b-container class="pt-3">
       <router-view />
     </b-container>
   </div>

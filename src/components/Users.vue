@@ -1,7 +1,7 @@
 <template>
   <div>
     <navbar />
-    <b-input-group class="mt-3">
+    <b-input-group class="mt-5">
       <input
         v-model="userSearch"
         class="form-control "

@@ -7,7 +7,6 @@
       :fields="fields"
       :filter="userSearch"
       small
-      hover
     >
       <template v-slot:cell(name)="row">
         {{ row.item.name }}
@@ -37,7 +36,7 @@
           >
         </b-badge>
       </template>
-      <template v-slot:cell(status)="row">
+      <template class="text-right" v-slot:cell(status)="row">
         <b-button-group>
           <b-button
             v-if="!row.item.bicycleID && !row.item.penalty"
@@ -152,7 +151,8 @@ export default {
         },
         {
           key: "status",
-          label: ""
+          label: "",
+          class: "text-center"
         }
       ]
     };
