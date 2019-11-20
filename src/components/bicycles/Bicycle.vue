@@ -1,5 +1,5 @@
 <template>
-  <b-card href="#" style="max-width: 30rem;" :img-src="bicycle.src" img-top>
+  <b-card href="#" style="max-width: 30rem;" :img-src="src" img-top>
     <b-badge variant="light" class="align-middle"
       ><span class="text-muted">ID: </span>{{ bicycle.id }}</b-badge
     >
@@ -49,10 +49,12 @@
 
 <script>
 import { db } from "@/firebase";
+import { storage } from "@/firebase";
 export default {
   data() {
     return {
-      popoverShow: false
+      popoverShow: false,
+      src: ""
     };
   },
   components: {},
@@ -61,10 +63,21 @@ export default {
     withButton: Boolean,
     deletable: Boolean
   },
+  created: function() {
+    storage
+      .ref()
+      .child("bicycle" + this.bicycle.id)
+      .getDownloadURL()
+      .then(url => {
+        /* eslint-disable no-console */
+        console.log(url);
+        this.src = url;
+      });
+  },
   methods: {
     setBicycle() {
       var key = this.bicycle.key;
-      var id = this.bicycle.key;
+      var id = this.bicycle.id;
       this.$emit("setBicycle", key, id);
     },
     deleteBicycle() {
