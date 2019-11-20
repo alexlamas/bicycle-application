@@ -1,36 +1,41 @@
 <template>
   <b-card href="#" style="max-width: 30rem;" :img-src="bicycle.src" img-top>
-    <b-badge variant="light" class="align-middle"
-      ><span class="text-muted">ID: </span>{{ bicycle.id }}</b-badge
-    >
-    <b-badge
-      v-if="status == 'available'"
-      variant="primary"
-      class="align-middle ml-2"
-      >{{ status }}</b-badge
-    >
-    <b-badge
-      v-if="status == 'busy'"
-      variant="warning"
-      class="align-middle ml-2"
-      >{{ status }}</b-badge
-    >
-    <b-button
-      v-if="withButton"
-      @click="setBicycle"
-      variant="outline-primary"
-      class="float-right align-middle btn-sm"
-      >Lend</b-button
-    >
-    <b-button
-      v-if="deletable"
-      :id="`popover-${bicycle.key}`"
-      :bicycle="bicycle"
-      variant="outline-danger"
-      class="float-right align-middle btn-sm"
-    >
-      <font-awesome-icon icon="trash" />
-    </b-button>
+    <div class="d-flex">
+      <div class="my-auto">
+        <b-badge variant="light"
+          ><span class="text-muted">ID: </span>{{ bicycle.id }}</b-badge
+        >
+        <b-badge v-if="status == 'available'" variant="primary" class=" ml-2">{{
+          status
+        }}</b-badge>
+        <b-badge
+          v-if="status == 'busy'"
+          variant="warning"
+          class="align-middle ml-2"
+          >{{ status }}</b-badge
+        >
+      </div>
+
+      <b-button
+        v-if="withButton"
+        @click="setBicycle"
+        variant="outline-primary"
+        size="sm"
+        class="ml-auto"
+        >Lend</b-button
+      >
+      <b-button
+        v-if="deletable"
+        :id="`popover-${bicycle.key}`"
+        :bicycle="bicycle"
+        variant="light"
+        size="sm"
+        class="ml-auto"
+      >
+        <font-awesome-icon icon="trash" />
+      </b-button>
+    </div>
+
     <b-popover
       :target="`popover-${bicycle.key}`"
       triggers="click"
@@ -98,5 +103,8 @@ export default {
 .card-img-top {
   height: 150px;
   object-fit: cover;
+}
+.card-body {
+  height: 46px !important;
 }
 </style>

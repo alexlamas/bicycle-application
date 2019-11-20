@@ -152,7 +152,7 @@ export default {
         {
           key: "status",
           label: "",
-          class: "text-md-right text-center"
+          class: "text-md-left text-center"
         }
       ]
     };
