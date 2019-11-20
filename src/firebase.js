@@ -10,7 +10,8 @@ const config = {
   projectId: "bicycle-1",
   storageBucket: "gs://bicycle-1.appspot.com/",
   messagingSenderId: "992141165877",
-  appId: "1:992141165877:web:65fc951234e76cb851b87c"
+  appId: "1:992141165877:web:65fc951234e76cb851b87c",
+  measurementId: "G-VH6EMTN7XT"
 };
 firebase.initializeApp(config);
 let db = firebase.database();
