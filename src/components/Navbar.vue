@@ -1,5 +1,5 @@
 <template lang="html">
-  <b-navbar fixed="top" type="light" variant="light">
+  <b-navbar class="mb-1" type="light" variant="light">
     <b-container class="px-md-2">
       <b-navbar-nav>
         <b-nav-item to="/users"><h6 class="m-0">Users</h6></b-nav-item>

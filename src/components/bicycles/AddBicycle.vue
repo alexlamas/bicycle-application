@@ -25,9 +25,27 @@
         drop-placeholder="Drop file here..."
       ></b-form-file>
       <div class="mt-3">Selected file: {{ file ? file.name : "" }}</div>
-      <b-button class="mt-2 float-right" type="submit" variant="primary"
+      <b-button
+        v-if="!isSaving"
+        class="mt-2 float-right"
+        type="submit"
+        variant="primary"
         >Submit</b-button
       >
+      <b-button
+        v-if="isSaving"
+        class="mt-2 float-right"
+        variant="primary"
+        type="button"
+        disabled
+      >
+        <span
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+        ></span>
+        Saving...
+      </b-button>
     </b-form>
   </b-modal>
 </template>
@@ -38,6 +56,7 @@ import { storage } from "@/firebase";
 export default {
   data() {
     return {
+      isSaving: false,
       file: null,
       newBicycle: {
         id: null,
@@ -51,6 +70,7 @@ export default {
     saveBicycle(evt) {
       /* eslint-disable no-console */
       evt.preventDefault();
+      this.isSaving = true;
       var storageRef = storage.ref().child("bicycle" + this.newBicycle.id);
       storageRef.put(this.file).then(() => {
         storageRef.getDownloadURL().then(i => {
@@ -61,6 +81,7 @@ export default {
             this.bicycles = Object.values(snapshot.val());
             this.newBicycle.id = null;
             this.file = null;
+            this.isSaving = false;
             this.$refs["add-bicycle"].hide();
           });
         });
