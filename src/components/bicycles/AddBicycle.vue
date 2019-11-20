@@ -61,7 +61,6 @@ export default {
       file: null,
       newBicycle: {
         id: null,
-        status: "available",
         currentUser: null,
         src: null
       }

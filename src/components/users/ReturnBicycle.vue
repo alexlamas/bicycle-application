@@ -10,7 +10,6 @@
     title="Return Bicycle"
   >
     <bicycle :bicycle="bicycle" />
-
     <template v-slot:modal-footer="{ ok, cancel, hide }">
       <div class="d-flex w-100 justify-content-between">
         <!-- Emulate built in modal footer ok and cancel button actions -->
@@ -87,16 +86,16 @@ export default {
   },
   methods: {
     returnBicycle() {
-      var bicycleID = this.bicycle.key;
-      var key = this.bicycle.currentUser;
+      var bicycleKey = this.bicycle.key;
+      var userKey = this.bicycle.currentUser;
       var newCount = this.user.num ? this.user.num + 1 : 1;
       var penaltyDate = new Date();
       penaltyDate = penaltyDate.getTime() + this.penalty * 24 * 60 * 60 * 1000;
-      db.ref("bicycles/" + bicycleID + "/currentUser").set(null);
-      db.ref("people/" + key + "/bicycleID").set(null);
-      db.ref("people/" + key + "/rentalDate").set(null);
-      db.ref("people/" + key + "/num").set(newCount);
-      db.ref("people/" + key + "/penalty").set(penaltyDate);
+      db.ref("bicycles/" + bicycleKey + "/currentUser").set(null);
+      db.ref("people/" + userKey + "/bicycleKey").set(null);
+      db.ref("people/" + userKey + "/rentalDate").set(null);
+      db.ref("people/" + userKey + "/num").set(newCount);
+      db.ref("people/" + userKey + "/penalty").set(penaltyDate);
     },
     resetPenalty() {
       this.penalty = null;

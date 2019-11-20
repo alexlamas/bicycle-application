@@ -21,10 +21,10 @@
     <b-form-input
       type="number"
       id="penalty"
-      :disabled="user.bicycleID ? true : false"
+      :disabled="user.bicycleKey ? true : false"
       v-model="editDetails.penalty"
     ></b-form-input>
-    <small v-if="user.bicycleID" id="emailHelp" class="form-text text-muted"
+    <small v-if="user.bicycleKey" id="emailHelp" class="form-text text-muted"
       >Cannot change penalty value during rental.</small
     >
 

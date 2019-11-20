@@ -70,13 +70,12 @@ export default {
   methods: {
     setBicycle() {
       var key = this.bicycle.key;
-      var id = this.bicycle.id;
-      this.$emit("setBicycle", key, id);
+      this.$emit("setBicycle", key);
     },
     deleteBicycle() {
       var key = this.bicycle.key;
       if (this.bicycle.currentUser) {
-        db.ref("people/" + this.bicycle.currentUser + "/bicycleID").set(null);
+        db.ref("people/" + this.bicycle.currentUser + "/bicycleKey").set(null);
       }
       db.ref("bicycles/" + key).remove();
       storage

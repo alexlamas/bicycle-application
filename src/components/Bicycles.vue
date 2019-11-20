@@ -1,41 +1,50 @@
 <template>
   <div>
-    <b-navbar sticky class="px-0" style="background-color:white">
-      <b-input-group>
-        <input
-          v-model="bicycleSearch"
-          class="form-control"
-          type="search"
-          placeholder="Search bicycles..."
-        />
-        <b-input-group-append>
-          <b-button v-b-modal.add-bicycle-modal variant="primary">Add</b-button>
-        </b-input-group-append>
-      </b-input-group>
-    </b-navbar>
-    <add-bicycle />
-    <div v-for="i in Math.ceil(bicycles.length / 3)" v-bind:key="i.id">
-      <b-card-group columns>
-        <bicycle
-          :deletable="true"
-          v-for="bicycle in filteredBicycles.slice((i - 1) * 3, i * 3)"
-          :bicycle="bicycle"
-          :key="bicycle.key"
-        />
-      </b-card-group>
-    </div>
+    <navbar />
+
+    <b-container>
+      <b-navbar sticky class="px-0" style="background-color:white">
+        <b-input-group>
+          <input
+            v-model="bicycleSearch"
+            class="form-control"
+            type="search"
+            placeholder="Search bicycles..."
+          />
+          <b-input-group-append>
+            <b-button v-b-modal.add-bicycle-modal variant="primary"
+              >Add</b-button
+            >
+          </b-input-group-append>
+        </b-input-group>
+      </b-navbar>
+      <add-bicycle />
+      <div v-for="i in Math.ceil(bicycles.length / 3)" v-bind:key="i.id">
+        <b-card-group columns>
+          <bicycle
+            :deletable="true"
+            v-for="bicycle in filteredBicycles.slice((i - 1) * 3, i * 3)"
+            :bicycle="bicycle"
+            :key="bicycle.key"
+          />
+        </b-card-group>
+      </div>
+    </b-container>
   </div>
 </template>
 
 <script>
 import Bicycle from "./bicycles/Bicycle";
 import AddBicycle from "./bicycles/AddBicycle";
+import Navbar from "./Navbar";
+
 import { db } from "@/firebase";
 
 export default {
   components: {
     AddBicycle,
-    Bicycle
+    Bicycle,
+    Navbar
   },
   data() {
     return {

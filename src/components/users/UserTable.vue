@@ -39,7 +39,7 @@
       <template class="text-right" v-slot:cell(status)="row">
         <b-button-group>
           <b-button
-            v-if="!row.item.bicycleID && !row.item.penalty"
+            v-if="!row.item.bicycleKey && !row.item.penalty"
             @click="selectUser(row.item)"
             variant="light"
             size="sm"
@@ -63,7 +63,7 @@
             >
           </b-button>
           <b-button
-            v-if="row.item.bicycleID"
+            v-if="row.item.bicycleKey"
             @click="returnBicycle(row.item)"
             variant="warning"
             size="sm"
@@ -85,7 +85,7 @@
             >
           </b-button>
           <b-dropdown
-            v-if="!row.item.bicycleID"
+            v-if="!row.item.bicycleKey"
             size="sm"
             id="dropdown-1"
             variant="light"
@@ -98,7 +98,7 @@
             >
           </b-dropdown>
           <b-dropdown
-            v-if="row.item.bicycleID"
+            v-if="row.item.bicycleKey"
             size="sm"
             id="dropdown-1"
             variant="warning"
@@ -180,23 +180,24 @@ export default {
       this.selectedUser = user;
     },
     returnBicycle(user) {
-      var key = user.bicycleID;
+      var key = user.bicycleKey;
       var bicycle;
       db.ref("bicycles/" + key).on("value", function(snapshot) {
         bicycle = snapshot.val();
         bicycle.key = snapshot.key;
+        /* eslint-disable no-console */
+        console.log(bicycle);
       });
       this.$root.$emit("bv::show::modal", "return-bicycle");
       this.selectedBicycle = bicycle;
       this.selectedUser = user;
     },
-    setBicycle(key, id) {
+    setBicycle(key) {
       var rentalDate = new Date();
       rentalDate = Math.ceil(rentalDate.getTime() / 1000 / 60 / 60 / 24);
       var userKey = this.selectedUser.key;
-      db.ref("people/" + userKey + "/bicycleID").set(key);
+      db.ref("people/" + userKey + "/bicycleKey").set(key);
       db.ref("people/" + userKey + "/rentalDate").set(rentalDate);
-      db.ref("people/" + userKey + "/bicycleID").set(id);
       db.ref("bicycles/" + key + "/currentUser").set(userKey);
       this.$refs.userTable.clearSelected();
     }
@@ -215,7 +216,7 @@ export default {
           helper: doc.val().helper,
           makerspace: doc.val().makerspace,
           penalty: Math.ceil(doc.val().penalty / 1000 / 60 / 60 / 24 - today),
-          bicycleID: doc.val().bicycleID,
+          bicycleKey: doc.val().bicycleKey,
           timeRenting: today - doc.val().rentalDate
         });
       });
