@@ -7,11 +7,19 @@
     ref="add-bicycle"
     title="Add a New Bicycle"
   >
-    <b-form @submit="saveBicycle">
+    <b-modal ok-only ok-variant="warning" id="idTaken" title="Error">
+      <p>
+        That bicycle ID is already in use. Please choose a different one or
+        delete the existing bicycle.
+      </p>
+    </b-modal>
+    <b-form @submit="checkID">
       <label for="bicycle-id">Bicycle ID</label>
       <b-form-input
         required
         type="number"
+        min="1"
+        max="999"
         v-model="newBicycle.id"
         class="mb-2"
         id="bicycle-id"
@@ -58,6 +66,7 @@ export default {
   data() {
     return {
       isSaving: false,
+      idTaken: false,
       file: null,
       newBicycle: {
         id: null,
@@ -67,9 +76,21 @@ export default {
     };
   },
   methods: {
-    saveBicycle(evt) {
-      /* eslint-disable no-console */
+    checkID(evt) {
       evt.preventDefault();
+      db.ref("bicycles")
+        .orderByChild("id")
+        .equalTo(this.newBicycle.id)
+        .on("value", snapshot => {
+          if (!snapshot.val()) {
+            this.saveBicycle();
+          } else {
+            this.idTaken = true;
+            this.$bvModal.show("idTaken");
+          }
+        });
+    },
+    saveBicycle() {
       this.isSaving = true;
       var storageRef = storage.ref().child("bicycle" + this.newBicycle.id);
       storageRef.put(this.file).then(() => {

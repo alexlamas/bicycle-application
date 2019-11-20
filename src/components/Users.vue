@@ -3,7 +3,7 @@
     <navbar />
     <b-container>
       <b-navbar sticky class="px-0" style="background-color:white">
-        <b-input-group>
+        <b-input-group size="sm">
           <input
             v-model="userSearch"
             class="form-control "
@@ -11,7 +11,9 @@
             placeholder="Search users..."
           />
           <b-input-group-append>
-            <b-button v-b-modal.add-user-modal variant="primary">Add</b-button>
+            <b-button v-b-modal.add-user-modal variant="primary"
+              ><font-awesome-icon icon="plus" class="mr-1" /> User</b-button
+            >
           </b-input-group-append>
         </b-input-group>
       </b-navbar>

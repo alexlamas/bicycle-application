@@ -3,13 +3,13 @@
     <div class="d-flex">
       <div class="my-auto">
         <b-badge variant="light"
-          ><span class="text-muted">ID: </span>{{ bicycle.id }}</b-badge
+          ><span class="text-muted">ID: </span>{{ formattedID }}</b-badge
         >
         <b-badge v-if="status == 'available'" variant="primary" class=" ml-2">{{
           status
         }}</b-badge>
         <b-badge
-          v-if="status == 'busy'"
+          v-if="status != 'available'"
           variant="warning"
           class="align-middle ml-2"
           >{{ status }}</b-badge
@@ -24,16 +24,24 @@
         class="ml-auto"
         >Lend</b-button
       >
-      <b-button
-        v-if="deletable"
-        :id="`popover-${bicycle.key}`"
-        :bicycle="bicycle"
-        variant="light"
-        size="sm"
-        class="ml-auto"
-      >
-        <font-awesome-icon icon="trash" />
-      </b-button>
+      <b-button-group v-if="deletable" class="ml-auto">
+        <b-button
+          @click="outOfOrder"
+          :bicycle="bicycle"
+          variant="light"
+          size="sm"
+        >
+          <font-awesome-icon icon="wrench" />
+        </b-button>
+        <b-button
+          :id="`popover-${bicycle.key}`"
+          :bicycle="bicycle"
+          variant="light"
+          size="sm"
+        >
+          <font-awesome-icon icon="trash" />
+        </b-button>
+      </b-button-group>
     </div>
 
     <b-popover
@@ -42,13 +50,19 @@
       placement="bottom"
       :show.sync="popoverShow"
     >
-      <b-button @click="popoverShow = false" size="sm" variant="secondary"
+      <b-button @click="popoverShow = false" size="sm" variant="light"
         >Cancel</b-button
       >
       <b-button @click="deleteBicycle" class="ml-2" size="sm" variant="danger"
         >Delete</b-button
       >
     </b-popover>
+    <b-modal ok-only ok-variant="warning" id="renting" title="Error">
+      <p>
+        Please go back to the User page and return the bicycle before setting it
+        to maintenance mode.
+      </p>
+    </b-modal>
   </b-card>
 </template>
 
@@ -68,6 +82,18 @@ export default {
     deletable: Boolean
   },
   methods: {
+    outOfOrder() {
+      var key = this.bicycle.key;
+      if (this.bicycle.currentUser == "fixing") {
+        db.ref("bicycles/" + key + "/currentUser").set(null);
+      } else if (this.bicycle.currentUser) {
+        alert(
+          "Please return the bicycle before setting it to maintenance mode."
+        );
+      } else {
+        db.ref("bicycles/" + key + "/currentUser").set("fixing");
+      }
+    },
     setBicycle() {
       var key = this.bicycle.key;
       this.$emit("setBicycle", key);
@@ -91,9 +117,24 @@ export default {
         status = "available";
       }
       if (this.bicycle.currentUser) {
-        status = "busy";
+        if (this.bicycle.currentUser == "fixing") {
+          status = "maintenance";
+        } else {
+          status = "on loan";
+        }
       }
       return status;
+    },
+    formattedID() {
+      var id;
+      if (this.bicycle.id < 10) {
+        id = "00" + this.bicycle.id;
+      } else if (this.bicycle.id < 99) {
+        id = "0" + this.bicycle.id;
+      } else {
+        id = this.bicycle.id;
+      }
+      return id;
     }
   }
 };

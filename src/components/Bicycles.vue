@@ -4,7 +4,7 @@
 
     <b-container>
       <b-navbar sticky class="px-0" style="background-color:white">
-        <b-input-group>
+        <b-input-group size="sm">
           <input
             v-model="bicycleSearch"
             class="form-control"
@@ -13,7 +13,7 @@
           />
           <b-input-group-append>
             <b-button v-b-modal.add-bicycle-modal variant="primary"
-              >Add</b-button
+              ><font-awesome-icon icon="plus" class="mr-1" /> Bicycle</b-button
             >
           </b-input-group-append>
         </b-input-group>
