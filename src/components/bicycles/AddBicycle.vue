@@ -42,7 +42,8 @@ export default {
       newBicycle: {
         id: null,
         status: "available",
-        currentUser: null
+        currentUser: null,
+        src: null
       }
     };
   },
@@ -50,18 +51,20 @@ export default {
     saveBicycle(evt) {
       /* eslint-disable no-console */
       evt.preventDefault();
-      var newBicycleToPush = this.newBicycle;
-      db.ref("bicycles").push(newBicycleToPush);
-      db.ref("bicycles").once("value", snapshot => {
-        this.bicycles = Object.values(snapshot.val());
-      });
       var storageRef = storage.ref().child("bicycle" + this.newBicycle.id);
-      storageRef.put(this.file).then(function(snapshot) {
-        console.log(snapshot);
+      storageRef.put(this.file).then(() => {
+        storageRef.getDownloadURL().then(i => {
+          this.newBicycle.src = i;
+          var newBicycleToPush = this.newBicycle;
+          db.ref("bicycles").push(newBicycleToPush);
+          db.ref("bicycles").once("value", snapshot => {
+            this.bicycles = Object.values(snapshot.val());
+            this.newBicycle.id = null;
+            this.file = null;
+            this.$refs["add-bicycle"].hide();
+          });
+        });
       });
-      this.newBicycle.id = null;
-      this.file = null;
-      this.$refs["add-bicycle"].hide();
     }
   }
 };
