@@ -49,6 +49,7 @@
 
 <script>
 import { db } from "@/firebase";
+import { storage } from "@/firebase";
 export default {
   data() {
     return {
@@ -64,7 +65,7 @@ export default {
   methods: {
     setBicycle() {
       var key = this.bicycle.key;
-      var id = this.bicycle.key;
+      var id = this.bicycle.id;
       this.$emit("setBicycle", key, id);
     },
     deleteBicycle() {
@@ -73,6 +74,10 @@ export default {
         db.ref("people/" + this.bicycle.currentUser + "/bicycleID").set(null);
       }
       db.ref("bicycles/" + key).remove();
+      storage
+        .ref()
+        .child("bicycle" + this.bicycle.id)
+        .delete();
     }
   },
   computed: {

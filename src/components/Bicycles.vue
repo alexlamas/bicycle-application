@@ -20,7 +20,7 @@
           :deletable="true"
           v-for="bicycle in filteredBicycles.slice((i - 1) * 3, i * 3)"
           :bicycle="bicycle"
-          :key="bicycle.id"
+          :key="bicycle.key"
         />
       </b-card-group>
     </div>
