@@ -29,8 +29,9 @@
         required
         class="mt-4"
         v-model="file"
+        accept="image/*"
         :state="Boolean(file)"
-        placeholder="Choose a file or drop it here..."
+        placeholder="Choose Image..."
         drop-placeholder="Drop file here..."
       ></b-form-file>
       <div class="mt-3">Selected file: {{ file ? file.name : "" }}</div>
@@ -83,17 +84,45 @@ export default {
         .equalTo(this.newBicycle.id)
         .on("value", snapshot => {
           if (!snapshot.val()) {
-            this.saveBicycle();
+            this.compress(this.file);
           } else {
             this.idTaken = true;
             this.$bvModal.show("idTaken");
           }
         });
     },
-    saveBicycle() {
+    compress(image) {
+      const width = 500;
+      const height = 300;
+      const fileName = image.name;
+      const reader = new FileReader();
+      reader.readAsDataURL(image);
+      reader.onload = event => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+          const elem = document.createElement("canvas");
+          elem.width = width;
+          elem.height = height;
+          const ctx = elem.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+          ctx.canvas.toBlob(
+            blob => {
+              const file = new File([blob], fileName, {
+                type: "image/jpeg"
+              });
+              this.saveBicycle(file);
+            },
+            "image/jpeg",
+            1
+          );
+        };
+      };
+    },
+    saveBicycle(file) {
       this.isSaving = true;
       var storageRef = storage.ref().child("bicycle" + this.newBicycle.id);
-      storageRef.put(this.file).then(() => {
+      storageRef.put(file).then(() => {
         storageRef.getDownloadURL().then(i => {
           this.newBicycle.src = i;
           var newBicycleToPush = this.newBicycle;
