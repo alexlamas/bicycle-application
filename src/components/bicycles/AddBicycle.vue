@@ -92,8 +92,7 @@ export default {
         });
     },
     compress(image) {
-      const width = 500;
-      const height = 300;
+      const width = 600;
       const fileName = image.name;
       const reader = new FileReader();
       reader.readAsDataURL(image);
@@ -103,6 +102,7 @@ export default {
         img.onload = () => {
           const elem = document.createElement("canvas");
           elem.width = width;
+          const height = width * (img.height / img.width);
           elem.height = height;
           const ctx = elem.getContext("2d");
           ctx.drawImage(img, 0, 0, width, height);
