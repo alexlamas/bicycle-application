@@ -36,7 +36,7 @@
           >
         </b-badge>
       </template>
-      <template class="text-right" v-slot:cell(status)="row">
+      <template v-slot:cell(status)="row">
         <b-button-group>
           <b-button
             v-if="!row.item.bicycleKey && !row.item.penalty"
@@ -136,23 +136,24 @@ export default {
         {
           key: "name",
           label: "Name",
-          class: "text-capitalize",
+          class: "text-capitalize text-left",
           sortable: true
         },
         {
           key: "code",
           label: "Ausweis",
-          sortable: true
+          sortable: true,
+          style: "empty-cells:hide"
         },
         {
           key: "num",
           label: "Usage",
-          sortable: true
+          sortable: true,
+          class: "d-none d-lg-block"
         },
         {
           key: "status",
-          label: "",
-          class: "text-md-left text-center"
+          label: ""
         }
       ]
     };
@@ -224,3 +225,15 @@ export default {
   }
 };
 </script>
+
+<style>
+.b-table-stacked-sm [data-label]::before {
+  text-align: left !important;
+  width: 28% !important;
+}
+@media (max-width: 576px) {
+  .table.b-table.b-table-stacked-sm div {
+    padding-left: 0 !important;
+  }
+}
+</style>
