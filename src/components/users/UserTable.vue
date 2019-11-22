@@ -3,7 +3,7 @@
     <b-table
       stacked="sm"
       ref="userTable"
-      :items="people"
+      :items="filteredPeople"
       :fields="fields"
       :filter="userSearch"
       :sort-by.sync="sortBy"
@@ -167,13 +167,25 @@ export default {
     };
   },
   props: {
-    userSearch: String
+    userSearch: String,
+    filters: Array
   },
   components: {
     EditUser,
     DeleteUser,
     ChooseBicycle,
     ReturnBicycle
+  },
+  computed: {
+    filteredPeople() {
+      if (this.filters.includes("renting")) {
+        return this.people.filter(p => {
+          return p.bicycleKey;
+        });
+      } else {
+        return this.people;
+      }
+    }
   },
   methods: {
     deleteModal(userArray, button) {
@@ -194,8 +206,6 @@ export default {
       db.ref("bicycles/" + key).on("value", function(snapshot) {
         bicycle = snapshot.val();
         bicycle.key = snapshot.key;
-        /* eslint-disable no-console */
-        console.log(bicycle);
       });
       this.$root.$emit("bv::show::modal", "return-bicycle");
       this.selectedBicycle = bicycle;
@@ -232,6 +242,8 @@ export default {
         });
       });
     });
+    /* eslint-disable no-console */
+    console.log(this.filters);
   }
 };
 </script>

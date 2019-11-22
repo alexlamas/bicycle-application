@@ -2,6 +2,19 @@
   <div>
     <navbar />
     <b-container>
+      <div class="d-flex mt-2">
+        <div class=" text-muted">
+          Filter by:
+        </div>
+        <b-form-checkbox-group
+          v-model="filters"
+          :options="options"
+          class=" ml-3"
+          switches
+        >
+        </b-form-checkbox-group>
+      </div>
+
       <b-navbar sticky class="px-0" style="background-color:white">
         <b-input-group size="sm">
           <input
@@ -19,7 +32,7 @@
       </b-navbar>
 
       <add-user :userSearch="userSearch" />
-      <user-table :userSearch="userSearch" />
+      <user-table :userSearch="userSearch" :filters="filters" />
     </b-container>
   </div>
 </template>
@@ -32,7 +45,9 @@ import Navbar from "./Navbar";
 export default {
   data() {
     return {
-      userSearch: ""
+      userSearch: "",
+      filters: [],
+      options: [{ text: "Renting", value: "renting" }]
     };
   },
   components: {
@@ -42,3 +57,10 @@ export default {
   }
 };
 </script>
+
+<style media="screen">
+.custom-control-input:checked ~ .custom-control-label::before {
+  border-color: #ffc107 !important;
+  background-color: #ffc107 !important;
+}
+</style>

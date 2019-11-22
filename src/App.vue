@@ -7,5 +7,6 @@
 <style>
 .router-link-exact-active {
   color: black !important;
+  font-weight: 700 !important;
 }
 </style>
