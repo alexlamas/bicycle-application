@@ -93,6 +93,7 @@ export default {
       penaltyDate = penaltyDate.getTime() + this.penalty * 24 * 60 * 60 * 1000;
       db.ref("bicycles/" + bicycleKey + "/currentUser").set(null);
       db.ref("people/" + userKey + "/bicycleKey").set(null);
+      db.ref("people/" + userKey + "/bicycleID").set(null);
       db.ref("people/" + userKey + "/rentalDate").set(null);
       db.ref("people/" + userKey + "/num").set(newCount);
       db.ref("people/" + userKey + "/penalty").set(penaltyDate);

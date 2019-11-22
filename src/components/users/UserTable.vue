@@ -6,6 +6,8 @@
       :items="people"
       :fields="fields"
       :filter="userSearch"
+      :sort-by.sync="sortBy"
+      :sort-desc.sync="sortDesc"
       small
     >
       <template v-slot:cell(name)="row">
@@ -13,6 +15,9 @@
         <b-badge class="ml-2" v-if="row.item.helper == true">Helper</b-badge>
         <b-badge class="ml-2" v-if="row.item.makerspace == true"
           >Makerspace</b-badge
+        >
+        <b-badge class="ml-2" variant="warning" v-if="row.item.bicycleID"
+          >ID: {{ row.item.bicycleID }}</b-badge
         >
       </template>
       <template v-slot:cell(num)="row">
@@ -36,7 +41,7 @@
           >
         </b-badge>
       </template>
-      <template v-slot:cell(status)="row">
+      <template v-slot:cell(bicycleKey)="row">
         <b-button-group>
           <b-button
             v-if="!row.item.bicycleKey && !row.item.penalty"
@@ -132,6 +137,8 @@ export default {
       selectedUser: {},
       selectedBicycle: {},
       people: [],
+      sortBy: "bicycleKey",
+      sortDesc: true,
       fields: [
         {
           key: "name",
@@ -149,11 +156,12 @@ export default {
           key: "num",
           label: "Usage",
           sortable: true,
-          class: "d-none d-lg-block"
+          class: "d-none d-lg-table-cell"
         },
         {
-          key: "status",
-          label: ""
+          key: "bicycleKey",
+          label: "",
+          sortable: true
         }
       ]
     };
@@ -193,11 +201,12 @@ export default {
       this.selectedBicycle = bicycle;
       this.selectedUser = user;
     },
-    setBicycle(key) {
+    setBicycle(key, id) {
       var rentalDate = new Date();
       rentalDate = Math.ceil(rentalDate.getTime() / 1000 / 60 / 60 / 24);
       var userKey = this.selectedUser.key;
       db.ref("people/" + userKey + "/bicycleKey").set(key);
+      db.ref("people/" + userKey + "/bicycleID").set(id);
       db.ref("people/" + userKey + "/rentalDate").set(rentalDate);
       db.ref("bicycles/" + key + "/currentUser").set(userKey);
       this.$refs.userTable.clearSelected();
@@ -217,7 +226,8 @@ export default {
           helper: doc.val().helper,
           makerspace: doc.val().makerspace,
           penalty: Math.ceil(doc.val().penalty / 1000 / 60 / 60 / 24 - today),
-          bicycleKey: doc.val().bicycleKey,
+          bicycleKey: doc.val().bicycleKey ? doc.val().bicycleKey : null,
+          bicycleID: doc.val().bicycleID ? doc.val().bicycleID : null,
           timeRenting: today - doc.val().rentalDate
         });
       });
