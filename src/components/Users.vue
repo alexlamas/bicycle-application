@@ -62,5 +62,14 @@ export default {
 .custom-control-input:checked ~ .custom-control-label::before {
   border-color: #ffc107 !important;
   background-color: #ffc107 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.custom-control-label::before,
+.custom-file-label,
+.custom-select {
+  outline: none !important;
+  box-shadow: none !important;
+  border: #adb5bd solid 1px !important;
 }
 </style>
