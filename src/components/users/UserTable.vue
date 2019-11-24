@@ -12,11 +12,11 @@
     >
       <template v-slot:cell(name)="row">
         {{ row.item.name }}
-        <b-badge class="ml-2" v-if="row.item.helper == true">Helper</b-badge>
-        <b-badge class="ml-2" v-if="row.item.makerspace == true"
+        <b-badge class="mr-1" v-if="row.item.helper == true">Helper</b-badge>
+        <b-badge class="mr-1" v-if="row.item.makerspace == true"
           >Makerspace</b-badge
         >
-        <b-badge class="ml-2" variant="warning" v-if="row.item.bicycleID"
+        <b-badge class="mr-1" variant="warning" v-if="row.item.bicycleID"
           >ID: {{ row.item.bicycleID }}</b-badge
         >
       </template>
@@ -149,14 +149,13 @@ export default {
         {
           key: "code",
           label: "Ausweis",
-          sortable: true,
-          style: "empty-cells:hide"
+          sortable: true
         },
         {
           key: "num",
           label: "Usage",
           sortable: true,
-          class: "d-none d-lg-table-cell"
+          class: "hidden-cells d-lg-table-cell"
         },
         {
           key: "bicycleKey",
@@ -235,7 +234,10 @@ export default {
           num: doc.val().num ? doc.val().num : 0,
           helper: doc.val().helper,
           makerspace: doc.val().makerspace,
-          penalty: Math.ceil(doc.val().penalty / 1000 / 60 / 60 / 24 - today),
+          penalty:
+            Math.ceil(doc.val().penalty / 1000 / 60 / 60 / 24 - today) > 1
+              ? Math.ceil(doc.val().penalty / 1000 / 60 / 60 / 24 - today)
+              : null,
           bicycleKey: doc.val().bicycleKey ? doc.val().bicycleKey : null,
           bicycleID: doc.val().bicycleID ? doc.val().bicycleID : null,
           timeRenting: today - doc.val().rentalDate
@@ -258,4 +260,19 @@ export default {
     padding-left: 0 !important;
   }
 }
+.table.b-table.b-table-stacked-sm > tbody > tr > [data-label] > div {
+  width: 72% !important;
+}
+/*
+.table.b-table.b-table-stacked-sm > tbody > tr > [data-label]::before {
+  display: none !important;
+}
+.table.b-table.b-table-stacked-sm > tbody > tr > td {
+  display: flex !important;
+  flex-direction: column;
+}
+
+.table.b-table.b-table-stacked-sm.hidden-cells > tbody > tr > td {
+  display: none !important;
+} */
 </style>
