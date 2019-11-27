@@ -49,7 +49,7 @@ export default {
       filters: ["visitors"],
       options: [
         { text: "Renting", value: "renting" },
-        { text: "Visitors", value: "visitors" }
+        { text: "Short-term", value: "visitors" }
       ]
     };
   },
