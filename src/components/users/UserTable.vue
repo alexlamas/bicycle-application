@@ -12,10 +12,10 @@
     >
       <template v-slot:cell(name)="row">
         {{ row.item.name }}
-        <b-badge class="mr-1" v-if="row.item.helper == true">Helper</b-badge>
-        <b-badge class="mr-1" v-if="row.item.makerspace == true"
-          >Makerspace</b-badge
+        <b-badge class="mr-1" v-if="row.item.helper && !row.item.makerspace"
+          >Helper</b-badge
         >
+        <b-badge class="mr-1" v-if="row.item.makerspace">Makerspace</b-badge>
         <b-badge class="mr-1" variant="warning" v-if="row.item.bicycleID"
           >ID: {{ row.item.bicycleID }}</b-badge
         >
@@ -48,7 +48,6 @@
             @click="selectUser(row.item)"
             variant="light"
             size="sm"
-            style="width:10rem; text-align:left"
             class="pl-3"
           >
             Choose Bike
@@ -59,7 +58,6 @@
             variant="light"
             size="sm"
             disabled
-            style="width:10rem; text-align:left"
             class="pl-3"
           >
             <b-badge
@@ -72,21 +70,34 @@
             @click="returnBicycle(row.item)"
             variant="warning"
             size="sm"
-            style="width:10rem; text-align:left"
             class="pl-3"
           >
             Return Bike
             <b-badge
-              v-if="row.item.timeRenting < 1"
+              v-if="
+                row.item.timeRenting < 1 &&
+                  !row.item.helper &&
+                  !row.item.makerspace
+              "
               class="ml-2"
               variant="light"
               >{{ row.item.timeRenting }} days</b-badge
             >
             <b-badge
-              v-if="row.item.timeRenting > 0"
+              v-if="
+                row.item.timeRenting > 0 &&
+                  !row.item.helper &&
+                  !row.item.makerspace
+              "
               class="ml-2"
               variant="danger"
               >{{ row.item.timeRenting }} days</b-badge
+            >
+            <b-badge
+              v-if="row.item.helper || row.item.makerspace"
+              class="ml-2"
+              variant="secondary"
+              >Long Term</b-badge
             >
           </b-button>
           <b-dropdown
@@ -177,9 +188,26 @@ export default {
   },
   computed: {
     filteredPeople() {
-      if (this.filters.includes("renting")) {
+      if (
+        this.filters.includes("renting") &&
+        !this.filters.includes("visitors")
+      ) {
         return this.people.filter(p => {
           return p.bicycleKey;
+        });
+      } else if (
+        !this.filters.includes("renting") &&
+        this.filters.includes("visitors")
+      ) {
+        return this.people.filter(p => {
+          return !p.helper && !p.makerspace;
+        });
+      } else if (
+        this.filters.includes("renting") &&
+        this.filters.includes("visitors")
+      ) {
+        return this.people.filter(p => {
+          return !p.helper && !p.makerspace && p.bicycleKey;
         });
       } else {
         return this.people;
@@ -194,6 +222,8 @@ export default {
     editModal(userArray, button) {
       this.$root.$emit("bv::show::modal", "edit-user-modal", button);
       this.selectedUser = userArray;
+      /* eslint-disable no-console */
+      console.log(this.filters);
     },
     selectUser(user) {
       this.$root.$emit("bv::show::modal", "choose-bicycle");
@@ -244,8 +274,6 @@ export default {
         });
       });
     });
-    /* eslint-disable no-console */
-    console.log(this.filters);
   }
 };
 </script>

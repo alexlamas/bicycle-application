@@ -9,6 +9,11 @@
     title="Add a New User"
   >
     <b-form @submit="saveUser">
+      <b-form-select
+        v-model="selected"
+        class="mb-3"
+        :options="options"
+      ></b-form-select>
       <label for="name">Full Name</label>
       <b-form-input
         id="name"
@@ -19,22 +24,6 @@
       ></b-form-input>
       <label class="mt-3" for="code">Ausweis</label>
       <b-form-input id="code" v-model="newPerson.code"></b-form-input>
-      <b-form-checkbox
-        class="mt-4"
-        v-model="newPerson.helper"
-        value="true"
-        unchecked-value="false"
-      >
-        Helper
-      </b-form-checkbox>
-      <b-form-checkbox
-        class="mt-2"
-        v-model="newPerson.makerspace"
-        value="true"
-        unchecked-value="false"
-      >
-        Makerspace
-      </b-form-checkbox>
       <b-button class="mt-2 float-right" type="submit" variant="primary"
         >Submit</b-button
       >
@@ -50,6 +39,12 @@ export default {
   },
   data() {
     return {
+      selected: null,
+      options: [
+        { value: null, text: "Visitor" },
+        { value: "helper", text: "Helper" },
+        { value: "makerspace", text: "Makerspace" }
+      ],
       newPerson: {
         name: "",
         code: "05/000",
@@ -65,6 +60,8 @@ export default {
         this.newPerson.code = "";
       }
       evt.preventDefault();
+      this.newPerson.helper = this.selected == "helper" ? true : false;
+      this.newPerson.makerspace = this.selected == "makerspace" ? true : false;
       var newPersonToPush = this.newPerson;
       db.ref("people").push(newPersonToPush);
       db.ref("people").once("value", snapshot => {
@@ -77,6 +74,7 @@ export default {
       this.newPerson.name = this.userSearch;
       this.newPerson.helper = false;
       this.newPerson.makerspace = false;
+      this.selected = null;
     }
   }
 };

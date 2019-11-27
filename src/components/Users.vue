@@ -46,8 +46,11 @@ export default {
   data() {
     return {
       userSearch: "",
-      filters: [],
-      options: [{ text: "Renting", value: "renting" }]
+      filters: ["visitors"],
+      options: [
+        { text: "Renting", value: "renting" },
+        { text: "Visitors", value: "visitors" }
+      ]
     };
   },
   components: {
