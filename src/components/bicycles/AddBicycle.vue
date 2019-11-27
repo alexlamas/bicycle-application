@@ -81,7 +81,7 @@ export default {
       evt.preventDefault();
       db.ref("bicycles")
         .orderByChild("id")
-        .equalTo(this.newBicycle.id)
+        .equalTo(parseInt(this.newBicycle.id))
         .on("value", snapshot => {
           if (!snapshot.val()) {
             this.compress(this.file);

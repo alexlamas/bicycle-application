@@ -70,7 +70,7 @@ export default {
         this.bicycles.push({
           key: doc.key,
           src: doc.val().src,
-          id: doc.val().id,
+          id: parseInt(doc.val().id),
           currentUser: doc.val().currentUser
         });
       });

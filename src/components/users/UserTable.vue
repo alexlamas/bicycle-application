@@ -17,7 +17,7 @@
         >
         <b-badge class="mr-1" v-if="row.item.makerspace">Makerspace</b-badge>
         <b-badge class="mr-1" variant="warning" v-if="row.item.bicycleID"
-          >ID: {{ row.item.bicycleID }}</b-badge
+          >ID: {{ formattedID(row.item.bicycleID) }}</b-badge
         >
       </template>
       <template v-slot:cell(num)="row">
@@ -215,6 +215,17 @@ export default {
     }
   },
   methods: {
+    formattedID(id) {
+      var formatted;
+      if (id < 10) {
+        formatted = "00" + id;
+      } else if (id < 99) {
+        formatted = "0" + id;
+      } else {
+        formatted = id;
+      }
+      return formatted;
+    },
     deleteModal(userArray, button) {
       this.$root.$emit("bv::show::modal", "delete-user-modal", button);
       this.selectedUser = userArray;
@@ -269,7 +280,7 @@ export default {
               ? Math.ceil(doc.val().penalty / 1000 / 60 / 60 / 24 - today)
               : null,
           bicycleKey: doc.val().bicycleKey ? doc.val().bicycleKey : null,
-          bicycleID: doc.val().bicycleID ? doc.val().bicycleID : null,
+          bicycleID: doc.val().bicycleID ? parseInt(doc.val().bicycleID) : null,
           timeRenting: today - doc.val().rentalDate
         });
       });

@@ -49,7 +49,7 @@ export default {
     filteredBicycles() {
       return this.bicycles.filter(bicycle => {
         return (
-          bicycle.id.toLowerCase().indexOf(this.bicycleSearch.toLowerCase()) >
+          bicycle.id.toString().indexOf(this.bicycleSearch.toLowerCase()) >
             -1 && !bicycle.currentUser
         );
       });
