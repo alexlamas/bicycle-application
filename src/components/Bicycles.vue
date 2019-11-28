@@ -3,6 +3,18 @@
     <navbar />
 
     <b-container>
+      <div class="d-flex mt-2">
+        <div class=" text-muted">
+          Filter by:
+        </div>
+        <b-form-checkbox-group
+          v-model="filters"
+          :options="options"
+          class=" ml-3"
+          switches
+        >
+        </b-form-checkbox-group>
+      </div>
       <b-navbar sticky class="px-0" style="background-color:white">
         <b-input-group size="sm">
           <input
@@ -49,18 +61,36 @@ export default {
   data() {
     return {
       bicycles: [],
-      bicycleSearch: ""
+      bicycleSearch: "",
+      filters: [],
+      options: [{ text: "Available", value: "available" }]
     };
+  },
+  methods: {
+    compare(a, b) {
+      if (a.id > b.id) {
+        return 1;
+      } else {
+        return -1;
+      }
+    }
   },
   computed: {
     filteredBicycles() {
-      return this.bicycles.filter(bicycle => {
+      var filtered;
+      filtered = this.bicycles.filter(bicycle => {
         return (
           !this.bicycleSearch ||
-          bicycle.id.toLowerCase().indexOf(this.bicycleSearch.toLowerCase()) >
-            -1
+          bicycle.id.toString().indexOf(this.bicycleSearch) > -1
         );
       });
+      if (this.filters.includes("available")) {
+        filtered = filtered.filter(bicycle => {
+          return !bicycle.currentUser;
+        });
+      }
+      filtered = filtered.sort(this.compare);
+      return filtered;
     }
   },
   created: function() {
@@ -74,6 +104,8 @@ export default {
           currentUser: doc.val().currentUser
         });
       });
+      /* eslint-disable no-console */
+      console.log(this.bicycles);
     });
   }
 };

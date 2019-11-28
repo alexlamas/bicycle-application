@@ -61,7 +61,7 @@ export default {
 };
 </script>
 
-<style media="screen">
+<style scoped>
 .custom-control-input:checked ~ .custom-control-label::before {
   border-color: #ffc107 !important;
   background-color: #ffc107 !important;
