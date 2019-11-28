@@ -12,6 +12,9 @@
           <b-nav-item class="my-auto mr-2" to="/users"
             ><h6 class="m-0">Users</h6></b-nav-item
           >
+          <b-nav-item class="my-auto mr-2" to="/volunteers"
+            ><h6 class="m-0">Volunteers</h6></b-nav-item
+          >
           <b-nav-item class="my-auto mr-3" to="/bicycles"
             ><h6 class="m-0">Bicycles</h6></b-nav-item
           >

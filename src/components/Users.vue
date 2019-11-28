@@ -47,10 +47,7 @@ export default {
     return {
       userSearch: "",
       filters: ["visitors"],
-      options: [
-        { text: "Renting", value: "renting" },
-        { text: "Short-term", value: "visitors" }
-      ]
+      options: [{ text: "Renting", value: "renting" }]
     };
   },
   components: {

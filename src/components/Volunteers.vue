@@ -14,7 +14,6 @@
         >
         </b-form-checkbox-group>
       </div>
-
       <b-navbar sticky class="px-0" style="background-color:white">
         <b-input-group size="sm">
           <input
@@ -46,11 +45,8 @@ export default {
   data() {
     return {
       userSearch: "",
-      filters: ["visitors"],
-      options: [
-        { text: "Renting", value: "renting" },
-        { text: "Short-term", value: "visitors" }
-      ]
+      filters: ["volunteers"],
+      options: [{ text: "Renting", value: "renting" }]
     };
   },
   components: {

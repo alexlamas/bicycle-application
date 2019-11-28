@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import Users from "../components/Users.vue";
 import Bicycles from "../components/Bicycles.vue";
 import Login from "../components/Login.vue";
+import Volunteers from "../components/Volunteers.vue";
 import { auth } from "@/firebase";
 
 Vue.use(VueRouter);
@@ -25,6 +26,14 @@ const routes = [
     path: "/users",
     name: "users",
     component: Users,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/volunteers",
+    name: "volunteers",
+    component: Volunteers,
     meta: {
       requiresAuth: true
     }

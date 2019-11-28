@@ -12,10 +12,15 @@
     >
       <template v-slot:cell(name)="row">
         {{ row.item.name }}
-        <b-badge class="mr-1" v-if="row.item.helper && !row.item.makerspace"
+        <b-badge
+          variant="light"
+          class="mr-1"
+          v-if="row.item.helper && !row.item.makerspace"
           >Helper</b-badge
         >
-        <b-badge class="mr-1" v-if="row.item.makerspace">Makerspace</b-badge>
+        <b-badge variant="light" class="mr-1" v-if="row.item.makerspace"
+          >Makerspace</b-badge
+        >
         <b-badge class="mr-1" variant="warning" v-if="row.item.bicycleID"
           >ID: {{ formattedID(row.item.bicycleID) }}</b-badge
         >
@@ -48,7 +53,7 @@
             @click="selectUser(row.item)"
             variant="light"
             size="sm"
-            class="pl-3"
+            class="pl-2"
           >
             Choose Bike
           </b-button>
@@ -58,7 +63,7 @@
             variant="light"
             size="sm"
             disabled
-            class="pl-3"
+            class="pl-2"
           >
             <b-badge
               >{{ row.item.penalty }}
@@ -70,7 +75,6 @@
             @click="returnBicycle(row.item)"
             variant="warning"
             size="sm"
-            class="pl-3"
           >
             Return Bike
             <b-badge
@@ -92,12 +96,6 @@
               class="ml-2"
               variant="danger"
               >{{ row.item.timeRenting }} days</b-badge
-            >
-            <b-badge
-              v-if="row.item.helper || row.item.makerspace"
-              class="ml-2"
-              variant="secondary"
-              >Long Term</b-badge
             >
           </b-button>
           <b-dropdown
@@ -188,29 +186,24 @@ export default {
   },
   computed: {
     filteredPeople() {
-      if (
-        this.filters.includes("renting") &&
-        !this.filters.includes("visitors")
-      ) {
-        return this.people.filter(p => {
-          return p.bicycleKey;
-        });
-      } else if (
-        !this.filters.includes("renting") &&
-        this.filters.includes("visitors")
-      ) {
-        return this.people.filter(p => {
-          return !p.helper && !p.makerspace;
-        });
-      } else if (
-        this.filters.includes("renting") &&
-        this.filters.includes("visitors")
-      ) {
+      if (this.filters.includes("volunteers")) {
+        if (this.filters.includes("renting")) {
+          return this.people.filter(p => {
+            return (p.helper || p.makerspace) && p.bicycleKey;
+          });
+        } else {
+          return this.people.filter(p => {
+            return p.helper || p.makerspace;
+          });
+        }
+      } else if (this.filters.includes("renting")) {
         return this.people.filter(p => {
           return !p.helper && !p.makerspace && p.bicycleKey;
         });
       } else {
-        return this.people;
+        return this.people.filter(p => {
+          return !p.helper && !p.makerspace;
+        });
       }
     }
   },
@@ -298,10 +291,11 @@ export default {
   .table.b-table.b-table-stacked-sm div {
     padding-left: 0 !important;
   }
+  .table.b-table.b-table-stacked-sm > tbody > tr > [data-label] > div {
+    width: 72% !important;
+  }
 }
-.table.b-table.b-table-stacked-sm > tbody > tr > [data-label] > div {
-  width: 72% !important;
-}
+
 /*
 .table.b-table.b-table-stacked-sm > tbody > tr > [data-label]::before {
   display: none !important;
