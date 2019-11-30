@@ -96,7 +96,9 @@ export default {
       db.ref("people/" + userKey + "/bicycleID").set(null);
       db.ref("people/" + userKey + "/rentalDate").set(null);
       db.ref("people/" + userKey + "/num").set(newCount);
-      db.ref("people/" + userKey + "/penalty").set(penaltyDate);
+      db.ref("people/" + userKey + "/penalty").set(
+        this.penalty ? penaltyDate : null
+      );
     },
     resetPenalty() {
       this.penalty = null;

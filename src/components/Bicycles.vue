@@ -3,32 +3,30 @@
     <navbar />
 
     <b-container>
-      <div class="d-flex mt-2">
-        <div class=" text-muted">
-          Filter by:
-        </div>
-        <b-form-checkbox-group
+      <b-navbar sticky class="px-0" style="background-color:white">
+        <b-form-select
           v-model="filters"
           :options="options"
-          class=" ml-3"
-          switches
+          class="mr-2 my-1"
+          style="width:auto"
+          size="sm"
         >
-        </b-form-checkbox-group>
-      </div>
-      <b-navbar sticky class="px-0" style="background-color:white">
-        <b-input-group size="sm">
-          <input
-            v-model="bicycleSearch"
-            class="form-control"
-            type="search"
-            placeholder="Search bicycles..."
-          />
-          <b-input-group-append>
-            <b-button v-b-modal.add-bicycle-modal variant="primary"
-              ><font-awesome-icon icon="plus" class="mr-1" /> Bicycle</b-button
-            >
-          </b-input-group-append>
-        </b-input-group>
+        </b-form-select>
+        <b-form-input
+          v-model="bicycleSearch"
+          type="search"
+          placeholder="Search bicycles..."
+          size="sm"
+        />
+        <b-button
+          v-b-modal.add-bicycle-modal
+          variant="primary"
+          size="sm"
+          class="ml-2"
+          style="width
+        :8rem"
+          ><font-awesome-icon icon="plus" class="mr-1" /> Bicycle</b-button
+        >
       </b-navbar>
       <add-bicycle />
       <div v-for="i in Math.ceil(bicycles.length / 3)" v-bind:key="i.id">
@@ -62,8 +60,13 @@ export default {
     return {
       bicycles: [],
       bicycleSearch: "",
-      filters: [],
-      options: [{ text: "Available", value: "available" }]
+      filters: null,
+      options: [
+        { value: null, text: "All" },
+        { value: "available", text: "Available" },
+        { value: "onloan", text: "On Loan" },
+        { value: "maintenance", text: "Maintenance" }
+      ]
     };
   },
   methods: {
@@ -84,10 +87,22 @@ export default {
           bicycle.id.toString().indexOf(this.bicycleSearch) > -1
         );
       });
-      if (this.filters.includes("available")) {
-        filtered = filtered.filter(bicycle => {
-          return !bicycle.currentUser;
-        });
+      if (this.filters) {
+        if (this.filters.includes("available")) {
+          filtered = filtered.filter(bicycle => {
+            return !bicycle.currentUser;
+          });
+        }
+        if (this.filters.includes("maintenance")) {
+          filtered = filtered.filter(bicycle => {
+            return bicycle.currentUser == "fixing";
+          });
+        }
+        if (this.filters.includes("onloan")) {
+          filtered = filtered.filter(bicycle => {
+            return bicycle.currentUser && bicycle.currentUser != "fixing";
+          });
+        }
       }
       filtered = filtered.sort(this.compare);
       return filtered;
