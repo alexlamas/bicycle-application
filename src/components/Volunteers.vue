@@ -30,7 +30,7 @@
         </b-input-group>
       </b-navbar>
 
-      <add-user :userSearch="userSearch" />
+      <add-user :type="type" :userSearch="userSearch" />
       <user-table :userSearch="userSearch" :filters="filters" />
     </b-container>
   </div>
@@ -44,6 +44,7 @@ import Navbar from "./Navbar";
 export default {
   data() {
     return {
+      type: "volunteers",
       userSearch: "",
       filters: ["volunteers"],
       options: [{ text: "Renting", value: "renting" }]

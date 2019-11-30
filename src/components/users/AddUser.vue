@@ -35,7 +35,8 @@
 import { db } from "@/firebase";
 export default {
   props: {
-    userSearch: String
+    userSearch: String,
+    type: String
   },
   data() {
     return {

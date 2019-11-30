@@ -4,29 +4,28 @@
 
     <b-container>
       <b-navbar sticky class="px-0" style="background-color:white">
-        <b-form-select
-          v-model="filters"
-          :options="options"
-          class="mr-2 my-1"
-          style="width:auto"
-          size="sm"
-        >
-        </b-form-select>
         <b-form-input
           v-model="bicycleSearch"
           type="search"
-          placeholder="Search bicycles..."
+          placeholder="Search..."
           size="sm"
         />
+
+        <b-form-select
+          v-model="filters"
+          :options="options"
+          class="ml-2 my-1"
+          style="max-width:8rem"
+          size="sm"
+        >
+        </b-form-select>
         <b-button
           v-b-modal.add-bicycle-modal
           variant="primary"
           size="sm"
           class="ml-2"
-          style="width
-        :8rem"
-          ><font-awesome-icon icon="plus" class="mr-1" /> Bicycle</b-button
-        >
+          ><font-awesome-icon icon="plus"
+        /></b-button>
       </b-navbar>
       <add-bicycle />
       <div v-for="i in Math.ceil(bicycles.length / 3)" v-bind:key="i.id">
@@ -119,8 +118,6 @@ export default {
           currentUser: doc.val().currentUser
         });
       });
-      /* eslint-disable no-console */
-      console.log(this.bicycles);
     });
   }
 };
