@@ -17,13 +17,20 @@
       <label for="name">Full Name</label>
       <b-form-input
         id="name"
+        class="mb-2"
         required
         autofocus
         v-model="newPerson.name"
         placeholder=""
       ></b-form-input>
-      <label class="mt-3" for="code">Ausweis</label>
-      <b-form-input id="code" v-model="newPerson.code"></b-form-input>
+      <label v-if="selected != 'volunteer'" class="mt-1" for="code"
+        >Ausweis</label
+      >
+      <b-form-input
+        v-if="selected != 'volunteer'"
+        id="code"
+        v-model="newPerson.code"
+      ></b-form-input>
       <b-button class="mt-2 float-right" type="submit" variant="primary"
         >Submit</b-button
       >
@@ -50,7 +57,7 @@ export default {
         code: "05/000",
         num: 0,
         helper: false,
-        makerspace: false
+        volunteer: false
       }
     };
   },
@@ -61,7 +68,7 @@ export default {
       }
       evt.preventDefault();
       this.newPerson.helper = this.selected == "helper" ? true : false;
-      this.newPerson.makerspace = this.selected == "makerspace" ? true : false;
+      this.newPerson.volunteer = this.selected == "volunteer" ? true : false;
       var newPersonToPush = this.newPerson;
       db.ref("people").push(newPersonToPush);
       db.ref("people").once("value", snapshot => {
@@ -73,7 +80,7 @@ export default {
       this.newPerson.code = "05/000";
       this.newPerson.name = this.userSearch;
       this.newPerson.helper = false;
-      this.newPerson.makerspace = false;
+      this.newPerson.volunteer = false;
       this.selected = null;
     }
   }

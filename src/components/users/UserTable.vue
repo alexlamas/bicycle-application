@@ -215,7 +215,7 @@ export default {
       }
       if (this.filters.includes("refugees")) {
         filtered = filtered.filter(p => {
-          return !p.helper && !p.makerspace;
+          return !p.helper && !p.volunteer;
         });
       }
 
