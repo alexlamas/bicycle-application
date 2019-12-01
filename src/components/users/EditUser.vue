@@ -59,8 +59,6 @@ export default {
   },
   methods: {
     initialValues() {
-      /* eslint-disable no-console */
-      console.log(this.user);
       this.editDetails.name = this.user.name;
       this.editDetails.code = this.user.code;
       this.editDetails.num = this.user.num;
@@ -105,12 +103,7 @@ export default {
       if (editDetails.type == "volunteer") {
         db.ref("people/" + key + "/volunteer").set(true);
         db.ref("people/" + key + "/helper").set(false);
-        /* eslint-disable no-console */
-        console.log("yep");
-        console.log(key);
       }
-      /* eslint-disable no-console */
-      console.log(editDetails.type);
       editDetails.name = null;
       editDetails.code = null;
       editDetails.num = 0;

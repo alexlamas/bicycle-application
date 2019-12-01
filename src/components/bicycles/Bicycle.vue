@@ -9,11 +9,21 @@
           status
         }}</b-badge>
         <b-badge
-          v-if="status != 'available'"
+          v-if="status == 'on loan'"
+          :id="`tooltip-${bicycle.key}`"
+          variant="warning"
+          class="align-middle ml-2 loan-badge"
+          >{{ status }}</b-badge
+        >
+        <b-badge
+          v-if="status == 'maintenance'"
           variant="warning"
           class="align-middle ml-2"
           >{{ status }}</b-badge
         >
+        <b-tooltip :target="`tooltip-${bicycle.key}`" triggers="hover">
+          <span style="text-transform:capitalize">{{ userName }}</span>
+        </b-tooltip>
       </div>
 
       <b-button
@@ -112,6 +122,16 @@ export default {
     }
   },
   computed: {
+    userName() {
+      var name;
+      db.ref("people/" + this.bicycle.currentUser + "/name").on(
+        "value",
+        snapshot => {
+          name = snapshot.val();
+        }
+      );
+      return name;
+    },
     status() {
       var status;
       if (!this.bicycle.currentUser) {
@@ -147,5 +167,9 @@ export default {
 }
 .card-body {
   height: 46px !important;
+}
+.loan-badge:hover {
+  opacity: 0.8;
+  cursor: default;
 }
 </style>

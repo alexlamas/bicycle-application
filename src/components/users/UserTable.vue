@@ -241,8 +241,6 @@ export default {
     editModal(userArray, button) {
       this.$root.$emit("bv::show::modal", "edit-user-modal", button);
       this.selectedUser = userArray;
-      /* eslint-disable no-console */
-      console.log(this.filters);
     },
     selectUser(user) {
       this.$root.$emit("bv::show::modal", "choose-bicycle");
