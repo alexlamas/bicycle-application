@@ -4,7 +4,7 @@
       stacked="sm"
       ref="userTable"
       :items="filteredPeople"
-      :fields="fields"
+      :fields="filteredFields"
       :filter="userSearch"
       :sort-by.sync="sortBy"
       :sort-desc.sync="sortDesc"
@@ -12,7 +12,7 @@
     >
       <template v-slot:cell(name)="row">
         {{ row.item.name }}
-        <b-badge
+        <!-- <b-badge
           variant="light"
           class="mr-1"
           v-if="row.item.helper && !row.item.makerspace"
@@ -20,7 +20,7 @@
         >
         <b-badge variant="light" class="mr-1" v-if="row.item.makerspace"
           >Makerspace</b-badge
-        >
+        > -->
         <b-badge class="mr-1" variant="warning" v-if="row.item.bicycleID"
           >ID: {{ formattedID(row.item.bicycleID) }}</b-badge
         >
@@ -164,12 +164,13 @@ export default {
           key: "num",
           label: "Usage",
           sortable: true,
-          class: "hidden-cells d-lg-table-cell"
+          class: " d-lg-table-cell"
         },
         {
           key: "bicycleKey",
           label: "",
-          sortable: true
+          sortable: true,
+          class: "buttons"
         }
       ]
     };
@@ -185,26 +186,40 @@ export default {
     ReturnBicycle
   },
   computed: {
-    filteredPeople() {
+    filteredFields() {
       if (this.filters.includes("volunteers")) {
-        if (this.filters.includes("renting")) {
-          return this.people.filter(p => {
-            return (p.helper || p.makerspace) && p.bicycleKey;
-          });
-        } else {
-          return this.people.filter(p => {
-            return p.helper || p.makerspace;
-          });
-        }
-      } else if (this.filters.includes("renting")) {
-        return this.people.filter(p => {
-          return !p.helper && !p.makerspace && p.bicycleKey;
+        return this.fields.filter(f => {
+          return f.key != "code";
         });
       } else {
-        return this.people.filter(p => {
+        return this.fields;
+      }
+    },
+    filteredPeople() {
+      var filtered;
+      filtered = this.people;
+      if (this.filters.includes("renting")) {
+        filtered = this.people.filter(p => {
+          return p.bicycleKey;
+        });
+      }
+      if (this.filters.includes("volunteers")) {
+        filtered = filtered.filter(p => {
+          return p.volunteer;
+        });
+      }
+      if (this.filters.includes("helpers")) {
+        filtered = filtered.filter(p => {
+          return p.helper;
+        });
+      }
+      if (this.filters.includes("refugees")) {
+        filtered = filtered.filter(p => {
           return !p.helper && !p.makerspace;
         });
       }
+
+      return filtered;
     }
   },
   methods: {
@@ -268,6 +283,7 @@ export default {
           num: doc.val().num ? doc.val().num : 0,
           helper: doc.val().helper,
           makerspace: doc.val().makerspace,
+          volunteer: doc.val().volunteer,
           penalty:
             Math.ceil(doc.val().penalty / 1000 / 60 / 60 / 24 - today) > 1
               ? Math.ceil(doc.val().penalty / 1000 / 60 / 60 / 24 - today)
@@ -295,17 +311,7 @@ export default {
     width: 72% !important;
   }
 }
-
-/*
-.table.b-table.b-table-stacked-sm > tbody > tr > [data-label]::before {
-  display: none !important;
+.buttons {
+  width: 12rem;
 }
-.table.b-table.b-table-stacked-sm > tbody > tr > td {
-  display: flex !important;
-  flex-direction: column;
-}
-
-.table.b-table.b-table-stacked-sm.hidden-cells > tbody > tr > td {
-  display: none !important;
-} */
 </style>

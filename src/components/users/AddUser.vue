@@ -35,16 +35,15 @@
 import { db } from "@/firebase";
 export default {
   props: {
-    userSearch: String,
-    type: String
+    userSearch: String
   },
   data() {
     return {
       selected: null,
       options: [
-        { value: null, text: "Visitor" },
+        { value: null, text: "Refugee" },
         { value: "helper", text: "Helper" },
-        { value: "makerspace", text: "Makerspace" }
+        { value: "volunteer", text: "Volunteer" }
       ],
       newPerson: {
         name: "",

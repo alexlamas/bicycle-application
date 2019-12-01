@@ -10,7 +10,10 @@
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="ml-auto ">
           <b-nav-item class="my-auto mr-2" to="users"
-            ><h6 class="m-0">Visitors</h6></b-nav-item
+            ><h6 class="m-0">Refugees</h6></b-nav-item
+          >
+          <b-nav-item class="my-auto mr-2" to="helpers"
+            ><h6 class="m-0">Helpers</h6></b-nav-item
           >
           <b-nav-item class="my-auto mr-2" to="volunteers"
             ><h6 class="m-0">Volunteers</h6></b-nav-item

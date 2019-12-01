@@ -7,6 +7,11 @@
     id="edit-user-modal"
     title="Edit User"
   >
+    <b-form-select
+      v-model="editDetails.type"
+      class="mb-3"
+      :options="options"
+    ></b-form-select>
     <label for="name">Name</label>
     <b-form-input id="name" v-model="editDetails.name"></b-form-input>
     <label class="mt-3" for="ausweis">Ausweis</label>
@@ -27,23 +32,6 @@
     <small v-if="user.bicycleKey" id="emailHelp" class="form-text text-muted"
       >Cannot change penalty value during rental.</small
     >
-
-    <b-form-checkbox
-      class="mt-4"
-      v-model="editDetails.helper"
-      value="true"
-      unchecked-value="false"
-    >
-      Helper
-    </b-form-checkbox>
-    <b-form-checkbox
-      class="mt-2"
-      v-model="editDetails.makerspace"
-      value="true"
-      unchecked-value="false"
-    >
-      Makerspace
-    </b-form-checkbox>
   </b-modal>
 </template>
 
@@ -56,22 +44,31 @@ export default {
   data() {
     return {
       editDetails: {
+        type: null,
         name: null,
         code: null,
         num: 0,
-        penalty: 0,
-        makerspace: null,
-        helper: null
-      }
+        penalty: 0
+      },
+      options: [
+        { value: null, text: "Refugee" },
+        { value: "helper", text: "Helper" },
+        { value: "volunteer", text: "Volunteer" }
+      ]
     };
   },
   methods: {
     initialValues() {
+      /* eslint-disable no-console */
+      console.log(this.user);
       this.editDetails.name = this.user.name;
       this.editDetails.code = this.user.code;
       this.editDetails.num = this.user.num;
-      this.editDetails.helper = this.user.helper;
-      this.editDetails.makerspace = this.user.makerspace;
+      this.editDetails.type = this.user.helper
+        ? "helper"
+        : this.user.volunteer
+        ? "volunteer"
+        : null;
       this.editDetails.penalty = this.user.penalty ? this.user.penalty : 0;
     },
     editUser(editDetails) {
@@ -97,18 +94,27 @@ export default {
       if (editDetails.penalty > 0) {
         db.ref("people/" + key + "/penalty").set(parseInt(penaltyDate));
       }
-      if (editDetails.helper) {
-        db.ref("people/" + key + "/helper").set(editDetails.helper);
+      if (editDetails.type == null) {
+        db.ref("people/" + key + "/volunteer").set(false);
+        db.ref("people/" + key + "/helper").set(false);
       }
-      if (editDetails.makerspace) {
-        db.ref("people/" + key + "/makerspace").set(editDetails.makerspace);
+      if (editDetails.type == "helper") {
+        db.ref("people/" + key + "/volunteer").set(false);
+        db.ref("people/" + key + "/helper").set(true);
       }
+      if (editDetails.type == "volunteer") {
+        db.ref("people/" + key + "/volunteer").set(true);
+        db.ref("people/" + key + "/helper").set(false);
+        /* eslint-disable no-console */
+        console.log("yep");
+        console.log(key);
+      }
+      /* eslint-disable no-console */
+      console.log(editDetails.type);
       editDetails.name = null;
       editDetails.code = null;
       editDetails.num = 0;
       editDetails.penalty = 0;
-      editDetails.helper = false;
-      editDetails.makerspace = false;
     }
   }
 };
