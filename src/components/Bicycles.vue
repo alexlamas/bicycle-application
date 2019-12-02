@@ -3,7 +3,7 @@
     <navbar />
 
     <b-container>
-      <b-navbar sticky class="px-0" style="background-color:white">
+      <b-navbar sticky class="px-0 mb-1" style="background-color:white">
         <b-form-input
           v-model="bicycleSearch"
           type="search"
@@ -14,7 +14,7 @@
         <b-form-select
           v-model="filters"
           :options="options"
-          class="ml-2 my-1"
+          class="ml-2"
           style="max-width:8rem"
           size="sm"
         >

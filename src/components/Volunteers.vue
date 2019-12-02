@@ -2,9 +2,25 @@
   <div>
     <navbar />
     <b-container>
-      <div class="d-flex mt-2">
+      <b-navbar sticky class="px-0" style="background-color:white">
+        <b-form-input
+          v-model="userSearch"
+          type="search"
+          placeholder="Search..."
+          size="sm"
+        />
+
+        <b-button
+          v-b-modal.add-user-modal
+          variant="primary"
+          size="sm"
+          class="ml-2"
+          ><font-awesome-icon icon="plus"
+        /></b-button>
+      </b-navbar>
+      <b-row style="padding-left:1.3rem">
         <div class=" text-muted">
-          Filter by:
+          Filter:
         </div>
         <b-form-checkbox-group
           v-model="filters"
@@ -13,22 +29,7 @@
           switches
         >
         </b-form-checkbox-group>
-      </div>
-      <b-navbar sticky class="px-0" style="background-color:white">
-        <b-input-group size="sm">
-          <input
-            v-model="userSearch"
-            class="form-control "
-            type="search"
-            placeholder="Search users..."
-          />
-          <b-input-group-append>
-            <b-button v-b-modal.add-user-modal variant="primary"
-              ><font-awesome-icon icon="plus" class="mr-1" /> User</b-button
-            >
-          </b-input-group-append>
-        </b-input-group>
-      </b-navbar>
+      </b-row>
 
       <add-user :type="type" :userSearch="userSearch" />
       <user-table :userSearch="userSearch" :filters="filters" />
