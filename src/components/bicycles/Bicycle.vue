@@ -51,6 +51,7 @@
           :bicycle="bicycle"
           variant="light"
           size="sm"
+          :class="{ active: status == 'unavailable' }"
         >
           <font-awesome-icon icon="ban" />
         </b-button>
@@ -59,6 +60,7 @@
           :bicycle="bicycle"
           variant="light"
           size="sm"
+          :class="{ active: status == 'maintenance' }"
         >
           <font-awesome-icon icon="wrench" />
         </b-button>
