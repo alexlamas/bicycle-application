@@ -27,7 +27,8 @@
         >
       </h5>
       <p>
-        There are currently <b>{{ numBikes }} bicycles</b> being rented.
+        There are currently <b>{{ numBikes }} bicycles</b> being rented and a
+        total of <b>{{ numBikesTotal }} bicycles</b>.
       </p>
     </b-container>
   </div>
@@ -41,6 +42,7 @@ export default {
   data() {
     return {
       numBikes: 0,
+      numBikesTotal: 0,
       numRefugees: 0,
       numHelpers: 0,
       numVolunteers: 0
@@ -50,6 +52,11 @@ export default {
     Navbar
   },
   created: function() {
+    db.ref("bicycles").on("value", snapshot => {
+      snapshot.forEach(() => {
+        this.numBikesTotal++;
+      });
+    });
     db.ref("people").on("value", snapshot => {
       snapshot.forEach(doc => {
         if (doc.val().bicycleID) {

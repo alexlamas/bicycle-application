@@ -5,36 +5,58 @@
         <b-badge variant="light"
           ><span class="text-muted">ID: </span>{{ formattedID }}</b-badge
         >
-        <b-badge v-if="status == 'available'" variant="primary" class=" ml-2">{{
-          status
-        }}</b-badge>
+        <b-badge
+          variant="success"
+          v-if="status == 'available'"
+          class=" ml-2 "
+          >{{ status }}</b-badge
+        >
         <b-badge
           v-if="status == 'on loan'"
-          :id="`tooltip-${bicycle.key}`"
           variant="warning"
+          :id="`tooltip-${bicycle.key}`"
+          style="width: 4rem"
           class="align-middle ml-2 loan-badge"
           >{{ status }}</b-badge
         >
         <b-badge
           v-if="status == 'maintenance'"
-          variant="warning"
+          variant="light"
           class="align-middle ml-2"
           >{{ status }}</b-badge
         >
-        <b-tooltip :target="`tooltip-${bicycle.key}`" triggers="hover">
-          <span style="text-transform:capitalize">{{ userName }}</span>
+        <b-badge
+          v-if="status == 'unavailable'"
+          variant="light"
+          class="align-middle ml-2"
+          >{{ status }}</b-badge
+        >
+        <b-tooltip
+          v-if="status == 'on loan'"
+          :target="`tooltip-${bicycle.key}`"
+          triggers="hover"
+        >
+          <span style="text-transform:capitalize">{{ currentUserName }}</span>
         </b-tooltip>
       </div>
 
       <b-button
         v-if="withButton"
         @click="setBicycle"
-        variant="outline-primary"
+        variant="light"
         size="sm"
         class="ml-auto"
         >Lend</b-button
       >
       <b-button-group v-if="deletable" class="ml-auto">
+        <b-button
+          @click="unavailable"
+          :bicycle="bicycle"
+          variant="light"
+          size="sm"
+        >
+          <font-awesome-icon icon="ban" />
+        </b-button>
         <b-button
           @click="outOfOrder"
           :bicycle="bicycle"
@@ -82,7 +104,8 @@ import { storage } from "@/firebase";
 export default {
   data() {
     return {
-      popoverShow: false
+      popoverShow: false,
+      currentUserName: ""
     };
   },
   components: {},
@@ -96,12 +119,28 @@ export default {
       var key = this.bicycle.key;
       if (this.bicycle.currentUser == "fixing") {
         db.ref("bicycles/" + key + "/currentUser").set(null);
+      } else if (this.bicycle.currentUser == "unavailable") {
+        db.ref("bicycles/" + key + "/currentUser").set("fixing");
       } else if (this.bicycle.currentUser) {
         alert(
           "Please return the bicycle before setting it to maintenance mode."
         );
       } else {
         db.ref("bicycles/" + key + "/currentUser").set("fixing");
+      }
+    },
+    unavailable() {
+      var key = this.bicycle.key;
+      if (this.bicycle.currentUser == "unavailable") {
+        db.ref("bicycles/" + key + "/currentUser").set(null);
+      } else if (this.bicycle.currentUser == "fixing") {
+        db.ref("bicycles/" + key + "/currentUser").set("unavailable");
+      } else if (this.bicycle.currentUser) {
+        alert(
+          "Please return the bicycle before setting it to unvailable mode."
+        );
+      } else {
+        db.ref("bicycles/" + key + "/currentUser").set("unavailable");
       }
     },
     setBicycle() {
@@ -122,16 +161,6 @@ export default {
     }
   },
   computed: {
-    userName() {
-      var name;
-      db.ref("people/" + this.bicycle.currentUser + "/name").on(
-        "value",
-        snapshot => {
-          name = snapshot.val();
-        }
-      );
-      return name;
-    },
     status() {
       var status;
       if (!this.bicycle.currentUser) {
@@ -140,6 +169,8 @@ export default {
       if (this.bicycle.currentUser) {
         if (this.bicycle.currentUser == "fixing") {
           status = "maintenance";
+        } else if (this.bicycle.currentUser == "unavailable") {
+          status = "unavailable";
         } else {
           status = "on loan";
         }
@@ -157,6 +188,21 @@ export default {
       }
       return id;
     }
+  },
+  created() {
+    if (this.bicycle.currentUser) {
+      if (
+        this.bicycle.currentUser != "fixing" &&
+        this.bicycle.currentUser != "maintenance"
+      ) {
+        db.ref("people/" + this.bicycle.currentUser + "/name").on(
+          "value",
+          snapshot => {
+            this.currentUserName = snapshot.val();
+          }
+        );
+      }
+    }
   }
 };
 </script>
@@ -171,5 +217,8 @@ export default {
 .loan-badge:hover {
   opacity: 0.8;
   cursor: default;
+}
+.badge {
+  text-transform: capitalize;
 }
 </style>

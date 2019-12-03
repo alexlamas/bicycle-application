@@ -10,11 +10,12 @@ import {
   faTrash,
   faTimesCircle,
   faPlus,
-  faWrench
+  faWrench,
+  faBan
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { auth } from "@/firebase";
-library.add(faTrash, faTimesCircle, faPlus, faWrench);
+library.add(faTrash, faTimesCircle, faPlus, faWrench, faBan);
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 Vue.use(BootstrapVue);

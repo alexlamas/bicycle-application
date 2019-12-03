@@ -64,17 +64,15 @@ export default {
         { value: null, text: "All" },
         { value: "available", text: "Available" },
         { value: "onloan", text: "On Loan" },
-        { value: "maintenance", text: "Maintenance" }
+        { value: "maintenance", text: "Maintenance" },
+        { value: "unavailable", text: "Unavailable" }
       ]
     };
   },
   methods: {
     compare(a, b) {
-      if (a.id > b.id) {
-        return 1;
-      } else {
-        return -1;
-      }
+      if (a.id > b.id) return 1;
+      else return -1;
     }
   },
   computed: {
@@ -87,7 +85,15 @@ export default {
         );
       });
       if (this.filters) {
-        if (this.filters.includes("available")) {
+        if (this.filters.includes("unavailable")) {
+          filtered = filtered.filter(bicycle => {
+            return bicycle.currentUser == "unavailable";
+          });
+        }
+        if (
+          this.filters.includes("available") &&
+          !this.filters.includes("unavailable")
+        ) {
           filtered = filtered.filter(bicycle => {
             return !bicycle.currentUser;
           });
@@ -99,7 +105,11 @@ export default {
         }
         if (this.filters.includes("onloan")) {
           filtered = filtered.filter(bicycle => {
-            return bicycle.currentUser && bicycle.currentUser != "fixing";
+            return (
+              bicycle.currentUser &&
+              bicycle.currentUser != "fixing" &&
+              bicycle.currentUser != "unavailable"
+            );
           });
         }
       }
