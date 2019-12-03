@@ -151,6 +151,8 @@ export default {
         {
           key: "organisation",
           label: "Organisation",
+          class: "text-capitalize text-left",
+
           sortable: true
         },
         {
