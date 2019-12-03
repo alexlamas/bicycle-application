@@ -213,7 +213,7 @@ export default {
           return p.helper;
         });
       }
-      if (this.filters.includes("refugees")) {
+      if (this.filters.includes("visitors")) {
         filtered = filtered.filter(p => {
           return !p.helper && !p.volunteer;
         });

@@ -6,8 +6,8 @@
       <h5>Users</h5>
       <ul>
         <li>
-          <router-link :to="{ name: 'refugees', params: {} }"
-            >Refugees ({{ numRefugees }} renting)</router-link
+          <router-link :to="{ name: 'visitors', params: {} }"
+            >Visitors ({{ numVisitors }} renting)</router-link
           >
         </li>
         <li>
@@ -43,7 +43,7 @@ export default {
     return {
       numBikes: 0,
       numBikesTotal: 0,
-      numRefugees: 0,
+      numVisitors: 0,
       numHelpers: 0,
       numVolunteers: 0
     };
@@ -63,7 +63,7 @@ export default {
           this.numBikes++;
         }
         if (!doc.val().helper && !doc.val().volunteer && doc.val().bicycleID) {
-          this.numRefugees++;
+          this.numVisitors++;
         }
         if (doc.val().helper && !doc.val().volunteer && doc.val().bicycleID) {
           this.numHelpers++;

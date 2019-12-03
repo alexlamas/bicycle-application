@@ -49,7 +49,7 @@ export default {
       auth
         .signInWithEmailAndPassword(this.email, this.password)
         .then(() => {
-          this.$router.replace("refugees");
+          this.$router.replace("home");
         })
         .catch(err => {
           alert(err);

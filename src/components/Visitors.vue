@@ -46,7 +46,7 @@ export default {
   data() {
     return {
       userSearch: "",
-      filters: ["refugees"],
+      filters: ["visitors"],
       options: [{ text: "Renting", value: "renting" }]
     };
   },

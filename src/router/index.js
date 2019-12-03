@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Refugees from "../components/Refugees.vue";
+import Visitors from "../components/Visitors.vue";
 import Bicycles from "../components/Bicycles.vue";
 import Login from "../components/Login.vue";
 import Volunteers from "../components/Volunteers.vue";
@@ -29,9 +29,9 @@ const routes = [
     }
   },
   {
-    path: "/refugees",
-    name: "refugees",
-    component: Refugees,
+    path: "/visitors",
+    name: "visitors",
+    component: Visitors,
     meta: {
       requiresAuth: true
     }
