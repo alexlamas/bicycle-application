@@ -1,7 +1,7 @@
 <template lang="html">
   <b-navbar toggleable="md" type="light">
     <b-container class="px-sm-2">
-      <b-navbar-brand class="ml-1" to="/">
+      <b-navbar-brand class="ml-md-1" to="/">
         <img src="@/assets/logo.png" alt="logo" style="width:200px" />
       </b-navbar-brand>
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -49,4 +49,21 @@ export default {
 };
 </script>
 
-<style lang="css" scoped></style>
+<style lang="css" scoped>
+.btn {
+  width: 5rem;
+}
+.router-link-exact-active h6 {
+  color: black !important;
+  font-weight: 500 !important;
+  border-bottom: 2px solid black;
+}
+@media (max-width: 766px) {
+  .router-link-exact-active h6 {
+    border-bottom: none;
+  }
+}
+.router-link {
+  font-weight: 200 !important;
+}
+</style>

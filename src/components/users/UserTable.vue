@@ -1,7 +1,7 @@
 <template>
   <b-row class="mt-2 px-3">
     <b-table
-      stacked="sm"
+      stacked="md"
       ref="userTable"
       :items="filteredPeople"
       :fields="filteredFields"
@@ -145,13 +145,13 @@ export default {
         {
           key: "name",
           label: "Name",
-          class: "text-capitalize text-left",
+          class: "text-capitalize",
           sortable: true
         },
         {
           key: "organisation",
           label: "Organisation",
-          class: "text-capitalize text-left",
+          class: "text-capitalize",
 
           sortable: true
         },
@@ -170,7 +170,7 @@ export default {
           key: "bicycleKey",
           label: "",
           sortable: true,
-          class: "buttons"
+          class: " text-md-right"
         }
       ]
     };
@@ -303,19 +303,16 @@ export default {
 </script>
 
 <style>
-.b-table-stacked-sm [data-label]::before {
+.b-table-stacked-md [data-label]::before {
   text-align: left !important;
   width: 28% !important;
 }
 @media (max-width: 576px) {
-  .table.b-table.b-table-stacked-sm div {
+  .table.b-table.b-table-stacked-md div {
     padding-left: 0 !important;
   }
-  .table.b-table.b-table-stacked-sm > tbody > tr > [data-label] > div {
+  .table.b-table.b-table-stacked-md > tbody > tr > [data-label] > div {
     width: 72% !important;
-  }
-  .buttons {
-    width: 18rem;
   }
 }
 </style>

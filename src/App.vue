@@ -3,14 +3,15 @@
     <router-view />
   </div>
 </template>
-
-<style>
-.router-link-exact-active h6 {
-  color: black !important;
-  font-weight: 500 !important;
-  border-bottom: 2px solid black;
+<style media="screen">
+@media (min-width: 576px) {
+  .container {
+    max-width: 98vw !important;
+  }
 }
-.router-link {
-  font-weight: 200 !important;
+@media (min-width: 900px) {
+  .container {
+    max-width: 860px;
+  }
 }
 </style>
