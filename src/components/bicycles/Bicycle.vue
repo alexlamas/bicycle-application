@@ -1,34 +1,31 @@
 <template>
-  <b-card href="#" style="max-width: 40rem;" :img-src="bicycle.src" img-top>
+  <b-card href="#" :img-src="bicycle.src" img-top>
     <div class="d-flex">
       <div class="my-auto">
-        <b-badge variant="light"
-          ><span class="text-muted">ID: </span>{{ formattedID }}</b-badge
+        <b-badge variant="light" class="mr-2"
+          ><span class="text-muted ">ID: </span>{{ formattedID }}</b-badge
         >
-        <b-badge
-          variant="success"
-          v-if="status == 'available'"
-          class=" ml-2 "
-          >{{ status }}</b-badge
-        >
+        <b-badge variant="success" v-if="status == 'available'">{{
+          status
+        }}</b-badge>
         <b-badge
           v-if="status == 'on loan'"
           variant="warning"
           :id="`tooltip-${bicycle.key}`"
           style="width: 4rem"
-          class="align-middle ml-2 loan-badge"
+          class="align-middle loan-badge"
           >{{ status }}</b-badge
         >
         <b-badge
           v-if="status == 'maintenance'"
           variant="light"
-          class="align-middle ml-2"
+          class="align-middle"
           >{{ status }}</b-badge
         >
         <b-badge
           v-if="status == 'unavailable'"
           variant="light"
-          class="align-middle ml-2"
+          class="align-middle"
           >{{ status }}</b-badge
         >
         <b-tooltip
@@ -179,12 +176,13 @@ export default {
     },
     formattedID() {
       var id;
-      if (this.bicycle.id < 10) {
-        id = "00" + this.bicycle.id;
-      } else if (this.bicycle.id < 99) {
-        id = "0" + this.bicycle.id;
+      var digit = parseInt(this.bicycle.id);
+      if (digit < 10) {
+        id = "00" + digit;
+      } else if (digit < 99) {
+        id = "0" + digit;
       } else {
-        id = this.bicycle.id;
+        id = digit;
       }
       return id;
     }
@@ -208,11 +206,8 @@ export default {
 </script>
 <style scoped>
 .card-img-top {
-  height: 150px;
+  height: 180px;
   object-fit: cover;
-}
-.card-body {
-  height: 46px !important;
 }
 .loan-badge:hover {
   opacity: 0.8;

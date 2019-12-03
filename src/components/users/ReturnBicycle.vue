@@ -110,6 +110,5 @@ export default {
 <style>
 .card-body {
   padding: 0.5rem !important;
-  height: 50px;
 }
 </style>
