@@ -1,5 +1,5 @@
 <template lang="html">
-  <b-navbar toggleable="md" class="mb-1" type="light">
+  <b-navbar toggleable="md" type="light">
     <b-container class="px-sm-2">
       <b-navbar-brand class="ml-1" to="/">
         <img src="@/assets/logo.png" alt="logo" style="width:200px" />
@@ -49,8 +49,4 @@ export default {
 };
 </script>
 
-<style lang="css" scoped>
-.navbar {
-  box-shadow: 0 2px 0 0 #00000010;
-}
-</style>
+<style lang="css" scoped></style>
