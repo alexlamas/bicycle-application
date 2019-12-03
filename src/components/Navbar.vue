@@ -9,6 +9,9 @@
       <!-- Right aligned nav items -->
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="ml-auto ">
+          <b-nav-item class="my-auto mr-2" to="/"
+            ><h6 class="m-0">Home</h6></b-nav-item
+          >
           <b-nav-item class="my-auto mr-2" to="visitors"
             ><h6 class="m-0">Visitors</h6></b-nav-item
           >

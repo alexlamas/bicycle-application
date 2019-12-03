@@ -12,15 +12,6 @@
     >
       <template v-slot:cell(name)="row">
         {{ row.item.name }}
-        <!-- <b-badge
-          variant="light"
-          class="mr-1"
-          v-if="row.item.helper && !row.item.makerspace"
-          >Helper</b-badge
-        >
-        <b-badge variant="light" class="mr-1" v-if="row.item.makerspace"
-          >Makerspace</b-badge
-        > -->
         <b-badge class="mr-1" variant="warning" v-if="row.item.bicycleID"
           >ID: {{ formattedID(row.item.bicycleID) }}</b-badge
         >
@@ -85,6 +76,7 @@
               "
               class="ml-2"
               variant="light"
+              style="width:4rem"
               >{{ row.item.timeRenting }} days</b-badge
             >
             <b-badge
@@ -94,6 +86,7 @@
                   !row.item.makerspace
               "
               class="ml-2"
+              style="width:4rem"
               variant="danger"
               >{{ row.item.timeRenting }} days</b-badge
             >
@@ -156,6 +149,11 @@ export default {
           sortable: true
         },
         {
+          key: "organisation",
+          label: "Organisation",
+          sortable: true
+        },
+        {
           key: "code",
           label: "Ausweis",
           sortable: true
@@ -187,6 +185,11 @@ export default {
   },
   computed: {
     filteredFields() {
+      if (this.filters.includes("visitors")) {
+        return this.fields.filter(f => {
+          return f.key != "organisation";
+        });
+      }
       if (this.filters.includes("volunteers")) {
         return this.fields.filter(f => {
           return f.key != "code";
@@ -282,6 +285,7 @@ export default {
           helper: doc.val().helper,
           makerspace: doc.val().makerspace,
           volunteer: doc.val().volunteer,
+          organisation: doc.val().organisation,
           penalty:
             Math.ceil(doc.val().penalty / 1000 / 60 / 60 / 24 - today) > 1
               ? Math.ceil(doc.val().penalty / 1000 / 60 / 60 / 24 - today)
@@ -308,8 +312,8 @@ export default {
   .table.b-table.b-table-stacked-sm > tbody > tr > [data-label] > div {
     width: 72% !important;
   }
-}
-.buttons {
-  width: 12rem;
+  .buttons {
+    width: 18rem;
+  }
 }
 </style>

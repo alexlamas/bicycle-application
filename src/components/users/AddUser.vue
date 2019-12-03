@@ -17,10 +17,22 @@
       <label for="name">Full Name</label>
       <b-form-input
         id="name"
-        class="mb-2"
+        class="mb-3"
         required
         autofocus
         v-model="newPerson.name"
+        placeholder=""
+      ></b-form-input>
+      <label v-if="selected" for="name"
+        >Organisation <span class="text-muted">(optional)</span>
+      </label>
+      <b-form-input
+        id="name"
+        class="mb-3"
+        v-if="selected"
+        required
+        autofocus
+        v-model="newPerson.organisation"
         placeholder=""
       ></b-form-input>
       <label v-if="selected != 'volunteer'" class="mt-1" for="code"
@@ -48,7 +60,7 @@ export default {
     return {
       selected: null,
       options: [
-        { value: null, text: "Refugee" },
+        { value: null, text: "Visitor" },
         { value: "helper", text: "Helper" },
         { value: "volunteer", text: "Volunteer" }
       ],
@@ -57,7 +69,8 @@ export default {
         code: "05/000",
         num: 0,
         helper: false,
-        volunteer: false
+        volunteer: false,
+        organisation: ""
       }
     };
   },
@@ -77,10 +90,13 @@ export default {
       this.$refs["add-user"].hide();
     },
     initialValues() {
+      /* eslint-disable no-console */
+      console.log(this.selected);
       this.newPerson.code = "05/000";
       this.newPerson.name = this.userSearch;
       this.newPerson.helper = false;
       this.newPerson.volunteer = false;
+      this.newPerson.organisation = "";
       this.selected = null;
     }
   }

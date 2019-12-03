@@ -206,7 +206,7 @@ export default {
   }
 };
 </script>
-<style>
+<style scoped>
 .card-img-top {
   height: 150px;
   object-fit: cover;

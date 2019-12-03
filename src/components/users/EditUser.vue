@@ -14,6 +14,12 @@
     ></b-form-select>
     <label for="name">Name</label>
     <b-form-input id="name" v-model="editDetails.name"></b-form-input>
+    <label class="mt-3" v-if="editDetails.type" for="name">Organisation</label>
+    <b-form-input
+      v-if="editDetails.type"
+      id="name"
+      v-model="editDetails.organisation"
+    ></b-form-input>
     <label class="mt-3" for="ausweis">Ausweis</label>
     <b-form-input id="ausweis" v-model="editDetails.code"></b-form-input>
     <label class="mt-3" for="num">Number of rentals</label>
@@ -47,11 +53,12 @@ export default {
         type: null,
         name: null,
         code: null,
+        organisation: null,
         num: 0,
         penalty: 0
       },
       options: [
-        { value: null, text: "Refugee" },
+        { value: null, text: "Visitor" },
         { value: "helper", text: "Helper" },
         { value: "volunteer", text: "Volunteer" }
       ]
@@ -61,6 +68,7 @@ export default {
     initialValues() {
       this.editDetails.name = this.user.name;
       this.editDetails.code = this.user.code;
+      this.editDetails.organisation = this.user.organisation;
       this.editDetails.num = this.user.num;
       this.editDetails.type = this.user.helper
         ? "helper"
@@ -104,6 +112,10 @@ export default {
         db.ref("people/" + key + "/volunteer").set(true);
         db.ref("people/" + key + "/helper").set(false);
       }
+      if (editDetails.type != null) {
+        db.ref("people/" + key + "/organisation").set(editDetails.organisation);
+      }
+
       editDetails.name = null;
       editDetails.code = null;
       editDetails.num = 0;
