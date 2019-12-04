@@ -79,9 +79,16 @@ export default {
     filteredBicycles() {
       var filtered;
       filtered = this.bicycles.filter(bicycle => {
+        var testString;
+        if (bicycle.id < 10) {
+          testString = "00" + bicycle.id.toString();
+        } else if (bicycle.id < 100) {
+          testString = "0" + bicycle.id.toString();
+        } else {
+          testString = bicycle.id.toString();
+        }
         return (
-          !this.bicycleSearch ||
-          bicycle.id.toString().indexOf(this.bicycleSearch) > -1
+          !this.bicycleSearch || testString.indexOf(this.bicycleSearch) > -1
         );
       });
       if (this.filters) {

@@ -57,7 +57,7 @@
             size="sm"
             class="pl-2"
           >
-            Rent
+            Borrow
           </b-button>
           <b-button
             v-if="row.item.penalty"
@@ -66,7 +66,7 @@
             size="sm"
             disabled
             class="pl-2"
-            >Rent
+            >Borrow
           </b-button>
           <b-button
             v-if="row.item.bicycleKey"
