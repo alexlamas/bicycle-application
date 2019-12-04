@@ -142,9 +142,17 @@ export default {
     },
     filteredBicycles() {
       return this.bicycles.filter(bicycle => {
+        var testString;
+        if (bicycle.id < 10) {
+          testString = "00" + bicycle.id.toString();
+        } else if (bicycle.id < 100) {
+          testString = "0" + bicycle.id.toString();
+        } else {
+          testString = bicycle.id.toString();
+        }
         return (
-          bicycle.id.toString().indexOf(this.bicycleSearch.toLowerCase()) >
-            -1 && !bicycle.currentUser
+          testString.indexOf(this.bicycleSearch.toLowerCase()) > -1 &&
+          !bicycle.currentUser
         );
       });
     }
