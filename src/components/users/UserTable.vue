@@ -72,7 +72,7 @@
               v-if="
                 row.item.timeRenting < 1 &&
                   !row.item.helper &&
-                  !row.item.makerspace
+                  !row.item.volunteer
               "
               class="ml-2"
               variant="light"
@@ -83,7 +83,7 @@
               v-if="
                 row.item.timeRenting > 0 &&
                   !row.item.helper &&
-                  !row.item.makerspace
+                  !row.item.volunteer
               "
               class="ml-2"
               style="width:4rem"
