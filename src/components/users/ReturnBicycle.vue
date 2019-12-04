@@ -3,7 +3,6 @@
     @ok="returnBicycle"
     @hide="resetPenalty"
     ok-title="Return"
-    ok-variant="warning"
     ref="return-bicycle"
     no-fade
     id="return-bicycle"
@@ -18,7 +17,7 @@
           v-b-modal.penalty
           class="float-left"
           size="sm"
-          variant="outline-secondary"
+          variant="light"
         >
           Add Penalty
         </b-button>
@@ -54,12 +53,8 @@
           <font-awesome-icon class="ml-2" icon="times-circle" />
         </b-button>
 
-        <div class="">
-          <b-button size="sm" variant="secondary" @click="cancel()">
-            Cancel
-          </b-button>
-          <!-- Button with custom close trigger value -->
-          <b-button class="ml-2" size="sm" variant="warning" @click="ok()">
+        <div>
+          <b-button class="ml-2" size="sm" variant="primary" @click="ok()">
             Return
           </b-button>
         </div>
@@ -88,7 +83,7 @@ export default {
     returnBicycle() {
       var bicycleKey = this.bicycle.key;
       var userKey = this.bicycle.currentUser;
-      var newCount = this.user.num ? this.user.num + 1 : 1;
+      var newCount = this.user.usage ? this.user.usage + 1 : 1;
       var penaltyDate = new Date();
       penaltyDate = penaltyDate.getTime() + this.penalty * 24 * 60 * 60 * 1000;
       db.ref("bicycles/" + bicycleKey + "/currentUser").set(null);
@@ -96,6 +91,7 @@ export default {
       db.ref("people/" + userKey + "/bicycleID").set(null);
       db.ref("people/" + userKey + "/rentalDate").set(null);
       db.ref("people/" + userKey + "/num").set(newCount);
+      db.ref("people/" + userKey + "/returnDate").set(null);
       db.ref("people/" + userKey + "/penalty").set(
         this.penalty ? penaltyDate : null
       );

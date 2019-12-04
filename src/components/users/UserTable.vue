@@ -9,18 +9,29 @@
       :sort-by.sync="sortBy"
       :sort-desc.sync="sortDesc"
       small
+      table-variant="light"
+      light
     >
       <template v-slot:cell(name)="row">
-        {{ row.item.name }}
-        <b-badge class="mr-1" variant="warning" v-if="row.item.bicycleID"
+        <span style="text-transform: capitalize" class="mr-2">{{
+          row.item.name
+        }}</span>
+        <b-badge v-if="row.item.penalty" variant="danger"
+          >{{ row.item.penalty }}
+          {{ row.item.penalty == 1 ? "day" : "days" }} penalty
+          remaining</b-badge
+        >
+        <b-badge class="mr-2" variant="secondary" v-if="row.item.bicycleID"
           >ID: {{ formattedID(row.item.bicycleID) }}</b-badge
         >
+
+        <status-badge :item="row.item" />
       </template>
-      <template v-slot:cell(num)="row">
+      <template v-slot:cell(usage)="row">
         <b-badge variant="light"
-          >{{ row.item.num
+          >{{ row.item.usage
           }}<span class="text-muted">
-            {{ row.item.num == 1 ? "rental" : "rentals" }}</span
+            {{ row.item.usage == 1 ? "rental" : "rentals" }}</span
           >
         </b-badge>
       </template>
@@ -29,11 +40,11 @@
           >{{ row.item.code }}
         </b-badge>
       </template>
-      <template v-slot:cell(num)="row">
+      <template v-slot:cell(usage)="row">
         <b-badge variant="light"
-          >{{ row.item.num
+          >{{ row.item.usage
           }}<span class="text-muted">
-            {{ row.item.num == 1 ? "rental" : "rentals" }}</span
+            {{ row.item.usage == 1 ? "rental" : "rentals" }}</span
           >
         </b-badge>
       </template>
@@ -46,7 +57,7 @@
             size="sm"
             class="pl-2"
           >
-            Choose Bike
+            Rent
           </b-button>
           <b-button
             v-if="row.item.penalty"
@@ -55,61 +66,17 @@
             size="sm"
             disabled
             class="pl-2"
-          >
-            <b-badge
-              >{{ row.item.penalty }}
-              {{ row.item.penalty == 1 ? "day" : "days" }} remaining</b-badge
-            >
+            >Rent
           </b-button>
           <b-button
             v-if="row.item.bicycleKey"
             @click="returnBicycle(row.item)"
-            variant="warning"
-            size="sm"
-          >
-            Return Bike
-            <b-badge
-              v-if="
-                row.item.timeRenting < 1 &&
-                  !row.item.helper &&
-                  !row.item.volunteer
-              "
-              class="ml-2"
-              variant="light"
-              style="width:4rem"
-              >{{ row.item.timeRenting }} days</b-badge
-            >
-            <b-badge
-              v-if="
-                row.item.timeRenting > 0 &&
-                  !row.item.helper &&
-                  !row.item.volunteer
-              "
-              class="ml-2"
-              style="width:4rem"
-              variant="danger"
-              >{{ row.item.timeRenting }} days</b-badge
-            >
-          </b-button>
-          <b-dropdown
-            v-if="!row.item.bicycleKey"
-            size="sm"
-            id="dropdown-1"
             variant="light"
-          >
-            <b-dropdown-item @click="editModal(row.item, $event.target)"
-              >Edit</b-dropdown-item
-            >
-            <b-dropdown-item @click="deleteModal(row.item, $event.target)"
-              >Delete</b-dropdown-item
-            >
-          </b-dropdown>
-          <b-dropdown
-            v-if="row.item.bicycleKey"
             size="sm"
-            id="dropdown-1"
-            variant="warning"
           >
+            Return
+          </b-button>
+          <b-dropdown size="sm" id="dropdown-1" variant="light" right>
             <b-dropdown-item @click="editModal(row.item, $event.target)"
               >Edit</b-dropdown-item
             >
@@ -124,6 +91,14 @@
     <delete-user :user="selectedUser" />
     <choose-bicycle v-on:setBicycle="setBicycle" />
     <return-bicycle :bicycle="selectedBicycle" :user="selectedUser" />
+    <!-- <b-modal size="sm" id="returnDateModal" title="New return date">
+      <template v-slot:modal-footer="{ ok, cancel, hide }">
+        <b-button variant="primary" size="sm">Set date</b-button>
+      </template>
+      <b-form>
+        <b-input v-model="this.returnDate" type="date" />
+      </b-form>
+    </b-modal> -->
   </b-row>
 </template>
 
@@ -132,6 +107,7 @@ import EditUser from "./EditUser";
 import DeleteUser from "./DeleteUser";
 import ChooseBicycle from "./ChooseBicycle";
 import ReturnBicycle from "./ReturnBicycle";
+import StatusBadge from "./StatusBadge";
 import { db } from "@/firebase";
 export default {
   data() {
@@ -141,11 +117,11 @@ export default {
       people: [],
       sortBy: "bicycleKey",
       sortDesc: true,
+      returnDate: "2019-01-08",
       fields: [
         {
           key: "name",
           label: "Name",
-          class: "text-capitalize",
           sortable: true
         },
         {
@@ -161,7 +137,7 @@ export default {
           sortable: true
         },
         {
-          key: "num",
+          key: "usage",
           label: "Usage",
           sortable: true,
           class: " d-lg-table-cell"
@@ -183,7 +159,8 @@ export default {
     EditUser,
     DeleteUser,
     ChooseBicycle,
-    ReturnBicycle
+    ReturnBicycle,
+    StatusBadge
   },
   computed: {
     filteredFields() {
@@ -223,21 +200,21 @@ export default {
           return !p.helper && !p.volunteer;
         });
       }
-
       return filtered;
     }
   },
   methods: {
-    formattedID(id) {
-      var formatted;
-      if (id < 10) {
-        formatted = "00" + id;
-      } else if (id < 99) {
-        formatted = "0" + id;
+    formattedID(input) {
+      var id;
+      var digit = parseInt(input);
+      if (digit < 10) {
+        id = "00" + digit;
+      } else if (digit < 99) {
+        id = "0" + digit;
       } else {
-        formatted = id;
+        id = digit;
       }
-      return formatted;
+      return id;
     },
     deleteModal(userArray, button) {
       this.$root.$emit("bv::show::modal", "delete-user-modal", button);
@@ -262,15 +239,24 @@ export default {
       this.selectedBicycle = bicycle;
       this.selectedUser = user;
     },
-    setBicycle(key, id) {
+    setBicycle(key, id, returnDate) {
       var rentalDate = new Date();
       rentalDate = Math.ceil(rentalDate.getTime() / 1000 / 60 / 60 / 24);
+      if (returnDate != "indefinite") {
+        returnDate = Math.ceil(returnDate.getTime() / 1000 / 60 / 60 / 24);
+      }
       var userKey = this.selectedUser.key;
       db.ref("people/" + userKey + "/bicycleKey").set(key);
       db.ref("people/" + userKey + "/bicycleID").set(id);
       db.ref("people/" + userKey + "/rentalDate").set(rentalDate);
+      db.ref("people/" + userKey + "/returnDate").set(returnDate);
       db.ref("bicycles/" + key + "/currentUser").set(userKey);
       this.$refs.userTable.clearSelected();
+    },
+    calculatePenalty(penalty, today) {
+      return Math.ceil(penalty / 1000 / 60 / 60 / 24 - today) > 1
+        ? Math.ceil(penalty / 1000 / 60 / 60 / 24 - today)
+        : null;
     }
   },
   created: function() {
@@ -283,28 +269,35 @@ export default {
           key: doc.key,
           name: doc.val().name,
           code: doc.val().code,
-          num: doc.val().num ? doc.val().num : 0,
+          usage: doc.val().num ? doc.val().num : 0,
           helper: doc.val().helper,
           makerspace: doc.val().makerspace,
           volunteer: doc.val().volunteer,
           organisation: doc.val().organisation,
-          penalty:
-            Math.ceil(doc.val().penalty / 1000 / 60 / 60 / 24 - today) > 1
-              ? Math.ceil(doc.val().penalty / 1000 / 60 / 60 / 24 - today)
-              : null,
+          penalty: this.calculatePenalty(doc.val().penalty, today),
           bicycleKey: doc.val().bicycleKey ? doc.val().bicycleKey : null,
           bicycleID: doc.val().bicycleID ? parseInt(doc.val().bicycleID) : null,
+          daysLeft: doc.val().returnDate - today,
+          returnDate: doc.val().returnDate,
           timeRenting: today - doc.val().rentalDate
         });
       });
     });
-    /* eslint-disable no-console */
-    console.log(this.people.bicycleID);
   }
 };
 </script>
 
 <style>
+.badge {
+  cursor: default;
+}
+.clickable {
+  cursor: pointer !important;
+}
+.clickable:hover {
+  opacity: 0.8;
+}
+
 .b-table-stacked-md [data-label]::before {
   text-align: left !important;
   width: 28% !important;
@@ -316,5 +309,8 @@ export default {
   .table.b-table.b-table-stacked-md > tbody > tr > [data-label] > div {
     width: 72% !important;
   }
+}
+.menuClass {
+  padding: 1rem 1.5rem !important;
 }
 </style>

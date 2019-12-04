@@ -5,12 +5,10 @@
         <b-badge variant="light" class="mr-2"
           ><span class="text-muted ">ID: </span>{{ formattedID }}</b-badge
         >
-        <b-badge variant="success" v-if="status == 'available'">{{
-          status
-        }}</b-badge>
+
         <b-badge
           v-if="status == 'on loan'"
-          variant="warning"
+          variant="secondary"
           :id="`tooltip-${bicycle.key}`"
           style="width: 4rem"
           class="align-middle loan-badge"
@@ -18,13 +16,13 @@
         >
         <b-badge
           v-if="status == 'maintenance'"
-          variant="light"
+          variant="warning"
           class="align-middle"
           >{{ status }}</b-badge
         >
         <b-badge
           v-if="status == 'unavailable'"
-          variant="light"
+          variant="warning"
           class="align-middle"
           >{{ status }}</b-badge
         >
@@ -43,7 +41,7 @@
         variant="light"
         size="sm"
         class="ml-auto"
-        >Lend</b-button
+        >Choose</b-button
       >
       <b-button-group v-if="deletable" class="ml-auto">
         <b-button
@@ -76,6 +74,7 @@
     </div>
 
     <b-popover
+      v-if="deletable"
       :target="`popover-${bicycle.key}`"
       triggers="click"
       placement="bottom"

@@ -7,17 +7,17 @@
       <ul>
         <li>
           <router-link :to="{ name: 'visitors', params: {} }"
-            >Visitors ({{ numVisitors }} renting)</router-link
+            >Visitors ({{ numVisitors }})</router-link
           >
         </li>
         <li>
           <router-link :to="{ name: 'helpers', params: {} }"
-            >Helpers ({{ numHelpers }} renting)</router-link
+            >Helpers ({{ numHelpers }})</router-link
           >
         </li>
         <li>
           <router-link :to="{ name: 'volunteers', params: {} }"
-            >Volunteers ({{ numVolunteers }} renting)</router-link
+            >Volunteers ({{ numVolunteers }})</router-link
           >
         </li>
       </ul>
@@ -27,7 +27,7 @@
         >
       </h5>
       <p>
-        There are currently <b>{{ numBikes }} bicycles</b> being rented and a
+        There are currently <b>{{ numBikes }} bicycles</b> being borrowed from a
         total of <b>{{ numBikesTotal }} bicycles</b>.
       </p>
     </b-container>

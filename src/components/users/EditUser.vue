@@ -22,11 +22,11 @@
     ></b-form-input>
     <label class="mt-3" for="ausweis">Ausweis</label>
     <b-form-input id="ausweis" v-model="editDetails.code"></b-form-input>
-    <label class="mt-3" for="num">Number of rentals</label>
+    <label class="mt-3" for="usage">Number of rentals</label>
     <b-form-input
       type="number"
-      id="num"
-      v-model="editDetails.num"
+      id="usage"
+      v-model="editDetails.usage"
     ></b-form-input>
     <label class="mt-3" for="penalty">Days of penalty remaining</label>
     <b-form-input
@@ -54,7 +54,7 @@ export default {
         name: null,
         code: null,
         organisation: null,
-        num: 0,
+        usage: 0,
         penalty: 0
       },
       options: [
@@ -69,7 +69,7 @@ export default {
       this.editDetails.name = this.user.name;
       this.editDetails.code = this.user.code;
       this.editDetails.organisation = this.user.organisation;
-      this.editDetails.num = this.user.num;
+      this.editDetails.usage = this.user.usage;
       this.editDetails.type = this.user.helper
         ? "helper"
         : this.user.volunteer
@@ -91,8 +91,8 @@ export default {
       if (!editDetails.code) {
         db.ref("people/" + key + "/code").set(null);
       }
-      if (editDetails.num) {
-        db.ref("people/" + key + "/num").set(parseInt(editDetails.num));
+      if (editDetails.usage) {
+        db.ref("people/" + key + "/num").set(parseInt(editDetails.usage));
       }
       if (editDetails.penalty == 0) {
         db.ref("people/" + key + "/penalty").set(null);
@@ -118,7 +118,7 @@ export default {
 
       editDetails.name = null;
       editDetails.code = null;
-      editDetails.num = 0;
+      editDetails.usage = 0;
       editDetails.penalty = 0;
     }
   }

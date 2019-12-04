@@ -30,7 +30,6 @@
         id="name"
         class="mb-3"
         v-if="selected"
-        required
         autofocus
         v-model="newPerson.organisation"
         placeholder=""
