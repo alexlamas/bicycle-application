@@ -33,9 +33,20 @@
         v-model="newPerson.organisation"
         placeholder=""
       ></b-form-input>
+      <label v-if="newPerson.type == 'volunteer'" for="phone"
+        >Phone number <span class="text-muted">(optional)</span>
+      </label>
+      <b-form-input
+        id="phone"
+        size="sm"
+        v-if="newPerson.type == 'volunteer'"
+        v-model="newPerson.phone"
+        placeholder=""
+      ></b-form-input>
       <b-form-checkbox
         v-model="newPerson.deposit"
         v-if="newPerson.type == 'volunteer'"
+        class="mt-3"
       >
         Deposit paid
       </b-form-checkbox>
@@ -60,7 +71,6 @@
           placeholder=""
         ></b-form-input>
       </b-input-group>
-
       <label v-if="newPerson.type != 'volunteer'" class="mt-1" for="code"
         >Ausweis</label
       >
@@ -98,7 +108,8 @@ export default {
         organisation: "",
         donation: false,
         deposit: false,
-        amount: 0
+        amount: 0,
+        phone: ""
       }
     };
   },
@@ -117,6 +128,7 @@ export default {
       this.newPerson.donation = false;
       this.newPerson.deposit = false;
       this.newPerson.amount = 0;
+      this.newPerson.phone = "";
       this.newPerson.code = "05/000";
       this.newPerson.name = this.userSearch;
       this.newPerson.organisation = "";

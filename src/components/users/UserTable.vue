@@ -128,6 +128,10 @@ export default {
           sortable: true
         },
         {
+          key: "phone",
+          label: "Number"
+        },
+        {
           key: "organisation",
           label: "Org",
           class: "text-capitalize",
@@ -293,6 +297,7 @@ export default {
           daysLeft: doc.val().returnDate - today,
           returnDate: doc.val().returnDate,
           deposit: doc.val().deposit,
+          phone: doc.val().phone,
           type: doc.val().type,
           donation: doc.val().donation,
           amount: doc.val().amount
