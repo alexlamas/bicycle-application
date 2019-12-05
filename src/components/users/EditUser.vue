@@ -56,8 +56,11 @@
       id="ausweis"
       v-model="editDetails.code"
     ></b-form-input>
-    <label class="mt-3" for="usage">Number of rentals</label>
+    <label v-if="editDetails.type != 'volunteer'" class="mt-3" for="usage"
+      >Number of rentals</label
+    >
     <b-form-input
+      v-if="editDetails.type != 'volunteer'"
       type="number"
       id="usage"
       v-model="editDetails.usage"

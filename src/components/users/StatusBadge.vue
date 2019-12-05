@@ -1,17 +1,8 @@
 <template lang="html">
   <span>
-    <b-badge v-if="item.timeRenting == 0 && !item.returnDate" variant="warning"
-      >Due today</b-badge
-    >
-    <b-badge v-if="item.timeRenting == 1 && !item.returnDate" variant="danger"
-      >1 day overdue</b-badge
-    >
-    <b-badge v-if="item.timeRenting > 1 && !item.returnDate" variant="danger"
-      >{{ item.timeRenting }} days overdue</b-badge
-    >
     <b-badge v-if="item.daysLeft == 0" variant="warning">Due today</b-badge>
     <b-badge v-if="item.daysLeft < 0" variant="danger"
-      >{{ item.daysLeft
+      >{{ -item.daysLeft
       }}{{ item.daysLeft == -1 ? " day" : " days" }} overdue</b-badge
     >
     <b-badge v-if="item.daysLeft == 1" variant="light">1 day remaining</b-badge>

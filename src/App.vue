@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <router-view />
+    Maintenance
+    <!-- <router-view /> -->
   </div>
 </template>
 <style media="screen">

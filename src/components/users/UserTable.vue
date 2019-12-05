@@ -1,5 +1,6 @@
 <template>
   <b-row class="mt-2 px-3">
+    <b-button @click="execute()">Execute</b-button>
     <b-table
       stacked="md"
       ref="userTable"
@@ -24,10 +25,8 @@
         <b-badge class="mr-2" variant="secondary" v-if="row.item.bicycleID"
           >ID: {{ formattedID(row.item.bicycleID) }}</b-badge
         >
-
         <status-badge :item="row.item" />
       </template>
-
       <template v-slot:cell(code)="row">
         <b-badge v-if="row.item.code" variant="light"
           >{{ row.item.code }}
@@ -209,17 +208,17 @@ export default {
       }
       if (this.filters.includes("volunteers")) {
         filtered = filtered.filter(p => {
-          return p.volunteer;
+          return p.type == "volunteer";
         });
       }
       if (this.filters.includes("helpers")) {
         filtered = filtered.filter(p => {
-          return p.helper;
+          return p.type == "helper";
         });
       }
       if (this.filters.includes("visitors")) {
         filtered = filtered.filter(p => {
-          return !p.helper && !p.volunteer;
+          return p.type == "visitor";
         });
       }
       return filtered;
@@ -279,6 +278,16 @@ export default {
       return Math.ceil(penalty / 1000 / 60 / 60 / 24 - today) > 1
         ? Math.ceil(penalty / 1000 / 60 / 60 / 24 - today)
         : null;
+    },
+    execute() {
+      /* eslint-disable no-console */
+      console.log(this.people);
+
+      this.people.forEach(p => {
+        if (p.bicycleID && !p.returnDate) {
+          db.ref("people/" + p.key + "/returnDate").set(p.rentalDate);
+        }
+      });
     }
   },
   created: function() {
@@ -293,7 +302,6 @@ export default {
           code: doc.val().code,
           usage: doc.val().num ? doc.val().num : 0,
           helper: doc.val().helper,
-          makerspace: doc.val().makerspace,
           volunteer: doc.val().volunteer,
           organisation: doc.val().organisation,
           penalty: this.calculatePenalty(doc.val().penalty, today),
@@ -302,9 +310,11 @@ export default {
           daysLeft: doc.val().returnDate - today,
           returnDate: doc.val().returnDate,
           deposit: doc.val().deposit,
+          type: doc.val().type,
           donation: doc.val().donation,
           amount: doc.val().amount,
-          timeRenting: today - doc.val().rentalDate
+          timeRenting: today - doc.val().rentalDate,
+          rentalDate: doc.val().rentalDate
         });
       });
     });
