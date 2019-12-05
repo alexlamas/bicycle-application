@@ -53,13 +53,20 @@ export default {
 .btn {
   width: 5rem;
 }
-.router-link-exact-active h6 {
+.nav-link {
+  border-bottom: 2px solid transparent;
+}
+
+.router-link-exact-active {
   color: black !important;
   font-weight: 500 !important;
   border-bottom: 2px solid black;
 }
+.navbar-brand {
+  border-bottom: 2px solid transparent;
+}
 @media (max-width: 766px) {
-  .router-link-exact-active h6 {
+  .router-link-exact-active {
     border-bottom: none;
   }
 }

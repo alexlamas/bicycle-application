@@ -52,6 +52,11 @@ export default {
     Navbar
   },
   created: function() {
+    this.numBikes = 0;
+    this.numBikesTotal = 0;
+    this.numVisitors = 0;
+    this.numHelpers = 0;
+    this.numVolunteers = 0;
     db.ref("bicycles").on("value", snapshot => {
       snapshot.forEach(() => {
         this.numBikesTotal++;

@@ -23,17 +23,45 @@
         v-model="newPerson.name"
         placeholder=""
       ></b-form-input>
-      <label v-if="selected" for="name"
+      <label v-if="selected" for="organisation"
         >Organisation <span class="text-muted">(optional)</span>
       </label>
       <b-form-input
-        id="name"
+        id="organisation"
         class="mb-3"
         v-if="selected"
-        autofocus
         v-model="newPerson.organisation"
         placeholder=""
       ></b-form-input>
+      <b-form-checkbox
+        @input="log()"
+        v-model="newPerson.deposit"
+        v-if="selected == 'volunteer'"
+      >
+        Deposit paid
+      </b-form-checkbox>
+      <b-form-checkbox
+        v-model="newPerson.donation"
+        v-if="selected == 'volunteer'"
+        class="mt-1"
+      >
+        Donation
+      </b-form-checkbox>
+      <b-input-group
+        v-if="newPerson.donation"
+        style="width: 5rem"
+        class="mt-1"
+        prepend="€"
+        size="sm"
+      >
+        <b-form-input
+          size="sm"
+          v-if="newPerson.donation"
+          v-model="newPerson.amount"
+          placeholder=""
+        ></b-form-input>
+      </b-input-group>
+
       <label v-if="selected != 'volunteer'" class="mt-1" for="code"
         >Ausweis</label
       >
@@ -53,7 +81,8 @@
 import { db } from "@/firebase";
 export default {
   props: {
-    userSearch: String
+    userSearch: String,
+    default: String
   },
   data() {
     return {
@@ -69,11 +98,18 @@ export default {
         num: 0,
         helper: false,
         volunteer: false,
-        organisation: ""
+        organisation: "",
+        donation: false,
+        deposit: false,
+        amount: 0
       }
     };
   },
   methods: {
+    log() {
+      /* eslint-disable no-console */
+      console.log(this.newPerson.deposit);
+    },
     saveUser(evt) {
       if (this.newPerson.code == "05/000") {
         this.newPerson.code = "";
@@ -89,14 +125,15 @@ export default {
       this.$refs["add-user"].hide();
     },
     initialValues() {
-      /* eslint-disable no-console */
-      console.log(this.selected);
+      this.newPerson.donation = false;
+      this.newPerson.deposit = false;
+      this.newPerson.amount = 0;
       this.newPerson.code = "05/000";
       this.newPerson.name = this.userSearch;
       this.newPerson.helper = false;
       this.newPerson.volunteer = false;
       this.newPerson.organisation = "";
-      this.selected = null;
+      this.selected = this.default;
     }
   }
 };

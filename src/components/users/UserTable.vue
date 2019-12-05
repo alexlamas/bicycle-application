@@ -27,14 +27,7 @@
 
         <status-badge :item="row.item" />
       </template>
-      <template v-slot:cell(usage)="row">
-        <b-badge variant="light"
-          >{{ row.item.usage
-          }}<span class="text-muted">
-            {{ row.item.usage == 1 ? "rental" : "rentals" }}</span
-          >
-        </b-badge>
-      </template>
+
       <template v-slot:cell(code)="row">
         <b-badge v-if="row.item.code" variant="light"
           >{{ row.item.code }}
@@ -47,6 +40,18 @@
             {{ row.item.usage == 1 ? "rental" : "rentals" }}</span
           >
         </b-badge>
+      </template>
+      <template v-slot:cell(deposit)="row">
+        <b-badge v-if="row.item.deposit" variant="light">Paid</b-badge>
+        <b-badge v-else variant="warning">Unpaid</b-badge>
+      </template>
+      <template v-slot:cell(donation)="row">
+        <b-badge v-if="row.item.donation" variant="light"
+          ><span class="text-muted">€ </span>{{ row.item.amount }}
+        </b-badge>
+        <b-badge v-else variant="light"
+          ><span class="text-muted">€</span> 0</b-badge
+        >
       </template>
       <template v-slot:cell(bicycleKey)="row">
         <b-button-group>
@@ -126,15 +131,25 @@ export default {
         },
         {
           key: "organisation",
-          label: "Organisation",
+          label: "Org",
           class: "text-capitalize",
-
+          sortable: true
+        },
+        {
+          key: "deposit",
+          label: "Deposit",
+          class: "text-capitalize",
+          sortable: true
+        },
+        {
+          key: "donation",
+          label: "Donation",
+          class: "text-capitalize",
           sortable: true
         },
         {
           key: "code",
-          label: "Ausweis",
-          sortable: true
+          label: "Ausweis"
         },
         {
           key: "usage",
@@ -166,12 +181,19 @@ export default {
     filteredFields() {
       if (this.filters.includes("visitors")) {
         return this.fields.filter(f => {
-          return f.key != "organisation";
+          return (
+            f.key != "organisation" && f.key != "deposit" && f.key != "donation"
+          );
+        });
+      }
+      if (this.filters.includes("helpers")) {
+        return this.fields.filter(f => {
+          return f.key != "deposit" && f.key != "donation";
         });
       }
       if (this.filters.includes("volunteers")) {
         return this.fields.filter(f => {
-          return f.key != "code";
+          return f.key != "code" && f.key != "usage";
         });
       } else {
         return this.fields;
@@ -279,6 +301,9 @@ export default {
           bicycleID: doc.val().bicycleID ? parseInt(doc.val().bicycleID) : null,
           daysLeft: doc.val().returnDate - today,
           returnDate: doc.val().returnDate,
+          deposit: doc.val().deposit,
+          donation: doc.val().donation,
+          amount: doc.val().amount,
           timeRenting: today - doc.val().rentalDate
         });
       });

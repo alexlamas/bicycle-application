@@ -21,9 +21,6 @@
     <b-badge v-if="item.daysLeft > 8" variant="light">{{
       getDateObject(item.returnDate)
     }}</b-badge>
-    <b-badge v-if="item.returnDate == 'indefinite'" variant="light"
-      >Indefinite</b-badge
-    >
   </span>
 </template>
 

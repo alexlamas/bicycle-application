@@ -31,7 +31,7 @@
         </b-form-checkbox-group>
       </b-row>
 
-      <add-user :userSearch="userSearch" />
+      <add-user :default="null" :userSearch="userSearch" />
       <user-table :userSearch="userSearch" :filters="filters" />
     </b-container>
   </div>

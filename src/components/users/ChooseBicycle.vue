@@ -27,7 +27,7 @@
         no-caret
       >
         <template v-slot:button-content>
-          <b-badge variant="light">{{ buttonContent }}</b-badge>
+          <b-badge variant="primary">{{ buttonContent }}</b-badge>
         </template>
         <b-form-radio
           class="mb-2"
