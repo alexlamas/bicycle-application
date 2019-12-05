@@ -10,7 +10,7 @@
   >
     <b-form @submit="saveUser">
       <b-form-select
-        v-model="selected"
+        v-model="newPerson.type"
         class="mb-3"
         :options="options"
       ></b-form-select>
@@ -23,26 +23,25 @@
         v-model="newPerson.name"
         placeholder=""
       ></b-form-input>
-      <label v-if="selected" for="organisation"
+      <label v-if="newPerson.type != 'visitor'" for="organisation"
         >Organisation <span class="text-muted">(optional)</span>
       </label>
       <b-form-input
         id="organisation"
         class="mb-3"
-        v-if="selected"
+        v-if="newPerson.type != 'visitor'"
         v-model="newPerson.organisation"
         placeholder=""
       ></b-form-input>
       <b-form-checkbox
-        @input="log()"
         v-model="newPerson.deposit"
-        v-if="selected == 'volunteer'"
+        v-if="newPerson.type == 'volunteer'"
       >
         Deposit paid
       </b-form-checkbox>
       <b-form-checkbox
         v-model="newPerson.donation"
-        v-if="selected == 'volunteer'"
+        v-if="newPerson.type == 'volunteer'"
         class="mt-1"
       >
         Donation
@@ -62,11 +61,11 @@
         ></b-form-input>
       </b-input-group>
 
-      <label v-if="selected != 'volunteer'" class="mt-1" for="code"
+      <label v-if="newPerson.type != 'volunteer'" class="mt-1" for="code"
         >Ausweis</label
       >
       <b-form-input
-        v-if="selected != 'volunteer'"
+        v-if="newPerson.type != 'volunteer'"
         id="code"
         v-model="newPerson.code"
       ></b-form-input>
@@ -86,18 +85,16 @@ export default {
   },
   data() {
     return {
-      selected: null,
       options: [
-        { value: null, text: "Visitor" },
+        { value: "visitor", text: "Visitor" },
         { value: "helper", text: "Helper" },
         { value: "volunteer", text: "Volunteer" }
       ],
       newPerson: {
+        type: "",
         name: "",
         code: "05/000",
         num: 0,
-        helper: false,
-        volunteer: false,
         organisation: "",
         donation: false,
         deposit: false,
@@ -106,17 +103,9 @@ export default {
     };
   },
   methods: {
-    log() {
-      /* eslint-disable no-console */
-      console.log(this.newPerson.deposit);
-    },
     saveUser(evt) {
-      if (this.newPerson.code == "05/000") {
-        this.newPerson.code = "";
-      }
       evt.preventDefault();
-      this.newPerson.helper = this.selected == "helper" ? true : false;
-      this.newPerson.volunteer = this.selected == "volunteer" ? true : false;
+      if (this.newPerson.code == "05/000") this.newPerson.code = "";
       var newPersonToPush = this.newPerson;
       db.ref("people").push(newPersonToPush);
       db.ref("people").once("value", snapshot => {
@@ -130,10 +119,8 @@ export default {
       this.newPerson.amount = 0;
       this.newPerson.code = "05/000";
       this.newPerson.name = this.userSearch;
-      this.newPerson.helper = false;
-      this.newPerson.volunteer = false;
       this.newPerson.organisation = "";
-      this.selected = this.default;
+      this.newPerson.type = this.default;
     }
   }
 };

@@ -11,7 +11,6 @@
     <bicycle :bicycle="bicycle" />
     <template v-slot:modal-footer="{ ok, cancel, hide }">
       <div class="d-flex w-100 justify-content-between">
-        <!-- Emulate built in modal footer ok and cancel button actions -->
         <b-button
           v-if="!penalty"
           v-b-modal.penalty
@@ -89,7 +88,6 @@ export default {
       db.ref("bicycles/" + bicycleKey + "/currentUser").set(null);
       db.ref("people/" + userKey + "/bicycleKey").set(null);
       db.ref("people/" + userKey + "/bicycleID").set(null);
-      db.ref("people/" + userKey + "/rentalDate").set(null);
       db.ref("people/" + userKey + "/num").set(newCount);
       db.ref("people/" + userKey + "/returnDate").set(null);
       db.ref("people/" + userKey + "/penalty").set(

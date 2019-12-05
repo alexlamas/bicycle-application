@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
   <div>
     <navbar />
     <b-container>
@@ -7,17 +7,17 @@
       <ul>
         <li>
           <router-link :to="{ name: 'visitors', params: {} }"
-            >Visitors ({{ numVisitors }})</router-link
+            >Visitors ({{ count.visitors }})</router-link
           >
         </li>
         <li>
           <router-link :to="{ name: 'helpers', params: {} }"
-            >Helpers ({{ numHelpers }})</router-link
+            >Helpers ({{ count.helpers }})</router-link
           >
         </li>
         <li>
           <router-link :to="{ name: 'volunteers', params: {} }"
-            >Volunteers ({{ numVolunteers }})</router-link
+            >Volunteers ({{ count.volunteers }})</router-link
           >
         </li>
       </ul>
@@ -27,8 +27,8 @@
         >
       </h5>
       <p>
-        There are currently <b>{{ numBikes }} bicycles</b> being borrowed from a
-        total of <b>{{ numBikesTotal }} bicycles</b>.
+        There are currently <b>{{ count.bicycles }} bicycles</b> being borrowed
+        from a total of <b>{{ count.totalBicycles }} bicycles</b>.
       </p>
     </b-container>
   </div>
@@ -41,40 +41,42 @@ import { db } from "@/firebase";
 export default {
   data() {
     return {
-      numBikes: 0,
-      numBikesTotal: 0,
-      numVisitors: 0,
-      numHelpers: 0,
-      numVolunteers: 0
+      count: {
+        bicycles: 0,
+        totalBicycles: 0,
+        visitors: 0,
+        volunteers: 0,
+        helpers: 0
+      }
     };
   },
   components: {
     Navbar
   },
   created: function() {
-    this.numBikes = 0;
-    this.numBikesTotal = 0;
-    this.numVisitors = 0;
-    this.numHelpers = 0;
-    this.numVolunteers = 0;
+    Object.keys(this.count).forEach(c => (this.count[c] = 0));
     db.ref("bicycles").on("value", snapshot => {
       snapshot.forEach(() => {
-        this.numBikesTotal++;
+        this.count.totalBicycles++;
       });
     });
     db.ref("people").on("value", snapshot => {
       snapshot.forEach(doc => {
         if (doc.val().bicycleID) {
-          this.numBikes++;
-        }
-        if (!doc.val().helper && !doc.val().volunteer && doc.val().bicycleID) {
-          this.numVisitors++;
-        }
-        if (doc.val().helper && !doc.val().volunteer && doc.val().bicycleID) {
-          this.numHelpers++;
-        }
-        if (!doc.val().helper && doc.val().volunteer && doc.val().bicycleID) {
-          this.numVolunteers++;
+          this.count.bicycles++;
+          switch (doc.val().type) {
+            case "visitor":
+              this.count.visitors++;
+              break;
+            case "helper":
+              this.count.helpers++;
+              break;
+            case "volunteer":
+              this.count.volunteers++;
+              break;
+            default:
+              break;
+          }
         }
       });
     });

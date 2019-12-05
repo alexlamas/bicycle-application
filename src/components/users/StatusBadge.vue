@@ -1,15 +1,15 @@
-<template lang="html">
+<template>
   <span>
     <b-badge v-if="item.daysLeft == 0" variant="warning">Due today</b-badge>
-    <b-badge v-if="item.daysLeft < 0" variant="danger"
-      >{{ -item.daysLeft
-      }}{{ item.daysLeft == -1 ? " day" : " days" }} overdue</b-badge
+    <b-badge v-if="item.daysLeft == -1" variant="danger">1 day overdue</b-badge>
+    <b-badge v-if="item.daysLeft < -1" variant="danger"
+      >{{ -item.daysLeft }} days overdue</b-badge
     >
     <b-badge v-if="item.daysLeft == 1" variant="light">1 day remaining</b-badge>
     <b-badge v-if="item.daysLeft > 1 && item.daysLeft < 8" variant="light"
       >{{ item.daysLeft }} days remaining</b-badge
     >
-    <b-badge v-if="item.daysLeft > 8" variant="light">{{
+    <b-badge v-if="item.daysLeft > 7" variant="light">{{
       getDateObject(item.returnDate)
     }}</b-badge>
   </span>
@@ -36,5 +36,3 @@ export default {
   }
 };
 </script>
-
-<style></style>

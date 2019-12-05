@@ -14,9 +14,11 @@
     ></b-form-select>
     <label for="name">Name</label>
     <b-form-input id="name" v-model="editDetails.name"></b-form-input>
-    <label class="mt-3" v-if="editDetails.type" for="name">Organisation</label>
+    <label class="mt-3" v-if="editDetails.type != 'visitor'" for="name"
+      >Organisation</label
+    >
     <b-form-input
-      v-if="editDetails.type"
+      v-if="editDetails.type != 'visitor'"
       id="name"
       v-model="editDetails.organisation"
     ></b-form-input>
@@ -87,7 +89,7 @@ export default {
   data() {
     return {
       editDetails: {
-        type: null,
+        type: "",
         name: null,
         code: null,
         organisation: null,
@@ -98,7 +100,7 @@ export default {
         amount: 0
       },
       options: [
-        { value: null, text: "Visitor" },
+        { value: "visitor", text: "Visitor" },
         { value: "helper", text: "Helper" },
         { value: "volunteer", text: "Volunteer" }
       ]
@@ -113,11 +115,7 @@ export default {
       this.editDetails.amount = this.user.amount;
       this.editDetails.donation = this.user.donation;
       this.editDetails.deposit = this.user.deposit;
-      this.editDetails.type = this.user.helper
-        ? "helper"
-        : this.user.volunteer
-        ? "volunteer"
-        : null;
+      this.editDetails.type = this.user.type;
       this.editDetails.penalty = this.user.penalty ? this.user.penalty : 0;
     },
     editUser(editDetails) {
@@ -136,28 +134,18 @@ export default {
         db.ref("people/" + key + "/penalty").set(null);
       if (editDetails.penalty > 0)
         db.ref("people/" + key + "/penalty").set(parseInt(penaltyDate));
-      if (editDetails.type == null) {
-        db.ref("people/" + key + "/volunteer").set(false);
-        db.ref("people/" + key + "/helper").set(false);
-      }
-      if (editDetails.type == "helper") {
-        db.ref("people/" + key + "/volunteer").set(false);
-        db.ref("people/" + key + "/helper").set(true);
-      }
-      if (editDetails.type == "volunteer") {
-        db.ref("people/" + key + "/volunteer").set(true);
-        db.ref("people/" + key + "/helper").set(false);
-      }
+      db.ref("people/" + key + "/type").set(editDetails.type);
       db.ref("people/" + key + "/deposit").set(editDetails.deposit);
       db.ref("people/" + key + "/amount").set(editDetails.amount);
       db.ref("people/" + key + "/donation").set(editDetails.donation);
-      if (editDetails.type != null)
+      if (editDetails.type != "visitor")
         db.ref("people/" + key + "/organisation").set(editDetails.organisation);
 
       editDetails.name = null;
       editDetails.code = null;
       editDetails.usage = 0;
       editDetails.penalty = 0;
+      editDetails.type = null;
     }
   }
 };

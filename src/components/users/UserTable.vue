@@ -1,6 +1,5 @@
 <template>
   <b-row class="mt-2 px-3">
-    <b-button @click="execute()">Execute</b-button>
     <b-table
       stacked="md"
       ref="userTable"
@@ -261,15 +260,11 @@ export default {
       this.selectedUser = user;
     },
     setBicycle(key, id, returnDate) {
-      var rentalDate = new Date();
-      rentalDate = Math.ceil(rentalDate.getTime() / 1000 / 60 / 60 / 24);
-      if (returnDate != "indefinite") {
+      if (returnDate != "indefinite")
         returnDate = Math.ceil(returnDate.getTime() / 1000 / 60 / 60 / 24);
-      }
       var userKey = this.selectedUser.key;
       db.ref("people/" + userKey + "/bicycleKey").set(key);
       db.ref("people/" + userKey + "/bicycleID").set(id);
-      db.ref("people/" + userKey + "/rentalDate").set(rentalDate);
       db.ref("people/" + userKey + "/returnDate").set(returnDate);
       db.ref("bicycles/" + key + "/currentUser").set(userKey);
       this.$refs.userTable.clearSelected();
@@ -278,16 +273,6 @@ export default {
       return Math.ceil(penalty / 1000 / 60 / 60 / 24 - today) > 1
         ? Math.ceil(penalty / 1000 / 60 / 60 / 24 - today)
         : null;
-    },
-    execute() {
-      /* eslint-disable no-console */
-      console.log(this.people);
-
-      this.people.forEach(p => {
-        if (p.bicycleID && !p.returnDate) {
-          db.ref("people/" + p.key + "/returnDate").set(p.rentalDate);
-        }
-      });
     }
   },
   created: function() {
@@ -301,8 +286,6 @@ export default {
           name: doc.val().name,
           code: doc.val().code,
           usage: doc.val().num ? doc.val().num : 0,
-          helper: doc.val().helper,
-          volunteer: doc.val().volunteer,
           organisation: doc.val().organisation,
           penalty: this.calculatePenalty(doc.val().penalty, today),
           bicycleKey: doc.val().bicycleKey ? doc.val().bicycleKey : null,
@@ -312,9 +295,7 @@ export default {
           deposit: doc.val().deposit,
           type: doc.val().type,
           donation: doc.val().donation,
-          amount: doc.val().amount,
-          timeRenting: today - doc.val().rentalDate,
-          rentalDate: doc.val().rentalDate
+          amount: doc.val().amount
         });
       });
     });
