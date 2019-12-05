@@ -92,7 +92,7 @@
     </b-table>
     <edit-user :user="selectedUser" />
     <delete-user :user="selectedUser" />
-    <choose-bicycle v-on:setBicycle="setBicycle" />
+    <choose-bicycle :user="selectedUser" />
     <return-bicycle :bicycle="selectedBicycle" :user="selectedUser" />
     <!-- <b-modal size="sm" id="returnDateModal" title="New return date">
       <template v-slot:modal-footer="{ ok, cancel, hide }">
@@ -243,13 +243,13 @@ export default {
       }
       return id;
     },
-    deleteModal(userArray, button) {
+    deleteModal(user, button) {
       this.$root.$emit("bv::show::modal", "delete-user-modal", button);
-      this.selectedUser = userArray;
+      this.selectedUser = user;
     },
-    editModal(userArray, button) {
+    editModal(user, button) {
       this.$root.$emit("bv::show::modal", "edit-user-modal", button);
-      this.selectedUser = userArray;
+      this.selectedUser = user;
     },
     selectUser(user) {
       this.$root.$emit("bv::show::modal", "choose-bicycle");
@@ -265,16 +265,6 @@ export default {
       this.$root.$emit("bv::show::modal", "return-bicycle");
       this.selectedBicycle = bicycle;
       this.selectedUser = user;
-    },
-    setBicycle(key, id, returnDate) {
-      if (returnDate != "indefinite")
-        returnDate = Math.ceil(returnDate.getTime() / 1000 / 60 / 60 / 24);
-      var userKey = this.selectedUser.key;
-      db.ref("people/" + userKey + "/bicycleKey").set(key);
-      db.ref("people/" + userKey + "/bicycleID").set(id);
-      db.ref("people/" + userKey + "/returnDate").set(returnDate);
-      db.ref("bicycles/" + key + "/currentUser").set(userKey);
-      this.$refs.userTable.clearSelected();
     },
     calculatePenalty(penalty, today) {
       return Math.ceil(penalty / 1000 / 60 / 60 / 24 - today) > 1

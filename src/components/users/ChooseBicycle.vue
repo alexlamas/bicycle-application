@@ -92,6 +92,9 @@
 import { db } from "@/firebase";
 import Bicycle from "../bicycles/Bicycle";
 export default {
+  props: {
+    user: Object
+  },
   components: {
     Bicycle
   },
@@ -174,9 +177,16 @@ export default {
           return new Date();
       }
     },
-    setBicycle(key, id) {
-      this.$emit("setBicycle", key, id, this.returnDate());
+    setBicycle(bicycleKey, bicycleID) {
       this.$refs["choose-bicycle"].hide();
+      var returnDate = this.returnDate();
+      if (returnDate != "indefinite")
+        returnDate = Math.ceil(returnDate.getTime() / 1000 / 60 / 60 / 24);
+      db.ref("people/" + this.user.key + "/bicycleKey").set(bicycleKey);
+      db.ref("people/" + this.user.key + "/bicycleID").set(bicycleID);
+      db.ref("people/" + this.user.key + "/returnDate").set(returnDate);
+      db.ref("bicycles/" + bicycleKey + "/currentUser").set(this.user.key);
+      this.$refs.userTable.clearSelected();
     },
     reset() {
       this.form = { type: "same-day", date: "", days: 1 };

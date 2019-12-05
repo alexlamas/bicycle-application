@@ -23,7 +23,7 @@
       v-model="editDetails.organisation"
     ></b-form-input>
     <label class="mt-3" v-if="editDetails.type == 'volunteer'" for="phone"
-      >Phone number <span class="text-muted">(optional)</span>
+      >Phone number
     </label>
     <b-form-input
       id="phone"
