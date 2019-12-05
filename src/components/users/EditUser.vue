@@ -22,6 +22,16 @@
       id="name"
       v-model="editDetails.organisation"
     ></b-form-input>
+    <label class="mt-3" v-if="editDetails.type == 'volunteer'" for="phone"
+      >Phone number <span class="text-muted">(optional)</span>
+    </label>
+    <b-form-input
+      id="phone"
+      size="sm"
+      v-if="editDetails.type == 'volunteer'"
+      v-model="editDetails.phone"
+      placeholder=""
+    ></b-form-input>
     <b-form-checkbox
       v-model="editDetails.deposit"
       v-if="editDetails.type == 'volunteer'"
@@ -97,7 +107,8 @@ export default {
         penalty: 0,
         donation: false,
         deposit: false,
-        amount: 0
+        amount: 0,
+        phone: null
       },
       options: [
         { value: "visitor", text: "Visitor" },
@@ -109,6 +120,7 @@ export default {
   methods: {
     initialValues() {
       this.editDetails.name = this.user.name;
+      this.editDetails.phone = this.user.phone;
       this.editDetails.code = this.user.code;
       this.editDetails.organisation = this.user.organisation;
       this.editDetails.usage = this.user.usage;
@@ -138,6 +150,7 @@ export default {
       db.ref("people/" + key + "/deposit").set(editDetails.deposit);
       db.ref("people/" + key + "/amount").set(editDetails.amount);
       db.ref("people/" + key + "/donation").set(editDetails.donation);
+      db.ref("people/" + key + "/phone").set(editDetails.phone);
       if (editDetails.type != "visitor")
         db.ref("people/" + key + "/organisation").set(editDetails.organisation);
 
@@ -146,6 +159,7 @@ export default {
       editDetails.usage = 0;
       editDetails.penalty = 0;
       editDetails.type = null;
+      editDetails.phone = null;
     }
   }
 };

@@ -184,13 +184,16 @@ export default {
       if (this.filters.includes("visitors")) {
         return this.fields.filter(f => {
           return (
-            f.key != "organisation" && f.key != "deposit" && f.key != "donation"
+            f.key != "organisation" &&
+            f.key != "deposit" &&
+            f.key != "phone" &&
+            f.key != "donation"
           );
         });
       }
       if (this.filters.includes("helpers")) {
         return this.fields.filter(f => {
-          return f.key != "deposit" && f.key != "donation";
+          return f.key != "deposit" && f.key != "donation" && f.key != "phone";
         });
       }
       if (this.filters.includes("volunteers")) {
