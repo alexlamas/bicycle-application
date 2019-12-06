@@ -119,6 +119,8 @@ export default {
         var today = new Date();
         if (today > date) {
           return true;
+        } else if (this.form.date == "") {
+          return true;
         } else {
           return false;
         }
@@ -162,15 +164,15 @@ export default {
   },
   methods: {
     returnDate() {
-      const date = new Date();
       switch (this.form.type) {
         case "date":
-          return new Date(this.form.date);
+          alert(this.form.date);
+          return Date.parse(this.form.date);
         case "days":
-          date.setDate(date.getDate() + parseInt(this.form.days));
-          return date;
+          var today = new Date();
+          return today.setDate(today.getDate() + parseInt(this.form.days));
         case "same-day":
-          return date;
+          return new Date();
         case "indefinite":
           return "indefinite";
         default:
@@ -179,18 +181,26 @@ export default {
     },
     setBicycle(bicycleKey, bicycleID) {
       this.$refs["choose-bicycle"].hide();
-      var returnDate = this.returnDate();
-      if (returnDate != "indefinite")
-        returnDate = Math.ceil(returnDate.getTime() / 1000 / 60 / 60 / 24);
+      var day;
+      if (this.returnDate() != "indefinite")
+        day = Math.ceil(this.returnDate() / 1000 / 60 / 60 / 24);
+      else day = "indefinite";
       db.ref("people/" + this.user.key + "/bicycleKey").set(bicycleKey);
       db.ref("people/" + this.user.key + "/bicycleID").set(bicycleID);
-      db.ref("people/" + this.user.key + "/returnDate").set(returnDate);
+      db.ref("people/" + this.user.key + "/returnDate").set(day);
       db.ref("bicycles/" + bicycleKey + "/currentUser").set(this.user.key);
-      this.$refs.userTable.clearSelected();
     },
     reset() {
       this.form = { type: "same-day", date: "", days: 1 };
       this.button = { type: "same-day", date: "", days: 1 };
+      var today = new Date();
+      this.form.date =
+        today.getFullYear() +
+        "-" +
+        (today.getMonth() + 1) +
+        "-" +
+        (today.getDay() + 8 < 10 ? "0" : "") +
+        (today.getDay() + 8);
     },
     save() {
       if (!this.daysInvalid && !this.dateInvalid) {
@@ -202,14 +212,6 @@ export default {
     }
   },
   created: function() {
-    var today = new Date();
-    this.form.date =
-      today.getFullYear() +
-      "-" +
-      (today.getMonth() + 1) +
-      "-" +
-      (today.getDay() + 2 < 10 ? "0" : "") +
-      (today.getDay() + 2);
     db.ref("bicycles").on("value", snapshot => {
       this.bicycles = [];
       snapshot.forEach(doc => {

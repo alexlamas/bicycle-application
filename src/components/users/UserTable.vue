@@ -11,6 +11,7 @@
       small
       table-variant="light"
       light
+      hover
     >
       <template v-slot:cell(name)="row">
         <span style="text-transform: capitalize" class="mr-2">{{
@@ -127,6 +128,7 @@ export default {
           label: "Name",
           sortable: true
         },
+
         {
           key: "phone",
           label: "Number"
@@ -140,13 +142,11 @@ export default {
         {
           key: "deposit",
           label: "Deposit",
-          class: "text-capitalize",
           sortable: true
         },
         {
           key: "donation",
           label: "Donation",
-          class: "text-capitalize",
           sortable: true
         },
         {
@@ -288,6 +288,7 @@ export default {
           bicycleKey: doc.val().bicycleKey ? doc.val().bicycleKey : null,
           bicycleID: doc.val().bicycleID ? parseInt(doc.val().bicycleID) : null,
           daysLeft: doc.val().returnDate - today,
+          today: today,
           returnDate: doc.val().returnDate,
           deposit: doc.val().deposit,
           phone: doc.val().phone,
@@ -302,16 +303,9 @@ export default {
 </script>
 
 <style>
-.badge {
-  cursor: default;
+.table-hover tbody tr:hover {
+  background-color: #f5f5f5 !important;
 }
-.clickable {
-  cursor: pointer !important;
-}
-.clickable:hover {
-  opacity: 0.8;
-}
-
 .b-table-stacked-md [data-label]::before {
   text-align: left !important;
   width: 28% !important;

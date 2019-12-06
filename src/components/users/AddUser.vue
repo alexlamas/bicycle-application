@@ -21,7 +21,6 @@
         required
         autofocus
         v-model="newPerson.name"
-        placeholder=""
       ></b-form-input>
       <label v-if="newPerson.type != 'visitor'" for="organisation"
         >Organisation <span class="text-muted">(optional)</span>
