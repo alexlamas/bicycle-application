@@ -6,7 +6,9 @@
     no-fade
     id="history"
     title="History"
-    ><b-table
+  >
+    <template v-slot:modal-title> {{ user.name }}'s History </template>
+    <b-table
       stacked="md"
       ref="userTable"
       v-if="filteredRentals.length"
