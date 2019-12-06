@@ -93,6 +93,10 @@ export default {
       db.ref("people/" + userKey + "/penalty").set(
         this.penalty ? penaltyDate : null
       );
+      db.ref("rentals")
+        .child(this.user.rentalKey)
+        .child("status")
+        .set("returned");
     },
     resetPenalty() {
       this.penalty = null;

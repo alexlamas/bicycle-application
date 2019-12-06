@@ -84,6 +84,9 @@
             <b-dropdown-item @click="editModal(row.item, $event.target)"
               >Edit</b-dropdown-item
             >
+            <b-dropdown-item @click="historyModal(row.item, $event.target)"
+              >History</b-dropdown-item
+            >
             <b-dropdown-item @click="deleteModal(row.item, $event.target)"
               >Delete</b-dropdown-item
             >
@@ -95,6 +98,7 @@
     <delete-user :user="selectedUser" />
     <choose-bicycle :user="selectedUser" />
     <return-bicycle :bicycle="selectedBicycle" :user="selectedUser" />
+    <history :user="selectedUser" />
     <!-- <b-modal size="sm" id="returnDateModal" title="New return date">
       <template v-slot:modal-footer="{ ok, cancel, hide }">
         <b-button variant="primary" size="sm">Set date</b-button>
@@ -112,6 +116,7 @@ import DeleteUser from "./DeleteUser";
 import ChooseBicycle from "./ChooseBicycle";
 import ReturnBicycle from "./ReturnBicycle";
 import StatusBadge from "./StatusBadge";
+import History from "./History";
 import { db } from "@/firebase";
 export default {
   data() {
@@ -177,7 +182,8 @@ export default {
     DeleteUser,
     ChooseBicycle,
     ReturnBicycle,
-    StatusBadge
+    StatusBadge,
+    History
   },
   computed: {
     filteredFields() {
@@ -247,6 +253,10 @@ export default {
       this.$root.$emit("bv::show::modal", "delete-user-modal", button);
       this.selectedUser = user;
     },
+    historyModal(user, button) {
+      this.$root.$emit("bv::show::modal", "history", button);
+      this.selectedUser = user;
+    },
     editModal(user, button) {
       this.$root.$emit("bv::show::modal", "edit-user-modal", button);
       this.selectedUser = user;
@@ -290,6 +300,7 @@ export default {
           daysLeft: doc.val().returnDate - today,
           today: today,
           returnDate: doc.val().returnDate,
+          rentalKey: doc.val().rentalKey,
           deposit: doc.val().deposit,
           phone: doc.val().phone,
           type: doc.val().type,

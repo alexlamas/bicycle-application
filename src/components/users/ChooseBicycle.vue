@@ -71,7 +71,9 @@
             Date must be in future
           </b-form-text>
         </b-form-radio>
-        <b-button @click="save()" size="sm" variant="primary">Save</b-button>
+        <b-button @click="saveBorrowPeriod()" size="sm" variant="primary"
+          >Save</b-button
+        >
       </b-dropdown>
     </b-navbar>
     <div v-for="i in Math.ceil(bicycles.length / 3)" v-bind:key="i.id">
@@ -166,7 +168,6 @@ export default {
     returnDate() {
       switch (this.form.type) {
         case "date":
-          alert(this.form.date);
           return Date.parse(this.form.date);
         case "days":
           var today = new Date();
@@ -181,14 +182,27 @@ export default {
     },
     setBicycle(bicycleKey, bicycleID) {
       this.$refs["choose-bicycle"].hide();
-      var day;
+      var returnDate;
+      var today = new Date();
+      today = Math.ceil(today.getTime() / 1000 / 60 / 60 / 24);
       if (this.returnDate() != "indefinite")
-        day = Math.ceil(this.returnDate() / 1000 / 60 / 60 / 24);
-      else day = "indefinite";
+        returnDate = Math.ceil(this.returnDate() / 1000 / 60 / 60 / 24);
+      else returnDate = "indefinite";
       db.ref("people/" + this.user.key + "/bicycleKey").set(bicycleKey);
       db.ref("people/" + this.user.key + "/bicycleID").set(bicycleID);
-      db.ref("people/" + this.user.key + "/returnDate").set(day);
+      db.ref("people/" + this.user.key + "/returnDate").set(returnDate);
+      db.ref("people/" + this.user.key + "/rentalKey").set(
+        this.user.key + today
+      );
       db.ref("bicycles/" + bicycleKey + "/currentUser").set(this.user.key);
+      db.ref("rentals/" + this.user.key + today).set({
+        start: today,
+        end: returnDate,
+        userKey: this.user.key,
+        bicycleKey,
+        bicycleID,
+        status: "active"
+      });
     },
     reset() {
       this.form = { type: "same-day", date: "", days: 1 };
@@ -202,7 +216,7 @@ export default {
         (today.getDay() + 8 < 10 ? "0" : "") +
         (today.getDay() + 8);
     },
-    save() {
+    saveBorrowPeriod() {
       if (!this.daysInvalid && !this.dateInvalid) {
         this.button.days = this.form.days;
         this.button.date = this.form.date;
