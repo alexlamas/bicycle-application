@@ -9,41 +9,31 @@
     title="Choose a Bicycle"
   >
     <b-navbar sticky class="px-0 mb-2" style="background-color:white">
-      <b-form-input
-        v-model="bicycleSearch"
-        class="form-control mr-2"
-        type="search"
-        placeholder="Search..."
-        size="sm"
-      />
-      <p class="my-0 ml-4 mr-2 text-muted" style="font-size:0.875rem">
-        Return:
-      </p>
       <b-dropdown
         ref="dropdown"
         menu-class="menuClass"
         size="sm"
-        variant="light"
+        variant="primary"
         no-caret
       >
         <template v-slot:button-content>
-          <b-badge variant="primary">{{ buttonContent }}</b-badge>
+          {{ buttonContent }}
         </template>
         <b-form-radio
-          class="mb-2"
+          class="mb-3"
           v-model="form.type"
           name="some-radios"
           value="same-day"
-          >Today</b-form-radio
+          >Return Today</b-form-radio
         >
         <b-form-radio
-          class="mb-2"
+          class="mb-3"
           v-model="form.type"
           name="some-radios"
           value="indefinite"
-          >Indefinite</b-form-radio
+          >Borrow Indefinitely</b-form-radio
         >
-        <b-form-radio class="mb-2" v-model="form.type" value="days"
+        <b-form-radio class="mb-3" v-model="form.type" value="days"
           ><b-input-group append="days" size="sm"
             ><b-form-input
               @input="form.type = 'days'"
@@ -58,7 +48,7 @@
             Must be greater than 1
           </b-form-text>
         </b-form-radio>
-        <b-form-radio class="mb-4" v-model="form.type" value="date"
+        <b-form-radio class="mb-3" v-model="form.type" value="date"
           ><b-input-group size="sm"
             ><b-form-input
               @input="form.type = 'date'"
@@ -71,10 +61,17 @@
             Date must be in future
           </b-form-text>
         </b-form-radio>
-        <b-button @click="saveBorrowPeriod()" size="sm" variant="primary"
+        <b-button block @click="saveBorrowPeriod()" size="sm" variant="primary"
           >Save</b-button
         >
       </b-dropdown>
+      <b-form-input
+        v-model="bicycleSearch"
+        class="form-control float-right ml-3"
+        type="search"
+        placeholder="Search..."
+        size="sm"
+      />
     </b-navbar>
     <div v-for="i in Math.ceil(bicycles.length / 3)" v-bind:key="i.id">
       <b-card-group columns>
@@ -132,17 +129,21 @@ export default {
     buttonContent() {
       switch (this.button.type) {
         case "same-day":
-          return "Today";
+          return "Return Today";
         case "indefinite":
-          return "Indefinite";
+          return "Borrow Indefinitely";
         case "days":
-          return this.button.days + (this.button.days == 1 ? " day" : " days");
+          return (
+            "Return in " +
+            this.button.days +
+            (this.button.days == 1 ? " day" : " days")
+          );
         case "date":
           if (!this.dateInvalid) {
-            return this.button.date;
-          } else {
-            return "no date";
+            return "Return on " + this.button.date;
           }
+          return "Invalid";
+
         default:
           return "Invalid";
       }
@@ -168,6 +169,9 @@ export default {
     returnDate() {
       switch (this.form.type) {
         case "date":
+          /* eslint-disable no-console */
+          console.log(this.form.date);
+          console.log(Date.parse(this.form.date));
           return Date.parse(this.form.date);
         case "days":
           var today = new Date();
@@ -213,8 +217,8 @@ export default {
         "-" +
         (today.getMonth() + 1) +
         "-" +
-        (today.getDay() + 8 < 10 ? "0" : "") +
-        (today.getDay() + 8);
+        (today.getDate() + 7 < 10 ? "0" : "") +
+        (today.getDate() + 7);
     },
     saveBorrowPeriod() {
       if (!this.daysInvalid && !this.dateInvalid) {

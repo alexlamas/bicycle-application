@@ -298,7 +298,6 @@ export default {
           bicycleKey: doc.val().bicycleKey ? doc.val().bicycleKey : null,
           bicycleID: doc.val().bicycleID ? parseInt(doc.val().bicycleID) : null,
           daysLeft: doc.val().returnDate - today,
-          today: today,
           returnDate: doc.val().returnDate,
           rentalKey: doc.val().rentalKey,
           deposit: doc.val().deposit,
@@ -330,6 +329,6 @@ export default {
   }
 }
 .menuClass {
-  padding: 1rem 1.5rem !important;
+  padding: 1rem 1.2rem !important;
 }
 </style>

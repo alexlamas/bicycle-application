@@ -86,9 +86,6 @@ export default {
       filtered = this.rentals.filter(rental => {
         return rental.userKey == this.user.key;
       });
-      /* eslint-disable no-console */
-
-      console.log(filtered);
       return filtered;
     }
   },
@@ -117,8 +114,8 @@ export default {
       var date = new Date();
       date.setTime(days * 24 * 60 * 60 * 1000);
       return (
-        (date.getDay() + 2 < 10 ? "0" : "") +
-        (date.getDay() + 2) +
+        (date.getDate() < 10 ? "0" : "") +
+        date.getDate() +
         "-" +
         (date.getMonth() + 1) +
         "-" +
