@@ -7,7 +7,9 @@
     id="history"
     title="History"
   >
-    <template v-slot:modal-title> {{ user.name }}'s History </template>
+    <template v-slot:modal-title>
+      <span class="text-capitalize"> {{ user.name }}'s History </span></template
+    >
     <b-table
       stacked="md"
       ref="userTable"
