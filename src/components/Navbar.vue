@@ -25,7 +25,7 @@
             ><h6 class="m-0">Bicycles</h6></b-nav-item
           >
           <b-nav-item>
-            <b-button size="sm" variant="outline-secondary" @click="signOut">
+            <b-button size="sm" variant="outline-dark" @click="signOut">
               Sign Out</b-button
             >
           </b-nav-item>

@@ -7,10 +7,10 @@
     id="history"
     title="History"
   >
-    <b-button @click="yo">yo</b-button>
     <template v-slot:modal-title>
       <span class="text-capitalize"> {{ user.name }}'s History </span></template
     >
+    <b-spinner v-if="isLoading" label="Spinning"></b-spinner>
     <b-table
       stacked="md"
       ref="userTable"
@@ -23,19 +23,22 @@
       <template v-slot:cell(start)="row"
         >{{ getDateObject(row.item.start) }}
       </template>
+      <template v-slot:cell(end)="row"
+        >{{ getDateObject(row.item.end) }}
+      </template>
 
       <template v-slot:cell(status)="row"
         ><b-badge v-if="row.item.status == 'active'" variant="success"
           >Active</b-badge
         >
         <b-link
-          @click="deleteRecord(row.item)"
+          @click="deleteRecord(row.index)"
           v-if="row.item.status == 'returned'"
           >Delete</b-link
         >
       </template>
     </b-table>
-    <p v-if="!rentals.length">
+    <p v-if="!rentals.length && !isLoading">
       This user has not borrowed any bicycles yet.
     </p>
   </b-modal></template
@@ -45,11 +48,13 @@
 import { db } from "@/firebase";
 export default {
   props: {
-    user: Object
+    user: Object,
+    rentals: Array,
+    rentalKeys: Array,
+    isLoading: Boolean
   },
   data() {
     return {
-      rentals: [],
       fields: [
         {
           key: "start",
@@ -70,23 +75,11 @@ export default {
       ]
     };
   },
-  created: function() {
-    db.ref("rentals/" + this.user.key).on("value", snapshot => {
-      this.rentals = [];
-      snapshot.forEach(doc => {
-        this.rentals.push(doc.val());
-      });
-    });
-  },
   methods: {
-    yo() {
-      /* eslint-disable no-console */
-      console.log(this.rentals);
-    },
-    deleteRecord(item) {
-      db.ref("rentals")
-        .child(item.key)
-        .set(null);
+    deleteRecord(index) {
+      db.ref(
+        "rentals/" + this.user.key + "/" + this.rentalKeys[index]
+      ).remove();
     },
     formattedID(input) {
       var id;
@@ -98,8 +91,6 @@ export default {
       } else {
         id = digit;
       }
-      /* eslint-disable no-console */
-      console.log(this.rentals);
       return id;
     },
     getDateObject(days) {

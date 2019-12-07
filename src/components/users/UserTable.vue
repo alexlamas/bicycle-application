@@ -74,9 +74,9 @@
             <b-dropdown-item @click="editModal(row.item, $event.target)"
               >Edit</b-dropdown-item
             >
-            <!-- <b-dropdown-item @click="historyModal(row.item, $event.target)"
+            <b-dropdown-item @click="historyModal(row.item, $event.target)"
               >History</b-dropdown-item
-            > -->
+            >
             <b-dropdown-item @click="deleteModal(row.item, $event.target)"
               >Delete</b-dropdown-item
             >
@@ -88,15 +88,20 @@
     <delete-user :user="selectedUser" />
     <choose-bicycle :user="selectedUser" />
     <return-bicycle :bicycle="selectedBicycle" :user="selectedUser" />
-    <history :user="selectedUser" />
-    <!-- <b-modal size="sm" id="returnDateModal" title="New return date">
+    <history
+      :isLoading="historyIsLoading"
+      :rentals="rentals"
+      :rentalKeys="rentalKeys"
+      :user="selectedUser"
+    />
+    <b-modal size="sm" id="returnDateModal" title="New return date">
       <template v-slot:modal-footer="{ ok, cancel, hide }">
         <b-button variant="primary" size="sm">Set date</b-button>
       </template>
       <b-form>
         <b-input v-model="this.returnDate" type="date" />
       </b-form>
-    </b-modal> -->
+    </b-modal>
   </b-row>
 </template>
 
@@ -115,6 +120,10 @@ export default {
       selectedBicycle: {},
       people: [],
       rentals: [],
+      usage: [],
+      usageKeys: [],
+      rentalKeys: [],
+      historyIsLoading: true,
       sortBy: "bicycleKey",
       sortDesc: true,
       returnDate: "2019-01-08",
@@ -149,12 +158,12 @@ export default {
           key: "code",
           label: "Ausweis"
         },
-        // {
-        //   key: "usage",
-        //   label: "Rentals",
-        //   sortable: true,
-        //   class: " d-lg-table-cell"
-        // },
+        {
+          key: "usage",
+          label: "Rentals",
+          sortable: true,
+          class: " d-lg-table-cell"
+        },
         {
           key: "bicycleKey",
           label: "",
@@ -245,7 +254,25 @@ export default {
       this.selectedUser = user;
     },
     historyModal(user, button) {
+      db.ref("rentals/" + user.key).on("value", snapshot => {
+        this.rentals = new Array();
+        this.rentalKeys = new Array();
+        snapshot.forEach(doc => {
+          this.rentals.push(doc.val());
+          this.rentalKeys.push(doc.key);
+        });
+        /* eslint-disable no-console */
+        console.log(this.rentals);
+        console.log(this.rentalKeys);
+        console.log(this.usage);
+        console.log(this.usageKeys);
+        this.historyIsLoading = false;
+      });
       this.$root.$emit("bv::show::modal", "history", button);
+      this.selectedUser = user;
+    },
+    returnDateModal(user, button) {
+      this.$root.$emit("bv::show::modal", "returnDateModal", button);
       this.selectedUser = user;
     },
     editModal(user, button) {
@@ -271,19 +298,14 @@ export default {
       return Math.ceil(penalty / 1000 / 60 / 60 / 24 - today) > 1
         ? Math.ceil(penalty / 1000 / 60 / 60 / 24 - today)
         : null;
+    },
+    rentalCount(userKey) {
+      var index = this.usageKeys.indexOf(userKey);
+      if (index != -1) {
+        return Object.keys(this.usage[index]).length;
+      }
+      return 0;
     }
-    // log() {
-    //   /* eslint-disable no-console */
-    // },
-    // rentalCount(userKey) {
-    //   /* eslint-disable no-console */
-    //   var rental = this.rentals["0"];
-    //   var userRental = rental[userKey];
-    //   if (userRental != null) {
-    //     return Object.keys(userRental).length;
-    //   }
-    //   return 0;
-    // }
   },
   created: function() {
     var today = new Date();
@@ -310,15 +332,22 @@ export default {
         });
       });
     });
-    // db.ref("rentals").on("value", snapshot => {
-    //   this.rentals = [];
-    //   this.rentals.push(snapshot.val());
-    // });
+    db.ref("rentals").on("value", snapshot => {
+      this.usage = [];
+      this.usageKeys = [];
+      snapshot.forEach(doc => {
+        this.usage.push(doc.val());
+        this.usageKeys.push(doc.key);
+      });
+    });
   }
 };
 </script>
 
 <style>
+.badge {
+  cursor: pointer;
+}
 .table-hover tbody tr:hover {
   background-color: #f5f5f5 !important;
 }

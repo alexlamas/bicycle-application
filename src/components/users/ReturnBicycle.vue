@@ -91,13 +91,24 @@ export default {
       db.ref("people/" + userKey + "/penalty").set(
         this.penalty ? penaltyDate : null
       );
-      // db.ref("rentals")
-      //   .child(this.user.key)
-      //   .child("status")
-      //   .set("returned");
+      db.ref("rentals")
+        .child(this.user.key)
+        .once("value")
+        .then(snapshot => {
+          snapshot.forEach(doc => {
+            this.setReturned(doc.key);
+          });
+        });
     },
     resetPenalty() {
       this.penalty = null;
+    },
+    setReturned(key) {
+      db.ref("rentals")
+        .child(this.user.key)
+        .child(key)
+        .child("status")
+        .set("returned");
     }
   }
 };
