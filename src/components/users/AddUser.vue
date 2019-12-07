@@ -103,7 +103,6 @@ export default {
         type: "",
         name: "",
         code: "05/000",
-        num: 0,
         organisation: "",
         donation: false,
         deposit: false,

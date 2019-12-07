@@ -199,7 +199,7 @@ export default {
         this.user.key + today
       );
       db.ref("bicycles/" + bicycleKey + "/currentUser").set(this.user.key);
-      db.ref("rentals/" + this.user.key + today).set({
+      db.ref("rentals/" + this.user.key).push({
         start: today,
         end: returnDate,
         userKey: this.user.key,

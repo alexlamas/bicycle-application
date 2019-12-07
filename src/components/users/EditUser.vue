@@ -68,15 +68,7 @@
       id="ausweis"
       v-model="editDetails.code"
     ></b-form-input>
-    <label v-if="editDetails.type != 'volunteer'" class="mt-3" for="usage"
-      >Number of rentals</label
-    >
-    <b-form-input
-      v-if="editDetails.type != 'volunteer'"
-      type="number"
-      id="usage"
-      v-model="editDetails.usage"
-    ></b-form-input>
+
     <label class="mt-3" for="penalty">Days of penalty remaining</label>
     <b-form-input
       type="number"
@@ -123,7 +115,6 @@ export default {
       this.editDetails.phone = this.user.phone;
       this.editDetails.code = this.user.code;
       this.editDetails.organisation = this.user.organisation;
-      this.editDetails.usage = this.user.usage;
       this.editDetails.amount = this.user.amount;
       this.editDetails.donation = this.user.donation;
       this.editDetails.deposit = this.user.deposit;
@@ -140,8 +131,6 @@ export default {
       if (editDetails.code)
         db.ref("people/" + key + "/code").set(editDetails.code);
       if (!editDetails.code) db.ref("people/" + key + "/code").set(null);
-      if (editDetails.usage)
-        db.ref("people/" + key + "/num").set(parseInt(editDetails.usage));
       if (editDetails.penalty == 0)
         db.ref("people/" + key + "/penalty").set(null);
       if (editDetails.penalty > 0)

@@ -7,18 +7,23 @@
     id="history"
     title="History"
   >
+    <b-button @click="yo">yo</b-button>
     <template v-slot:modal-title>
       <span class="text-capitalize"> {{ user.name }}'s History </span></template
     >
     <b-table
       stacked="md"
       ref="userTable"
-      v-if="filteredRentals.length"
-      :items="filteredRentals"
+      v-if="rentals.length"
+      :items="rentals"
       :fields="fields"
       small
       table-variant="light"
     >
+      <template v-slot:cell(start)="row"
+        >{{ getDateObject(row.item.start) }}
+      </template>
+
       <template v-slot:cell(status)="row"
         ><b-badge v-if="row.item.status == 'active'" variant="success"
           >Active</b-badge
@@ -30,7 +35,7 @@
         >
       </template>
     </b-table>
-    <p v-if="!filteredRentals.length">
+    <p v-if="!rentals.length">
       This user has not borrowed any bicycles yet.
     </p>
   </b-modal></template
@@ -66,30 +71,18 @@ export default {
     };
   },
   created: function() {
-    db.ref("rentals").on("value", snapshot => {
+    db.ref("rentals/" + this.user.key).on("value", snapshot => {
       this.rentals = [];
       snapshot.forEach(doc => {
-        this.rentals.push({
-          key: doc.key,
-          start: this.getDateObject(doc.val().start),
-          end: this.getDateObject(doc.val().end),
-          bicycleID: this.formattedID(doc.val().bicycleID),
-          userKey: doc.val().userKey,
-          status: doc.val().status
-        });
+        this.rentals.push(doc.val());
       });
     });
   },
-  computed: {
-    filteredRentals() {
-      var filtered;
-      filtered = this.rentals.filter(rental => {
-        return rental.userKey == this.user.key;
-      });
-      return filtered;
-    }
-  },
   methods: {
+    yo() {
+      /* eslint-disable no-console */
+      console.log(this.rentals);
+    },
     deleteRecord(item) {
       db.ref("rentals")
         .child(item.key)
@@ -105,6 +98,8 @@ export default {
       } else {
         id = digit;
       }
+      /* eslint-disable no-console */
+      console.log(this.rentals);
       return id;
     },
     getDateObject(days) {

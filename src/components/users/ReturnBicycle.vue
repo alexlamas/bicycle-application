@@ -82,21 +82,19 @@ export default {
     returnBicycle() {
       var bicycleKey = this.bicycle.key;
       var userKey = this.bicycle.currentUser;
-      var newCount = this.user.usage ? this.user.usage + 1 : 1;
       var penaltyDate = new Date();
       penaltyDate = penaltyDate.getTime() + this.penalty * 24 * 60 * 60 * 1000;
       db.ref("bicycles/" + bicycleKey + "/currentUser").set(null);
       db.ref("people/" + userKey + "/bicycleKey").set(null);
       db.ref("people/" + userKey + "/bicycleID").set(null);
-      db.ref("people/" + userKey + "/num").set(newCount);
       db.ref("people/" + userKey + "/returnDate").set(null);
       db.ref("people/" + userKey + "/penalty").set(
         this.penalty ? penaltyDate : null
       );
-      db.ref("rentals")
-        .child(this.user.rentalKey)
-        .child("status")
-        .set("returned");
+      // db.ref("rentals")
+      //   .child(this.user.key)
+      //   .child("status")
+      //   .set("returned");
     },
     resetPenalty() {
       this.penalty = null;

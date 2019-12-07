@@ -125,8 +125,7 @@ export default {
       storageRef.put(file).then(() => {
         storageRef.getDownloadURL().then(i => {
           this.newBicycle.src = i;
-          var newBicycleToPush = this.newBicycle;
-          db.ref("bicycles").push(newBicycleToPush);
+          db.ref("bicycles").push(this.newBicycle);
           db.ref("bicycles").once("value", snapshot => {
             this.bicycles = Object.values(snapshot.val());
             this.newBicycle.id = null;

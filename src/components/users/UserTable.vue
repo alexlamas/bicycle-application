@@ -28,29 +28,19 @@
         <status-badge :item="row.item" />
       </template>
       <template v-slot:cell(code)="row">
-        <b-badge v-if="row.item.code" variant="light"
-          >{{ row.item.code }}
-        </b-badge>
+        {{ row.item.code }}
       </template>
-      <template v-slot:cell(usage)="row">
-        <b-badge variant="light"
-          >{{ row.item.usage
-          }}<span class="text-muted">
-            {{ row.item.usage == 1 ? "rental" : "rentals" }}</span
-          >
-        </b-badge>
-      </template>
+
       <template v-slot:cell(deposit)="row">
         <b-badge v-if="row.item.deposit" variant="light">Paid</b-badge>
         <b-badge v-else variant="warning">Unpaid</b-badge>
       </template>
       <template v-slot:cell(donation)="row">
-        <b-badge v-if="row.item.donation" variant="light"
-          ><span class="text-muted">€ </span>{{ row.item.amount }}
-        </b-badge>
-        <b-badge v-else variant="light"
-          ><span class="text-muted">€</span> 0</b-badge
-        >
+        <span class="text-muted">€ </span
+        >{{ row.item.amount > 0 ? row.item.amount : 0 }}
+      </template>
+      <template v-slot:cell(usage)="row">
+        {{ rentalCount(row.item.key) }}
       </template>
       <template v-slot:cell(bicycleKey)="row">
         <b-button-group>
@@ -84,9 +74,9 @@
             <b-dropdown-item @click="editModal(row.item, $event.target)"
               >Edit</b-dropdown-item
             >
-            <b-dropdown-item @click="historyModal(row.item, $event.target)"
+            <!-- <b-dropdown-item @click="historyModal(row.item, $event.target)"
               >History</b-dropdown-item
-            >
+            > -->
             <b-dropdown-item @click="deleteModal(row.item, $event.target)"
               >Delete</b-dropdown-item
             >
@@ -124,6 +114,7 @@ export default {
       selectedUser: {},
       selectedBicycle: {},
       people: [],
+      rentals: [],
       sortBy: "bicycleKey",
       sortDesc: true,
       returnDate: "2019-01-08",
@@ -136,7 +127,7 @@ export default {
 
         {
           key: "phone",
-          label: "Number"
+          label: "Phone"
         },
         {
           key: "organisation",
@@ -158,12 +149,12 @@ export default {
           key: "code",
           label: "Ausweis"
         },
-        {
-          key: "usage",
-          label: "Usage",
-          sortable: true,
-          class: " d-lg-table-cell"
-        },
+        // {
+        //   key: "usage",
+        //   label: "Rentals",
+        //   sortable: true,
+        //   class: " d-lg-table-cell"
+        // },
         {
           key: "bicycleKey",
           label: "",
@@ -281,6 +272,18 @@ export default {
         ? Math.ceil(penalty / 1000 / 60 / 60 / 24 - today)
         : null;
     }
+    // log() {
+    //   /* eslint-disable no-console */
+    // },
+    // rentalCount(userKey) {
+    //   /* eslint-disable no-console */
+    //   var rental = this.rentals["0"];
+    //   var userRental = rental[userKey];
+    //   if (userRental != null) {
+    //     return Object.keys(userRental).length;
+    //   }
+    //   return 0;
+    // }
   },
   created: function() {
     var today = new Date();
@@ -292,7 +295,6 @@ export default {
           key: doc.key,
           name: doc.val().name,
           code: doc.val().code,
-          usage: doc.val().num ? doc.val().num : 0,
           organisation: doc.val().organisation,
           penalty: this.calculatePenalty(doc.val().penalty, today),
           bicycleKey: doc.val().bicycleKey ? doc.val().bicycleKey : null,
@@ -308,6 +310,10 @@ export default {
         });
       });
     });
+    // db.ref("rentals").on("value", snapshot => {
+    //   this.rentals = [];
+    //   this.rentals.push(snapshot.val());
+    // });
   }
 };
 </script>
