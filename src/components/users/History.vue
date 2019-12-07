@@ -10,12 +10,11 @@
     <template v-slot:modal-title>
       <span class="text-capitalize"> {{ user.name }}'s History </span></template
     >
-    <b-spinner v-if="isLoading" label="Spinning"></b-spinner>
     <b-table
       stacked="md"
       ref="userTable"
-      v-if="rentals.length"
-      :items="rentals"
+      v-if="userRentals"
+      :items="userRentals"
       :fields="fields"
       small
       table-variant="light"
@@ -38,8 +37,8 @@
         >
       </template>
     </b-table>
-    <p v-if="!rentals.length && !isLoading">
-      This user has not borrowed any bicycles yet.
+    <p v-if="!userRentals">
+      There are no records for this user.
     </p>
   </b-modal></template
 >
@@ -50,8 +49,7 @@ export default {
   props: {
     user: Object,
     rentals: Array,
-    rentalKeys: Array,
-    isLoading: Boolean
+    rentalKeys: Array
   },
   data() {
     return {
@@ -62,7 +60,7 @@ export default {
         },
         {
           key: "end",
-          label: "End"
+          label: "Due"
         },
         {
           key: "bicycleID",
@@ -75,11 +73,21 @@ export default {
       ]
     };
   },
+  computed: {
+    rentalIndex() {
+      return this.rentalKeys.indexOf(this.user.key);
+    },
+    userRentals() {
+      if (this.rentalIndex != -1) {
+        return Object.values(this.rentals[this.rentalIndex]);
+      }
+      return null;
+    }
+  },
   methods: {
     deleteRecord(index) {
-      db.ref(
-        "rentals/" + this.user.key + "/" + this.rentalKeys[index]
-      ).remove();
+      var rentalKey = Object.keys(this.rentals[this.rentalIndex])[index];
+      db.ref("rentals/" + this.user.key + "/" + rentalKey).remove();
     },
     formattedID(input) {
       var id;

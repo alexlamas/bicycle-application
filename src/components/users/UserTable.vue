@@ -39,7 +39,7 @@
         <span class="text-muted">€ </span
         >{{ row.item.amount > 0 ? row.item.amount : 0 }}
       </template>
-      <template v-slot:cell(usage)="row">
+      <template v-slot:cell(rentals)="row">
         {{ rentalCount(row.item.key) }}
       </template>
       <template v-slot:cell(bicycleKey)="row">
@@ -88,12 +88,7 @@
     <delete-user :user="selectedUser" />
     <choose-bicycle :user="selectedUser" />
     <return-bicycle :bicycle="selectedBicycle" :user="selectedUser" />
-    <history
-      :isLoading="historyIsLoading"
-      :rentals="rentals"
-      :rentalKeys="rentalKeys"
-      :user="selectedUser"
-    />
+    <history :rentals="rentals" :rentalKeys="rentalKeys" :user="selectedUser" />
     <b-modal size="sm" id="returnDateModal" title="New return date">
       <template v-slot:modal-footer="{ ok, cancel, hide }">
         <b-button variant="primary" size="sm">Set date</b-button>
@@ -120,10 +115,7 @@ export default {
       selectedBicycle: {},
       people: [],
       rentals: [],
-      usage: [],
-      usageKeys: [],
       rentalKeys: [],
-      historyIsLoading: true,
       sortBy: "bicycleKey",
       sortDesc: true,
       returnDate: "2019-01-08",
@@ -159,7 +151,7 @@ export default {
           label: "Ausweis"
         },
         {
-          key: "usage",
+          key: "rentals",
           label: "Rentals",
           sortable: true,
           class: " d-lg-table-cell"
@@ -204,7 +196,7 @@ export default {
       }
       if (this.filters.includes("volunteers")) {
         return this.fields.filter(f => {
-          return f.key != "code" && f.key != "usage";
+          return f.key != "code" && f.key != "rentals";
         });
       } else {
         return this.fields;
@@ -254,20 +246,6 @@ export default {
       this.selectedUser = user;
     },
     historyModal(user, button) {
-      db.ref("rentals/" + user.key).on("value", snapshot => {
-        this.rentals = new Array();
-        this.rentalKeys = new Array();
-        snapshot.forEach(doc => {
-          this.rentals.push(doc.val());
-          this.rentalKeys.push(doc.key);
-        });
-        /* eslint-disable no-console */
-        console.log(this.rentals);
-        console.log(this.rentalKeys);
-        console.log(this.usage);
-        console.log(this.usageKeys);
-        this.historyIsLoading = false;
-      });
       this.$root.$emit("bv::show::modal", "history", button);
       this.selectedUser = user;
     },
@@ -300,12 +278,38 @@ export default {
         : null;
     },
     rentalCount(userKey) {
-      var index = this.usageKeys.indexOf(userKey);
+      var index = this.rentalKeys.indexOf(userKey);
       if (index != -1) {
-        return Object.keys(this.usage[index]).length;
+        return Object.keys(this.rentals[index]).length;
       }
       return 0;
     }
+    // addHistory() {
+    //   /* eslint-disable no-console */
+    //   var today = new Date();
+    //   today = Math.ceil(today.getTime() / 1000 / 60 / 60 / 24);
+    //   this.people.forEach(p => {
+    //     if (p.bicycleID) {
+    //       console.log(today);
+    //       console.log(p);
+    //       var start;
+    //       if (p.returnDate == "indefinite") start = today;
+    //       if (p.returnDate < today) start = p.returnDate;
+    //       if (p.returnDate == today) start = today;
+    //       if (p.returnDate > today) start = today;
+    //
+    //       var rentalRef = db.ref("rentals/" + p.key).push();
+    //       rentalRef.set({
+    //         start: start,
+    //         end: p.returnDate,
+    //         userKey: p.key,
+    //         bicycleKey: p.bicycleKey,
+    //         bicycleID: p.bicycleID,
+    //         status: "active"
+    //       });
+    //     }
+    //   });
+    // }
   },
   created: function() {
     var today = new Date();
@@ -333,11 +337,11 @@ export default {
       });
     });
     db.ref("rentals").on("value", snapshot => {
-      this.usage = [];
-      this.usageKeys = [];
+      this.rentals = [];
+      this.rentalKeys = [];
       snapshot.forEach(doc => {
-        this.usage.push(doc.val());
-        this.usageKeys.push(doc.key);
+        this.rentals.push(doc.val());
+        this.rentalKeys.push(doc.key);
       });
     });
   }
@@ -346,7 +350,6 @@ export default {
 
 <style>
 .badge {
-  cursor: pointer;
 }
 .table-hover tbody tr:hover {
   background-color: #f5f5f5 !important;
