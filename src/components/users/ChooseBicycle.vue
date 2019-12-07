@@ -169,9 +169,6 @@ export default {
     returnDate() {
       switch (this.form.type) {
         case "date":
-          /* eslint-disable no-console */
-          console.log(this.form.date);
-          console.log(Date.parse(this.form.date));
           return Date.parse(this.form.date);
         case "days":
           var today = new Date();
@@ -199,12 +196,13 @@ export default {
         this.user.key + today
       );
       db.ref("bicycles/" + bicycleKey + "/currentUser").set(this.user.key);
-      db.ref("rentals/" + this.user.key).push({
+      var rentalRef = db.ref("rentals/" + this.user.key).push();
+      rentalRef.set({
         start: today,
         end: returnDate,
         userKey: this.user.key,
-        bicycleKey,
-        bicycleID,
+        bicycleKey: bicycleKey,
+        bicycleID: bicycleID,
         status: "active"
       });
     },

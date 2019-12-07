@@ -39,7 +39,7 @@
         <span class="text-muted">€ </span
         >{{ row.item.amount > 0 ? row.item.amount : 0 }}
       </template>
-      <template v-slot:cell(usage)="row">
+      <template v-slot:cell(rentals)="row">
         {{ rentalCount(row.item.key) }}
       </template>
       <template v-slot:cell(bicycleKey)="row">
@@ -74,9 +74,9 @@
             <b-dropdown-item @click="editModal(row.item, $event.target)"
               >Edit</b-dropdown-item
             >
-            <!-- <b-dropdown-item @click="historyModal(row.item, $event.target)"
+            <b-dropdown-item @click="historyModal(row.item, $event.target)"
               >History</b-dropdown-item
-            > -->
+            >
             <b-dropdown-item @click="deleteModal(row.item, $event.target)"
               >Delete</b-dropdown-item
             >
@@ -88,15 +88,15 @@
     <delete-user :user="selectedUser" />
     <choose-bicycle :user="selectedUser" />
     <return-bicycle :bicycle="selectedBicycle" :user="selectedUser" />
-    <history :user="selectedUser" />
-    <!-- <b-modal size="sm" id="returnDateModal" title="New return date">
+    <history :rentals="rentals" :rentalKeys="rentalKeys" :user="selectedUser" />
+    <b-modal size="sm" id="returnDateModal" title="New return date">
       <template v-slot:modal-footer="{ ok, cancel, hide }">
         <b-button variant="primary" size="sm">Set date</b-button>
       </template>
       <b-form>
         <b-input v-model="this.returnDate" type="date" />
       </b-form>
-    </b-modal> -->
+    </b-modal>
   </b-row>
 </template>
 
@@ -115,6 +115,7 @@ export default {
       selectedBicycle: {},
       people: [],
       rentals: [],
+      rentalKeys: [],
       sortBy: "bicycleKey",
       sortDesc: true,
       returnDate: "2019-01-08",
@@ -149,12 +150,12 @@ export default {
           key: "code",
           label: "Ausweis"
         },
-        // {
-        //   key: "usage",
-        //   label: "Rentals",
-        //   sortable: true,
-        //   class: " d-lg-table-cell"
-        // },
+        {
+          key: "rentals",
+          label: "Rentals",
+          sortable: true,
+          class: " d-lg-table-cell"
+        },
         {
           key: "bicycleKey",
           label: "",
@@ -195,7 +196,7 @@ export default {
       }
       if (this.filters.includes("volunteers")) {
         return this.fields.filter(f => {
-          return f.key != "code" && f.key != "usage";
+          return f.key != "code" && f.key != "rentals";
         });
       } else {
         return this.fields;
@@ -248,6 +249,10 @@ export default {
       this.$root.$emit("bv::show::modal", "history", button);
       this.selectedUser = user;
     },
+    returnDateModal(user, button) {
+      this.$root.$emit("bv::show::modal", "returnDateModal", button);
+      this.selectedUser = user;
+    },
     editModal(user, button) {
       this.$root.$emit("bv::show::modal", "edit-user-modal", button);
       this.selectedUser = user;
@@ -271,18 +276,39 @@ export default {
       return Math.ceil(penalty / 1000 / 60 / 60 / 24 - today) > 1
         ? Math.ceil(penalty / 1000 / 60 / 60 / 24 - today)
         : null;
+    },
+    rentalCount(userKey) {
+      var index = this.rentalKeys.indexOf(userKey);
+      if (index != -1) {
+        return Object.keys(this.rentals[index]).length;
+      }
+      return 0;
     }
-    // log() {
+    // addHistory() {
     //   /* eslint-disable no-console */
-    // },
-    // rentalCount(userKey) {
-    //   /* eslint-disable no-console */
-    //   var rental = this.rentals["0"];
-    //   var userRental = rental[userKey];
-    //   if (userRental != null) {
-    //     return Object.keys(userRental).length;
-    //   }
-    //   return 0;
+    //   var today = new Date();
+    //   today = Math.ceil(today.getTime() / 1000 / 60 / 60 / 24);
+    //   this.people.forEach(p => {
+    //     if (p.bicycleID) {
+    //       console.log(today);
+    //       console.log(p);
+    //       var start;
+    //       if (p.returnDate == "indefinite") start = today;
+    //       if (p.returnDate < today) start = p.returnDate;
+    //       if (p.returnDate == today) start = today;
+    //       if (p.returnDate > today) start = today;
+    //
+    //       var rentalRef = db.ref("rentals/" + p.key).push();
+    //       rentalRef.set({
+    //         start: start,
+    //         end: p.returnDate,
+    //         userKey: p.key,
+    //         bicycleKey: p.bicycleKey,
+    //         bicycleID: p.bicycleID,
+    //         status: "active"
+    //       });
+    //     }
+    //   });
     // }
   },
   created: function() {
@@ -310,15 +336,21 @@ export default {
         });
       });
     });
-    // db.ref("rentals").on("value", snapshot => {
-    //   this.rentals = [];
-    //   this.rentals.push(snapshot.val());
-    // });
+    db.ref("rentals").on("value", snapshot => {
+      this.rentals = [];
+      this.rentalKeys = [];
+      snapshot.forEach(doc => {
+        this.rentals.push(doc.val());
+        this.rentalKeys.push(doc.key);
+      });
+    });
   }
 };
 </script>
 
 <style>
+.badge {
+}
 .table-hover tbody tr:hover {
   background-color: #f5f5f5 !important;
 }
