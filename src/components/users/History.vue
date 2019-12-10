@@ -48,8 +48,8 @@ import { db } from "@/firebase";
 export default {
   props: {
     user: Object,
-    rentals: Array,
-    rentalKeys: Array
+    rentalKeys: Array,
+    rentalsObject: Object
   },
   data() {
     return {
@@ -75,18 +75,19 @@ export default {
   },
   computed: {
     rentalIndex() {
+      /* eslint-disable no-console */
       return this.rentalKeys.indexOf(this.user.key);
     },
     userRentals() {
-      if (this.rentalIndex != -1) {
-        return Object.values(this.rentals[this.rentalIndex]);
+      if (this.rentalIndex > -1) {
+        return Object.values(this.rentalsObject[this.user.key]);
       }
       return null;
     }
   },
   methods: {
     deleteRecord(index) {
-      var rentalKey = Object.keys(this.rentals[this.rentalIndex])[index];
+      var rentalKey = Object.keys(this.rentalsObject[this.user.key])[index];
       db.ref("rentals/" + this.user.key + "/" + rentalKey).remove();
     },
     formattedID(input) {

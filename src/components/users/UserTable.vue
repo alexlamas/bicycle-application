@@ -88,7 +88,11 @@
     <delete-user :user="selectedUser" />
     <choose-bicycle :user="selectedUser" />
     <return-bicycle :bicycle="selectedBicycle" :user="selectedUser" />
-    <history :rentals="rentals" :rentalKeys="rentalKeys" :user="selectedUser" />
+    <history
+      :rentalsObject="rentalsObject"
+      :rentalKeys="rentalKeys"
+      :user="selectedUser"
+    />
     <b-modal size="sm" id="returnDateModal" title="New return date">
       <template v-slot:modal-footer="{ ok, cancel, hide }">
         <b-button variant="primary" size="sm">Set date</b-button>
@@ -114,8 +118,8 @@ export default {
       selectedUser: {},
       selectedBicycle: {},
       people: [],
-      rentals: [],
       rentalKeys: [],
+      rentalsObject: null,
       sortBy: "bicycleKey",
       sortDesc: true,
       returnDate: "2019-01-08",
@@ -153,7 +157,6 @@ export default {
         {
           key: "rentals",
           label: "Rentals",
-          sortable: true,
           class: " d-lg-table-cell"
         },
         {
@@ -272,77 +275,42 @@ export default {
       this.selectedBicycle = bicycle;
       this.selectedUser = user;
     },
-    calculatePenalty(penalty, today) {
-      return Math.ceil(penalty / 1000 / 60 / 60 / 24 - today) > 1
-        ? Math.ceil(penalty / 1000 / 60 / 60 / 24 - today)
+    calculatePenalty(penalty) {
+      var today = new Date();
+      var hours = this.$dateToDays(today);
+      return Math.ceil(penalty / 1000 / 60 / 60 / 24 - hours) > 1
+        ? Math.ceil(penalty / 1000 / 60 / 60 / 24 - hours)
         : null;
     },
     rentalCount(userKey) {
       var index = this.rentalKeys.indexOf(userKey);
       if (index != -1) {
-        return Object.keys(this.rentals[index]).length;
+        return Object.keys(this.rentalsObject[userKey]).length;
       }
       return 0;
     }
-    // addHistory() {
-    //   /* eslint-disable no-console */
-    //   var today = new Date();
-    //   today = Math.ceil(today.getTime() / 1000 / 60 / 60 / 24);
-    //   this.people.forEach(p => {
-    //     if (p.bicycleID) {
-    //       console.log(today);
-    //       console.log(p);
-    //       var start;
-    //       if (p.returnDate == "indefinite") start = today;
-    //       if (p.returnDate < today) start = p.returnDate;
-    //       if (p.returnDate == today) start = today;
-    //       if (p.returnDate > today) start = today;
-    //
-    //       var rentalRef = db.ref("rentals/" + p.key).push();
-    //       rentalRef.set({
-    //         start: start,
-    //         end: p.returnDate,
-    //         userKey: p.key,
-    //         bicycleKey: p.bicycleKey,
-    //         bicycleID: p.bicycleID,
-    //         status: "active"
-    //       });
-    //     }
-    //   });
-    // }
   },
   created: function() {
     var today = new Date();
-    today = Math.ceil(today.getTime() / 1000 / 60 / 60 / 24);
     db.ref("people").on("value", snapshot => {
       this.people = [];
       snapshot.forEach(doc => {
         this.people.push({
+          ...doc.val(),
           key: doc.key,
-          name: doc.val().name,
-          code: doc.val().code,
           organisation: doc.val().organisation,
-          penalty: this.calculatePenalty(doc.val().penalty, today),
+          penalty: this.calculatePenalty(doc.val().penalty),
           bicycleKey: doc.val().bicycleKey ? doc.val().bicycleKey : null,
           bicycleID: doc.val().bicycleID ? parseInt(doc.val().bicycleID) : null,
-          daysLeft: doc.val().returnDate - today,
-          returnDate: doc.val().returnDate,
-          rentalKey: doc.val().rentalKey,
-          deposit: doc.val().deposit,
-          phone: doc.val().phone,
-          type: doc.val().type,
-          donation: doc.val().donation,
-          amount: doc.val().amount
+          daysLeft: doc.val().returnDate - this.$dateToDays(today)
         });
       });
     });
+    /* eslint-disable no-console */
+
     db.ref("rentals").on("value", snapshot => {
-      this.rentals = [];
-      this.rentalKeys = [];
-      snapshot.forEach(doc => {
-        this.rentals.push(doc.val());
-        this.rentalKeys.push(doc.key);
-      });
+      this.rentalKeys = Object.keys(snapshot.val());
+      this.rentalsObject = snapshot.val();
     });
   }
 };

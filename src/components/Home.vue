@@ -2,6 +2,7 @@
   <div>
     <navbar />
     <b-container>
+      {{ counted }}
       <p class="mt-4">Welcome to the Low Tech bicycle dashboard.</p>
       <h5>Users</h5>
       <ul>
@@ -53,7 +54,13 @@ export default {
   components: {
     Navbar
   },
+  computed: {
+    counted() {
+      return this.$store.state.counted;
+    }
+  },
   created: function() {
+    this.$store.commit("increment");
     Object.keys(this.count).forEach(c => (this.count[c] = 0));
     db.ref("bicycles").on("value", snapshot => {
       snapshot.forEach(() => {
