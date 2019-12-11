@@ -1,7 +1,6 @@
 <template>
   <div>
     <navbar />
-
     <b-container>
       <b-navbar sticky class="px-0 mb-1" style="background-color:white">
         <b-form-input

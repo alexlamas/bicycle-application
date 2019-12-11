@@ -148,13 +148,14 @@ export default {
     },
     deleteBicycle() {
       var key = this.bicycle.key;
+      var id = this.bicycle.id.toString();
       if (this.bicycle.currentUser) {
         db.ref("people/" + this.bicycle.currentUser + "/bicycleKey").set(null);
       }
       db.ref("bicycles/" + key).remove();
       storage
         .ref()
-        .child("bicycle" + this.bicycle.id)
+        .child("bicycle" + id)
         .delete();
     }
   },

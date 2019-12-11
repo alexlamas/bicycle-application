@@ -119,12 +119,14 @@ export default {
         };
       };
     },
+
     saveBicycle(file) {
       this.isSaving = true;
       var storageRef = storage.ref().child("bicycle" + this.newBicycle.id);
       storageRef.put(file).then(() => {
         storageRef.getDownloadURL().then(i => {
           this.newBicycle.src = i;
+          this.newBicycle.id = parseInt(this.newBicycle.id);
           db.ref("bicycles").push(this.newBicycle);
           db.ref("bicycles").once("value", snapshot => {
             this.bicycles = Object.values(snapshot.val());
