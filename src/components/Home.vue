@@ -2,7 +2,6 @@
   <div>
     <navbar />
     <b-container>
-      {{ counted }}
       <p class="mt-4">Welcome to the Low Tech bicycle dashboard.</p>
       <h5>Users</h5>
       <ul>
@@ -29,7 +28,9 @@
       </h5>
       <p>
         There are currently <b>{{ count.bicycles }} bicycles</b> being borrowed
-        from a total of <b>{{ count.totalBicycles }} bicycles</b>.
+        from a total of <b>{{ count.totalBicycles }} bicycles</b>. <br />
+        So far this week, bicycles have been borrowed
+        <b>{{ count.weeklyRentals }} times</b>.
       </p>
     </b-container>
   </div>
@@ -45,6 +46,7 @@ export default {
       count: {
         bicycles: 0,
         totalBicycles: 0,
+        weeklyRentals: 0,
         visitors: 0,
         volunteers: 0,
         helpers: 0
@@ -54,17 +56,25 @@ export default {
   components: {
     Navbar
   },
-  computed: {
-    counted() {
-      return this.$store.state.counted;
-    }
-  },
   created: function() {
-    this.$store.commit("increment");
     Object.keys(this.count).forEach(c => (this.count[c] = 0));
     db.ref("bicycles").on("value", snapshot => {
       snapshot.forEach(() => {
         this.count.totalBicycles++;
+      });
+    });
+    db.ref("rentals").on("value", snapshot => {
+      snapshot.forEach(userRental => {
+        var today = new Date();
+        var monday =
+          this.$dateToDays(today) -
+          (today.getDay() == 0 ? 7 : today.getDay() - 1);
+
+        userRental.forEach(rental => {
+          if (rental.val().start >= monday) {
+            this.count.weeklyRentals++;
+          }
+        });
       });
     });
     db.ref("people").on("value", snapshot => {

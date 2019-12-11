@@ -306,7 +306,6 @@ export default {
         });
       });
     });
-    /* eslint-disable no-console */
 
     db.ref("rentals").on("value", snapshot => {
       this.rentalKeys = Object.keys(snapshot.val());

@@ -22,7 +22,12 @@ Vue.component("font-awesome-icon", FontAwesomeIcon);
 Vue.use(BootstrapVue);
 Vue.config.productionTip = false;
 Vue.prototype.$dateToDays = function(date) {
-  return Math.ceil(date.getTime() / 1000 / 60 / 60 / 24);
+  if (date) {
+    return Math.ceil(date.getTime() / 1000 / 60 / 60 / 24);
+  } else {
+    var today = new Date();
+    return Math.ceil(today.getTime() / 1000 / 60 / 60 / 24);
+  }
 };
 let app;
 auth.onAuthStateChanged(() => {
