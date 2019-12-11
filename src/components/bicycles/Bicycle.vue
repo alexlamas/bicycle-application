@@ -44,6 +44,10 @@
         >Choose</b-button
       >
       <b-button-group v-if="deletable" class="ml-auto">
+        <b-button @click="history($event.target)" variant="light" size="sm">
+          H
+        </b-button>
+
         <b-button
           @click="unavailable"
           :bicycle="bicycle"
@@ -106,13 +110,17 @@ export default {
       currentUserName: ""
     };
   },
-  components: {},
   props: {
     bicycle: Object,
     withButton: Boolean,
     deletable: Boolean
   },
   methods: {
+    history(button) {
+      var key = this.bicycle.key;
+      this.$emit("setBicycle", key);
+      this.$root.$emit("bv::show::modal", "history", button);
+    },
     outOfOrder() {
       var key = this.bicycle.key;
       if (this.bicycle.currentUser == "fixing") {

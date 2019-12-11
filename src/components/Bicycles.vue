@@ -34,10 +34,16 @@
             v-for="bicycle in filteredBicycles.slice((i - 1) * 3, i * 3)"
             :bicycle="bicycle"
             :key="bicycle.key"
+            v-on:setBicycle="setBicycleHistory"
           />
         </b-card-group>
       </div>
     </b-container>
+    <history
+      :rentalsObject="rentalsObject"
+      :rentalKeys="rentalKeys"
+      :bicycleHistory="bicycleHistory"
+    />
   </div>
 </template>
 
@@ -45,6 +51,7 @@
 import Bicycle from "./bicycles/Bicycle";
 import AddBicycle from "./bicycles/AddBicycle";
 import Navbar from "./Navbar";
+import History from "./bicycles/History.vue";
 
 import { db } from "@/firebase";
 
@@ -52,11 +59,15 @@ export default {
   components: {
     AddBicycle,
     Bicycle,
-    Navbar
+    Navbar,
+    History
   },
   data() {
     return {
+      bicycleHistory: [],
       bicycles: [],
+      rentalKeys: [],
+      rentalsObject: null,
       bicycleSearch: "",
       filters: null,
       options: [
@@ -72,6 +83,28 @@ export default {
     compare(a, b) {
       if (a.id > b.id) return 1;
       else return -1;
+    },
+    setBicycle(bicycleKey, bicycleID) {
+      this.selectedBicycle = { key: bicycleKey, id: bicycleID };
+    },
+    setBicycleHistory(bicycleKey) {
+      this.bicycleHistory = [];
+      Object.values(this.rentalsObject).forEach(rentalUser => {
+        Object.values(rentalUser).forEach(rental => {
+          if (bicycleKey == rental.bicycleKey) {
+            var name;
+            db.ref("people/" + rental.userKey)
+              .once("value")
+              .then(snapshot => {
+                name = snapshot.val().name;
+                this.bicycleHistory.push({
+                  ...rental,
+                  user: name
+                });
+              });
+          }
+        });
+      });
     }
   },
   computed: {
@@ -124,6 +157,10 @@ export default {
     }
   },
   created: function() {
+    db.ref("rentals").on("value", snapshot => {
+      this.rentalKeys = Object.keys(snapshot.val());
+      this.rentalsObject = snapshot.val();
+    });
     db.ref("bicycles").on("value", snapshot => {
       this.bicycles = [];
       snapshot.forEach(doc => {

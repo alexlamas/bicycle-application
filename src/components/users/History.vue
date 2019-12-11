@@ -75,7 +75,6 @@ export default {
   },
   computed: {
     rentalIndex() {
-      /* eslint-disable no-console */
       return this.rentalKeys.indexOf(this.user.key);
     },
     userRentals() {
