@@ -192,9 +192,7 @@ export default {
       db.ref("people/" + this.user.key + "/bicycleKey").set(bicycleKey);
       db.ref("people/" + this.user.key + "/bicycleID").set(bicycleID);
       db.ref("people/" + this.user.key + "/returnDate").set(returnDate);
-      db.ref("people/" + this.user.key + "/rentalKey").set(
-        this.user.key + today
-      );
+
       db.ref("bicycles/" + bicycleKey + "/currentUser").set(this.user.key);
       var rentalRef = db.ref("rentals/" + this.user.key).push();
       rentalRef.set({
