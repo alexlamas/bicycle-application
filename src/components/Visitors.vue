@@ -41,6 +41,7 @@
 import UserTable from "./users/UserTable";
 import AddUser from "./users/AddUser";
 import Navbar from "./Navbar";
+import { db } from "@/firebase.js";
 
 export default {
   data() {

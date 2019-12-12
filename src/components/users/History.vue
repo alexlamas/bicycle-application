@@ -25,6 +25,9 @@
       <template v-slot:cell(end)="row"
         >{{ getDateObject(row.item.end) }}
       </template>
+      <template v-slot:cell(bicycleID)="row"
+        >{{ formattedID(row.item.bicycleID) }}
+      </template>
 
       <template v-slot:cell(status)="row"
         ><b-badge v-if="row.item.status == 'active'" variant="success"

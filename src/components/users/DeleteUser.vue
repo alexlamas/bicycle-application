@@ -7,7 +7,8 @@
     id="delete-user-modal"
     title="Delete User"
   >
-    Are you sure you want to delete the selected user?
+    This user's history will also be deleted. Are you sure you want to delete
+    the selected user?
   </b-modal>
 </template>
 
@@ -22,6 +23,7 @@ export default {
       if (this.user.bicycleKey)
         db.ref("bicycles/" + this.user.bicycleKey + "/currentUser").set(null);
       db.ref("people/" + key).remove();
+      db.ref("rentals/" + key).remove();
     }
   }
 };
