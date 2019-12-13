@@ -112,15 +112,17 @@ export default {
         this.count.totalBicycles++;
       });
     });
-    db.ref("rentals").on("value", snapshot => {
+    db.ref("rentals").on("value", rentals => {
       this.weeklyRentals = 0;
-      snapshot.forEach(userRental => {
+      /* eslint-disable no-console */
+      console.log(rentals.val());
+      rentals.forEach(user => {
         var today = new Date();
         var monday =
           this.$dateToDays(today) -
           (today.getDay() == 0 ? 7 : today.getDay() - 1);
         var days = [];
-        userRental.forEach(rental => {
+        user.forEach(rental => {
           if (rental.val().start >= monday) {
             if (!days.includes(rental.val().start)) {
               this.weeklyRentals++;
@@ -130,11 +132,11 @@ export default {
         });
       });
     });
-    db.ref("people").on("value", snapshot => {
-      snapshot.forEach(doc => {
-        if (doc.val().bicycleID) {
+    db.ref("people").on("value", people => {
+      people.forEach(person => {
+        if (person.val().bicycleID) {
           this.count.bicycles++;
-          switch (doc.val().type) {
+          switch (person.val().type) {
             case "visitor":
               this.count.visitors++;
               break;

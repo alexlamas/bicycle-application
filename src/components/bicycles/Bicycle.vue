@@ -159,6 +159,8 @@ export default {
       var id = this.bicycle.id.toString();
       if (this.bicycle.currentUser) {
         db.ref("people/" + this.bicycle.currentUser + "/bicycleKey").set(null);
+        db.ref("people/" + this.bicycle.currentUser + "/bicycleID").set(null);
+        db.ref("people/" + this.bicycle.currentUser + "/returnDate").set(null);
       }
       db.ref("bicycles/" + key).remove();
       storage

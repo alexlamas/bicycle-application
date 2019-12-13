@@ -93,14 +93,6 @@
       :rentalKeys="rentalKeys"
       :user="selectedUser"
     />
-    <b-modal size="sm" id="returnDateModal" title="New return date">
-      <template v-slot:modal-footer="{ ok, cancel, hide }">
-        <b-button variant="primary" size="sm">Set date</b-button>
-      </template>
-      <b-form>
-        <b-input v-model="this.returnDate" type="date" />
-      </b-form>
-    </b-modal>
   </b-row>
 </template>
 
@@ -122,7 +114,6 @@ export default {
       rentalsObject: null,
       sortBy: "bicycleKey",
       sortDesc: true,
-      returnDate: "2019-01-08",
       fields: [
         {
           key: "name",
@@ -250,10 +241,6 @@ export default {
     },
     historyModal(user, button) {
       this.$root.$emit("bv::show::modal", "history", button);
-      this.selectedUser = user;
-    },
-    returnDateModal(user, button) {
-      this.$root.$emit("bv::show::modal", "returnDateModal", button);
       this.selectedUser = user;
     },
     editModal(user, button) {
