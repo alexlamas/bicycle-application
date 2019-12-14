@@ -36,8 +36,7 @@
           </p>
 
           <b-table style="max-width: 200px" :items="data" small hover></b-table>
-          So far the total number of rentals this week is
-          {{ total }}
+          So far the total number of rentals this week is {{ total }}
         </b-col>
       </b-row>
     </b-container>
@@ -99,13 +98,6 @@ export default {
       });
       var monday = this.$dateToDays() - ((this.$dateToDays() - 18240) % 7);
       rentalsByDay = rentalsByDay.splice(monday);
-      rentalsByDay.forEach((day, index) => {
-        if (day) {
-          console.log(this.$daysToDate(index));
-          console.log(index);
-          console.log(day);
-        }
-      });
       rentalsByDay.forEach((day, index) => {
         this.data[index].count = day;
         this.total += day;
