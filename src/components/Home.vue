@@ -33,12 +33,12 @@
           <p>
             There are currently <b>{{ count.bicycles }} bicycles</b> being
             borrowed from a total of <b>{{ count.totalBicycles }} bicycles</b>.
-            <br />
-            So far this week, bicycles have been borrowed
-            <b>{{ weeklyRentals }} times</b>.
           </p>
+
+          <b-table style="max-width: 200px" :items="data" small hover></b-table>
+          So far the total number of rentals this week is
+          {{ total }}
         </b-col>
-        <!-- <b-col> <canvas id="planet-chart"></canvas> </b-col> -->
       </b-row>
     </b-container>
   </div>
@@ -47,13 +47,21 @@
 <script>
 import Navbar from "./Navbar";
 import { db } from "@/firebase";
-import Chart from "chart.js";
 
 export default {
   data() {
     return {
-      weeklyRentals: 0,
       userkeys: [],
+      total: 0,
+      data: [
+        { day: "Monday", count: 0 },
+        { day: "Tuesday", count: 0 },
+        { day: "Wednesday", count: 0 },
+        { day: "Thursday", count: 0 },
+        { day: "Friday", count: 0 },
+        { day: "Saturday", count: 0 },
+        { day: "Sunday", count: 0 }
+      ],
       count: {
         bicycles: 0,
         totalBicycles: 0,
@@ -64,44 +72,7 @@ export default {
       }
     };
   },
-  mounted() {
-    this.createChart("planet-chart");
-  },
-  methods: {
-    createChart(chartId) {
-      const ctx = document.getElementById(chartId);
-      const myChart = new Chart(ctx, {
-        type: "bar",
-        data: {
-          labels: ["02-12 -> 08-12", "Current Week"],
-          datasets: [
-            {
-              // one line graph
-              label: "Bikes borrowed",
-              data: [0, 76],
-              borderWidth: 3
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          lineTension: 1,
-          scales: {
-            yAxes: [
-              {
-                ticks: {
-                  beginAtZero: true,
-                  padding: 25
-                }
-              }
-            ]
-          }
-        }
-      });
-      /* eslint-disable no-console */
-      console.log(myChart);
-    }
-  },
+
   components: {
     Navbar
   },
@@ -112,24 +83,32 @@ export default {
         this.count.totalBicycles++;
       });
     });
+    var rentalsByDay = [];
     db.ref("rentals").on("value", rentals => {
-      this.weeklyRentals = 0;
       /* eslint-disable no-console */
-      console.log(rentals.val());
       rentals.forEach(user => {
-        var today = new Date();
-        var monday =
-          this.$dateToDays(today) -
-          (today.getDay() == 0 ? 7 : today.getDay() - 1);
         var days = [];
         user.forEach(rental => {
-          if (rental.val().start >= monday) {
-            if (!days.includes(rental.val().start)) {
-              this.weeklyRentals++;
-            }
+          if (!days.includes(rental.val().start)) {
+            if (!rentalsByDay[rental.val().start]) {
+              rentalsByDay[rental.val().start] = 1;
+            } else rentalsByDay[rental.val().start]++;
             days.push(rental.val().start);
           }
         });
+      });
+      var monday = this.$dateToDays() - ((this.$dateToDays() - 18240) % 7);
+      rentalsByDay = rentalsByDay.splice(monday);
+      rentalsByDay.forEach((day, index) => {
+        if (day) {
+          console.log(this.$daysToDate(index));
+          console.log(index);
+          console.log(day);
+        }
+      });
+      rentalsByDay.forEach((day, index) => {
+        this.data[index].count = day;
+        this.total += day;
       });
     });
     db.ref("people").on("value", people => {

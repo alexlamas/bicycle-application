@@ -29,6 +29,21 @@ Vue.prototype.$dateToDays = function(date) {
     return Math.ceil(today.getTime() / 1000 / 60 / 60 / 24);
   }
 };
+Vue.prototype.$daysToDate = function(days) {
+  if (days == "indefinite") {
+    return "Indefinite";
+  }
+  var date = new Date();
+  date.setTime(days * 24 * 60 * 60 * 1000);
+  return (
+    (date.getDate() < 10 ? "0" : "") +
+    date.getDate() +
+    "-" +
+    (date.getMonth() + 1) +
+    "-" +
+    date.getFullYear()
+  );
+};
 let app;
 auth.onAuthStateChanged(() => {
   if (!app) {
