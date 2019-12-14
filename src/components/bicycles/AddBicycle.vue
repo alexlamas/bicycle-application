@@ -40,7 +40,7 @@
         class="mt-2 float-right"
         type="submit"
         variant="primary"
-        >Submit</b-button
+        >Add bicycle</b-button
       >
       <b-button
         v-if="isSaving"

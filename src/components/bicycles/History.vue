@@ -65,7 +65,7 @@ export default {
 
   methods: {
     deleteRecord(index, userKey) {
-      var rentalKey = Object.keys(this.rentalsObject[userKey])[index];
+      var rentalKey = Object.keys(this.$store.state.rentals[userKey])[index];
       db.ref("rentals/" + userKey + "/" + rentalKey).remove();
       this.bicycleHistory.splice(index, 1);
     },
@@ -86,9 +86,7 @@ export default {
     }
   },
   props: {
-    bicycleHistory: Array,
-    rentalKeys: Array,
-    rentalsObject: Object
+    bicycleHistory: Array
   }
 };
 </script>

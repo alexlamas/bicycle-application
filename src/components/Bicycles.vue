@@ -39,11 +39,7 @@
         </b-card-group>
       </div>
     </b-container>
-    <history
-      :rentalsObject="rentalsObject"
-      :rentalKeys="rentalKeys"
-      :bicycleHistory="bicycleHistory"
-    />
+    <history :bicycleHistory="bicycleHistory" />
   </div>
 </template>
 
@@ -65,9 +61,6 @@ export default {
   data() {
     return {
       bicycleHistory: [],
-      bicycles: [],
-      rentalKeys: [],
-      rentalsObject: null,
       bicycleSearch: "",
       filters: null,
       options: [
@@ -89,7 +82,7 @@ export default {
     },
     setBicycleHistory(bicycleKey) {
       this.bicycleHistory = [];
-      Object.values(this.rentalsObject).forEach(rentalUser => {
+      Object.values(this.$store.state.rentals).forEach(rentalUser => {
         Object.values(rentalUser).forEach(rental => {
           if (bicycleKey == rental.bicycleKey) {
             var name;
@@ -108,9 +101,12 @@ export default {
     }
   },
   computed: {
+    bicycles() {
+      return this.$store.state.bicycles;
+    },
     filteredBicycles() {
       var filtered;
-      filtered = this.bicycles.filter(bicycle => {
+      filtered = this.$store.state.bicycles.filter(bicycle => {
         var testString;
         if (bicycle.id < 10) {
           testString = "00" + bicycle.id.toString();
@@ -156,22 +152,9 @@ export default {
       return filtered;
     }
   },
-  created: function() {
-    db.ref("rentals").on("value", snapshot => {
-      this.rentalKeys = Object.keys(snapshot.val());
-      this.rentalsObject = snapshot.val();
-    });
-    db.ref("bicycles").on("value", snapshot => {
-      this.bicycles = [];
-      snapshot.forEach(doc => {
-        this.bicycles.push({
-          key: doc.key,
-          src: doc.val().src,
-          id: parseInt(doc.val().id),
-          currentUser: doc.val().currentUser
-        });
-      });
-    });
+  mounted: function() {
+    if (!this.$store.state.rentals) this.$store.commit("fetchRentals");
+    if (!this.$store.state.bicycles.length) this.$store.commit("fetchBicycles");
   }
 };
 </script>

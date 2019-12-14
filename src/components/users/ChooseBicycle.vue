@@ -99,13 +99,15 @@ export default {
   },
   data() {
     return {
-      bicycles: [],
       bicycleSearch: "",
       button: { type: "same-day", date: "", days: 1 },
       form: { type: "same-day", date: "", days: 1 }
     };
   },
   computed: {
+    bicycles() {
+      return this.$store.state.bicycles;
+    },
     daysInvalid() {
       if (this.form.type == "days" && this.form.days < 1) {
         return true;
@@ -225,18 +227,8 @@ export default {
       }
     }
   },
-  created: function() {
-    db.ref("bicycles").on("value", snapshot => {
-      this.bicycles = [];
-      snapshot.forEach(doc => {
-        this.bicycles.push({
-          key: doc.key,
-          src: doc.val().src,
-          id: doc.val().id,
-          currentUser: doc.val().currentUser
-        });
-      });
-    });
+  mounted: function() {
+    if (!this.$store.state.bicycles.length) this.$store.commit("fetchBicycles");
   }
 };
 </script>

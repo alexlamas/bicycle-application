@@ -2,7 +2,6 @@
   <b-row class="mt-2 px-3">
     <b-table
       stacked="md"
-      ref="userTable"
       :items="filteredPeople"
       :fields="filteredFields"
       :filter="userSearch"
@@ -88,11 +87,7 @@
     <delete-user :user="selectedUser" />
     <choose-bicycle :user="selectedUser" />
     <return-bicycle :bicycle="selectedBicycle" :user="selectedUser" />
-    <history
-      :rentalsObject="rentalsObject"
-      :rentalKeys="rentalKeys"
-      :user="selectedUser"
-    />
+    <history :user="selectedUser" />
   </b-row>
 </template>
 
@@ -109,9 +104,6 @@ export default {
     return {
       selectedUser: {},
       selectedBicycle: {},
-      people: [],
-      rentalKeys: [],
-      rentalsObject: null,
       sortBy: "bicycleKey",
       sortDesc: true,
       fields: [
@@ -198,7 +190,7 @@ export default {
     },
     filteredPeople() {
       var filtered;
-      filtered = this.people;
+      filtered = this.$store.state.people;
       if (this.filters.includes("renting")) {
         filtered = this.people.filter(p => {
           return p.bicycleKey;
@@ -263,41 +255,21 @@ export default {
       this.selectedUser = user;
     },
     calculatePenalty(penalty) {
-      var today = new Date();
-      var hours = this.$dateToDays(today);
-      return Math.ceil(penalty / 1000 / 60 / 60 / 24 - hours) > 1
-        ? Math.ceil(penalty / 1000 / 60 / 60 / 24 - hours)
+      return Math.ceil(penalty / 1000 / 60 / 60 / 24 - this.$dateToDays()) > 1
+        ? Math.ceil(penalty / 1000 / 60 / 60 / 24 - this.$dateToDays())
         : null;
     },
     rentalCount(userKey) {
-      var index = this.rentalKeys.indexOf(userKey);
+      var index = this.$store.state.rentalKeys.indexOf(userKey);
       if (index != -1) {
-        return Object.keys(this.rentalsObject[userKey]).length;
+        return Object.keys(this.$store.state.rentals[userKey]).length;
       }
       return 0;
     }
   },
-  created: function() {
-    var today = new Date();
-    db.ref("people").on("value", snapshot => {
-      this.people = [];
-      snapshot.forEach(doc => {
-        this.people.push({
-          ...doc.val(),
-          key: doc.key,
-          organisation: doc.val().organisation,
-          penalty: this.calculatePenalty(doc.val().penalty),
-          bicycleKey: doc.val().bicycleKey ? doc.val().bicycleKey : null,
-          bicycleID: doc.val().bicycleID ? parseInt(doc.val().bicycleID) : null,
-          daysLeft: doc.val().returnDate - this.$dateToDays(today)
-        });
-      });
-    });
-
-    db.ref("rentals").on("value", snapshot => {
-      this.rentalKeys = Object.keys(snapshot.val());
-      this.rentalsObject = snapshot.val();
-    });
+  mounted: function() {
+    if (!this.$store.state.people.length) this.$store.commit("fetchPeople");
+    if (!this.$store.state.rentals) this.$store.commit("fetchRentals");
   }
 };
 </script>

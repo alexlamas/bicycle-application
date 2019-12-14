@@ -48,11 +48,28 @@ import Navbar from "./Navbar";
 import { db } from "@/firebase";
 
 export default {
-  data() {
-    return {
-      userkeys: [],
-      total: 0,
-      data: [
+  computed: {
+    bicycles() {
+      return this.$store.state.bicycles;
+    },
+    rentals() {
+      return this.$store.state.rentals;
+    },
+    people() {
+      return this.$store.state.people;
+    },
+    count() {
+      var count = {
+        bicycles: 0,
+        totalBicycles: this.$store.state.bicycles.length,
+        visitors: 0,
+        volunteers: 0,
+        helpers: 0
+      };
+      return count;
+    },
+    data() {
+      var data = [
         { day: "Monday", count: 0 },
         { day: "Tuesday", count: 0 },
         { day: "Wednesday", count: 0 },
@@ -60,49 +77,42 @@ export default {
         { day: "Friday", count: 0 },
         { day: "Saturday", count: 0 },
         { day: "Sunday", count: 0 }
-      ],
-      count: {
-        bicycles: 0,
-        totalBicycles: 0,
-
-        visitors: 0,
-        volunteers: 0,
-        helpers: 0
-      }
-    };
-  },
-
-  components: {
-    Navbar
-  },
-  created: function() {
-    db.ref("bicycles").on("value", snapshot => {
-      Object.keys(this.count).forEach(c => (this.count[c] = 0));
-      snapshot.forEach(() => {
-        this.count.totalBicycles++;
-      });
-    });
-    var rentalsByDay = [];
-    db.ref("rentals").on("value", rentals => {
-      /* eslint-disable no-console */
-      rentals.forEach(user => {
+      ];
+      var rentalsByDay = [];
+      Object.values(this.rentals).forEach(user => {
         var days = [];
-        user.forEach(rental => {
-          if (!days.includes(rental.val().start)) {
-            if (!rentalsByDay[rental.val().start]) {
-              rentalsByDay[rental.val().start] = 1;
-            } else rentalsByDay[rental.val().start]++;
-            days.push(rental.val().start);
+        Object.values(user).forEach(rental => {
+          if (!days.includes(rental.start)) {
+            if (!rentalsByDay[rental.start]) {
+              rentalsByDay[rental.start] = 1;
+            } else rentalsByDay[rental.start]++;
+            days.push(rental.start);
           }
         });
       });
       var monday = this.$dateToDays() - ((this.$dateToDays() - 18240) % 7);
       rentalsByDay = rentalsByDay.splice(monday);
       rentalsByDay.forEach((day, index) => {
-        this.data[index].count = day;
-        this.total += day;
+        data[index].count = day;
       });
-    });
+      return data;
+    },
+    total() {
+      var total = 0;
+      this.data.forEach(day => {
+        total += day.count;
+      });
+      return total;
+    }
+  },
+  components: {
+    Navbar
+  },
+  created: function() {
+    if (!this.$store.state.rentals) this.$store.commit("fetchRentals");
+    if (!this.$store.state.bicycles.length) this.$store.commit("fetchBicycles");
+    if (!this.$store.state.people.length) this.$store.commit("fetchPeople");
+
     db.ref("people").on("value", people => {
       people.forEach(person => {
         if (person.val().bicycleID) {
