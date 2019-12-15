@@ -45,7 +45,6 @@
 
 <script>
 import Navbar from "./Navbar";
-import { db } from "@/firebase";
 
 export default {
   computed: {
@@ -66,6 +65,24 @@ export default {
         volunteers: 0,
         helpers: 0
       };
+      this.people.forEach(person => {
+        if (person.bicycleID) {
+          count.bicycles++;
+          switch (person.type) {
+            case "visitor":
+              count.visitors++;
+              break;
+            case "helper":
+              count.helpers++;
+              break;
+            case "volunteer":
+              count.volunteers++;
+              break;
+            default:
+              break;
+          }
+        }
+      });
       return count;
     },
     data() {
@@ -112,27 +129,6 @@ export default {
     if (!this.$store.state.rentals) this.$store.commit("fetchRentals");
     if (!this.$store.state.bicycles.length) this.$store.commit("fetchBicycles");
     if (!this.$store.state.people.length) this.$store.commit("fetchPeople");
-
-    db.ref("people").on("value", people => {
-      people.forEach(person => {
-        if (person.val().bicycleID) {
-          this.count.bicycles++;
-          switch (person.val().type) {
-            case "visitor":
-              this.count.visitors++;
-              break;
-            case "helper":
-              this.count.helpers++;
-              break;
-            case "volunteer":
-              this.count.volunteers++;
-              break;
-            default:
-              break;
-          }
-        }
-      });
-    });
   }
 };
 </script>
