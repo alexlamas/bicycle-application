@@ -4,7 +4,7 @@
     <b-container>
       <b-navbar sticky class="px-0" style="background-color:white">
         <b-form-input
-          v-model="userSearch"
+          v-model.lazy="userSearch"
           type="search"
           placeholder="Search..."
           size="sm"
