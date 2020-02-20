@@ -1,5 +1,6 @@
 <template>
-  <b-card href="#" :img-src="bicycle.src" img-top>
+  <b-card href="#">
+    <b-card-img-lazy :src="bicycle.src" top></b-card-img-lazy>
     <div class="d-flex">
       <div class="my-auto">
         <b-badge variant="light" class="mr-2"
